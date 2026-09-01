@@ -1,0 +1,27 @@
+{
+  "summary": "P0.1 SCROLL STABILITY: PASSED — scrolled all 5 public routes (/, /framework, /ecosystem, /platform, /resources) across desktop (1920x800), tablet (768x1024), and mobile (390x844); no section became blank/invisible while scrolling. Direct load of /#challenge also scrolled cleanly with the Challenge section and following sections remaining visible. The .glass class in index.css correctly uses solid rgba background instead of backdrop-filter, confirming the root-cause fix. P0.2 v2.0 CONTENT: PASSED with one fix — Hero headline, Solution 'CCDP is not' chips (all 4 present), Learning Experience header, Shared Collaboration tiles, University Partnerships retain/provide grids all render correctly. Inquiry flow works: hero-deck-btn opens InquiryDialog, form submits, POST /api/inquiries returns 200 with success confirmation ('Thank you for your interest in CCDP.'). nav-briefing-btn intentionally opens Google Calendar in a new tab (schedulingUrl configured via /api/config) — this is by design, not a bug. Audio toggle present. No console errors. No broken images.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Homepage — Solution section", "issues": ["Copy references 'A course catalog' chip is intentional (line-through), but standalone marketing lines outside the strikethrough still contain the legacy academic tokens the spec asked to avoid: 'Built for majors, not careers' (heading), 'organize learning around disciplines and course catalogs' (Challenge description), 'You don't declare a major.' (Learning Experience intro), and 'CCDP replaces the traditional course catalog with signature learning experiences' (Learning Experience subhead). Spec: 'search rendered text for major, course catalog, list of majors — should only appear in the intentional CCDP is not strikethrough context.' These usages are contrast/comparison copy, not actual descriptors of CCDP, so they are borderline — flagging for main agent to decide whether to rephrase (e.g., 'declared discipline', 'legacy program lists')."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_6.json"],
+  "action_items": [
+    "OPTIONAL / EDITORIAL: Rephrase remaining occurrences of 'major(s)' and 'course catalog(s)' in Challenge and Learning Experience intro copy if strict compliance with 'only appear in the CCDP is not strikethrough' rule is required. Current copy uses these terms only in contrast/comparison contexts."
+  ],
+  "critical_code_review_comments": [
+    "FIXED by tester: /app/frontend/src/components/LearningExperience.jsx — GlassPanel component was not forwarding the data-testid prop to the underlying <div>, so all 18 signature-* and all 8 intelligence-* testids were missing from the DOM. Changed signature to ({ children, className = '', ...rest }) and spread {...rest} onto the div. After fix: signature-* count = 18, intelligence-* count = 8 (as expected).",
+    "InquiryProvider.openBriefing opens Google Calendar in a new tab when schedulingUrl is configured. This is correct behavior, but note that automated tests targeting nav-briefing-btn expecting a dialog will fail — tests should instead assert new-tab/new-window open or clear schedulingUrl first. Consider documenting this."
+  ],
+  "updated_files": ["/app/frontend/src/components/LearningExperience.jsx"],
+  "success_rate": {"backend": "N/A (frontend-only run; POST /api/inquiries verified 200)", "frontend": "100% after 1-line data-testid forwarding fix"},
+  "test_credentials": "N/A — public site tested; admin flows out of scope",
+  "seed_data_creation": "Created one inquiry via POST /api/inquiries (id=a7301365-a296-443f-a769-577db4f943e1, TEST User / test.user@example.com / TEST Org).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Scroll bug is fully resolved by the solid background .glass in /app/frontend/src/index.css. The InquiryDialog is triggered by openInquiry (hero-deck-btn, investment-deck-btn, partners-cta-btn, ecosystem-cta-btn, etc.), NOT by nav-briefing-btn (that one opens external scheduling URL). Dialog testids: inquiry-first-name, inquiry-last-name, inquiry-organization, inquiry-job-title, inquiry-org-type (Radix Select — click then pick [role=option]), inquiry-area, inquiry-email, inquiry-phone, inquiry-website, inquiry-message, inquiry-submit. Signature/Intelligence testids required a fix (GlassPanel prop-forwarding) which has been applied.",
+  "rca of the issue": "signature-*/intelligence-* selectors returned zero elements even though the JSX declared 18+8 cards. Root cause: the wrapping GlassPanel component in LearningExperience.jsx accepted only { children, className } and did not spread the remaining props (including data-testid) onto the rendered <div>. Fix: add ...rest to props and spread onto the div. Verified post-fix: 18 signature and 8 intelligence data-testids present in DOM."
+}

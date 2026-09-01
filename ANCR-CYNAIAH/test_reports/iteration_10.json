@@ -1,0 +1,44 @@
+{
+  "summary": "Iteration 10 — Storyboard Frame Feedback milestone tested end-to-end. Wrote /app/backend/tests/test_frame_feedback.py (12 tests, 12/12 passing) covering happy path, validation (missing target_ref → 400, unknown frame → 404, cross-project frame smuggling → 404), authZ (student POST 403, second-student GET 403), notification envelope (type=review, review_kind=frame_feedback, event_type=review.frame_feedback, deep_link=/story-lab?project=&frame=, ancr_ready=true, in_app delivered + ancr_bus not_configured), link registry (6 entries including storyboard.frame + resolve-link happy path + 3× 404 for missing query keys), and immutable-history/supersedes (message + created_at preserved, superseded_by patched, no deletion). Frontend flows verified in the live preview: faculty can pin a note on /faculty/projects/proj-mv-neon-heart Storyboard tab (per-frame testids + composer + gold count badge + inline notes list), the target student receives the notification, deep-link /story-lab?project=proj-mv-neon-heart&frame=<fid> auto-selects project + Storyboard tab, target frame shows the cyan ring + '2 notes' gold badge (data-testid storyboard-frame-note-badge-<fid>), and the right rail 'Faculty notes on this frame' panel (data-testid storyboard-frame-notes-panel-<fid>) renders each note attributed to 'Prof. Idris Bello' plus the copy 'Append-only — nothing is silently overwritten.' A newly registered second student navigating the same deep_link does NOT crash the UI and sees zero frames (no cross-owner leak in DOM).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "GET /api/notifications", "issue": "Endpoint returns a raw JSON array in some code paths and a {notifications:[...]} object in others — the frontend uses one shape, tests need to handle both. Consider normalising to always return {notifications, unread_count}."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_frame_feedback.py",
+    "/app/test_reports/pytest/iter10_frame_feedback.xml",
+    "/app/test_reports/pytest/iter10_all.xml"
+  ],
+  "action_items": [
+    "PRE-EXISTING TEST-DATA CONTAMINATION (not caused by this milestone): The live demo DB's `proj-mv-neon-heart` has accumulated 15+ status='approved' faculty_reviews from prior manual/test runs (messages: 'TEST status', 'ANCR test status', 'Smoke approved'). This causes 4 iteration-3 assertions in test_faculty_reviews.py (test_faculty_dashboard_faculty_ok, test_faculty_project_view_ok, test_student_reviews_summary) to fail because they expect latest_status='revision_requested' but it's now 'approved'. Recommend: (a) reset the flagship's status by posting a new 'revision_requested' status review as faculty, and/or (b) make the old tests tolerant (assert status in {'revision_requested','approved'}), and/or (c) fix the seed to be strictly idempotent for faculty_reviews so `POST /api/seed` re-normalises the flagship status.",
+    "REGRESSION FROM MILESTONE — hardcoded link-registry counts in old tests need bumping from 5 → 6: test_ancr_envelope.py::test_link_registry_public_no_auth and test_security_auth.py::TestAncrRegression::test_link_registry both assert `len(links) == 5`. The main agent added a 6th registry entry ('storyboard.frame') on purpose but did not update the two existing tests. Bump both to 6 (or `>= 5` if you want future-proofing).",
+    "PRE-EXISTING (unrelated to iter 10): test_cynaiah_backend.py::test_seed_idempotent and test_music_default_and_seeded already failing on iteration 9 — worth investigating separately."
+  ],
+  "critical_code_review_comments": [
+    "server.py::_record_review correctly FORCES target_type='storyboard_frame' for frame_feedback (line 1668) so a client cannot spoof the type. Good.",
+    "server.py::_record_review scopes the frame lookup to project_id (line 1670) — blocks cross-project frame-id smuggling. Verified by test_frame_feedback_cross_project_frame_404.",
+    "_spawn_review_notification refuses to emit unregistered deep_links (line 1747–1750) — protects the ANCR contract. The new /story-lab?project=&frame= link is properly added to LINK_REGISTRY.",
+    "Immutable history: supersedes only patches `superseded_by`; message + created_at + rubric_scores are never mutated on the old row. Verified.",
+    "GET /api/notifications shape inconsistency (list vs dict) — small papercut, worth normalising for downstream consumers."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_frame_feedback.py (NEW)"
+  ],
+  "success_rate": {
+    "backend": "100% new suite 12/12; regression 185/192 (7 failures — 2 milestone-knock-ons on hardcoded link counts + 3 flagship-status-drift + 2 pre-existing from iter 9)",
+    "frontend": "100% — faculty pin flow, student deep-link, cyan ring + gold badge + right-rail notes panel, cross-owner no-leak all verified in live preview"
+  },
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026!, faculty@cynaiah.demo / Cynaiah2026!. Second student created dynamically via /api/auth/register with SecTest2026!.",
+  "seed_data_creation": "Test suite posts TEST_-prefixed frame_feedback reviews against the live demo DB flagship project. These are additive/append-only (per milestone contract). No cleanup — matches the pattern used by test_faculty_reviews.py.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The frame_feedback deep_link is /story-lab?project=X&frame=Y (NOT /reviews?...). LINK_REGISTRY now has 6 entries — if a future milestone adds another link, remember to also bump test_ancr_envelope.py and test_security_auth.py hardcoded counts. Frame IDs on the flagship follow 'frame-proj-mv-neon-heart-<n>' for n=0..13 (the seed created 14 frames, not 13 as the review request said). Faculty/frame testids: faculty-frame-<fid>, faculty-frame-note-btn-<fid>, faculty-frame-note-input-<fid>, faculty-frame-note-submit-<fid>, faculty-frame-note-count-<fid>, faculty-frame-notes-<fid>. Story Lab side: storyboard-frame-<fid>, storyboard-frame-note-badge-<fid>, storyboard-frame-notes-panel-<fid>.",
+  "rca of the issue": "The 4 test_faculty_reviews.py failures on `latest_status == 'revision_requested'` are NOT caused by the frame-feedback milestone. They are caused by demo-DB drift: multiple prior test runs posted status='approved' reviews on proj-mv-neon-heart (visible in db.faculty_reviews). Since latest_status is computed as the most recent status kind, the assertion now reads 'approved'. Fix by either (a) resetting the flagship status in seed, (b) relaxing the old assertions, or (c) running the tests against a scratch DB like iteration 9 does."
+}

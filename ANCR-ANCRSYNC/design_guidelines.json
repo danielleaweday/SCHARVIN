@@ -1,0 +1,142 @@
+{
+  "theme_and_archetype": {
+    "theme": "dark",
+    "archetype": "5 (Luxury / Premium Tech)",
+    "description": "A cinematic, moody, and highly professional dark interface inspired by Apple, Linear, and Arc. It blends Swiss minimalism with high-end glassmorphism. It strictly avoids purple/violet and relies on deep obsidian/zinc tones, striking white typography, and electric azure blue accents for interaction.",
+    "core_principles": [
+      "Absolute Linear Simplicity: No clutter, everything is meticulously aligned.",
+      "High-End Glassmorphism: Surfaces must feel like milled crystal, not muddy gray.",
+      "Fluid Motion: Every interaction has a subtle, premium framer-motion transition.",
+      "Contrast over Color: Hierarchy is established through stark white against deep zinc, using accent color extremely sparingly."
+    ]
+  },
+  "typography": {
+    "rules": [
+      "Strictly avoid Inter and Roboto.",
+      "Use tight letter spacing (tracking-tight) for all headings.",
+      "Uppercase with wide spacing (tracking-[0.2em]) for overlines and small labels.",
+      "Maintain a 2-step tailwind size gap max between headings and subheadings."
+    ],
+    "fonts": {
+      "headings": {
+        "family": "'Cabinet Grotesk', sans-serif",
+        "weights": ["300", "500", "800"],
+        "usage": "Hero titles, section headers, dashboard widget numbers."
+      },
+      "body": {
+        "family": "'Satoshi', sans-serif",
+        "weights": ["400", "500"],
+        "usage": "Paragraphs, lists, standard UI elements."
+      },
+      "mono": {
+        "family": "'JetBrains Mono', monospace",
+        "weights": ["400"],
+        "usage": "Data points in Creative Passport, timestamps, code/log snippets."
+      }
+    },
+    "scales": {
+      "h1": "text-5xl sm:text-6xl tracking-tighter font-medium text-zinc-50",
+      "h2": "text-3xl sm:text-4xl tracking-tight font-medium text-zinc-100",
+      "h3": "text-xl sm:text-2xl font-medium text-zinc-100",
+      "body": "text-base leading-relaxed text-zinc-400",
+      "label": "text-xs tracking-[0.2em] uppercase text-zinc-500"
+    }
+  },
+  "color_palette": {
+    "backgrounds": {
+      "main": "#000000",
+      "secondary": "#09090B",
+      "tertiary": "#18181B"
+    },
+    "surfaces": {
+      "glass": "rgba(24, 24, 27, 0.6)",
+      "glass_light": "rgba(255, 255, 255, 0.03)",
+      "solid": "#18181B"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A1A1AA",
+      "muted": "#71717A"
+    },
+    "accents": {
+      "primary": "#007AFF",
+      "primary_hover": "#3B82F6",
+      "glow": "rgba(0, 122, 255, 0.2)",
+      "success_passport": "#F59E0B"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "focus": "rgba(0, 122, 255, 0.5)"
+    },
+    "forbidden_colors": ["purple", "violet", "#9D4CDD", "#7351B7", "pure #FFFFFF for large backgrounds"]
+  },
+  "layout_and_spacing": {
+    "spacing_system": "Generous spacing. p-6, p-8, p-12 for containers. gap-8 for bento grids.",
+    "dashboard_grid": "Mode B: 'Control Room' Grid. grid-cols-1 md:grid-cols-3 lg:grid-cols-4. gap-6.",
+    "marketing_grid": "Mode A: 'Tetris' Grid. Asymmetric. col-span-8 row-span-2 for heroes.",
+    "surfaces": {
+      "cards": "bg-zinc-900/50 backdrop-blur-2xl border border-white/5 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
+      "headers": "sticky top-0 z-50 bg-black/60 backdrop-blur-xl border-b border-white/10 saturate-150"
+    }
+  },
+  "components_and_interactions": {
+    "buttons": {
+      "primary": "bg-zinc-50 text-zinc-950 hover:bg-zinc-200 transition-colors rounded-full px-6 py-2.5 font-medium",
+      "accent": "bg-[#007AFF] text-white hover:bg-blue-500 shadow-[0_0_15px_rgba(0,122,255,0.3)] transition-all rounded-full px-6 py-2.5 font-medium",
+      "ghost": "text-zinc-400 hover:text-zinc-50 hover:bg-white/5 rounded-full px-4 py-2 transition-colors"
+    },
+    "forms": "Shadcn based. Inputs: bg-zinc-950/50 border-white/10 focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] text-white rounded-xl.",
+    "motion": "Use framer-motion. Subtle scale (0.98 on tap), smooth opacity/y-axis reveals on scroll.",
+    "testing": "CRITICAL: All interactive elements must have data-testid attributes (e.g., data-testid='join-session-btn')."
+  },
+  "feature_specific_guidelines": {
+    "global_collaboration_map": {
+      "library": "react-globe.gl",
+      "style": "Dark background (rgba(0,0,0,0)), globe image in dark/monochrome tones, points/arcs in electric blue (#007AFF) and gold (#F59E0B). Interactive on hover."
+    },
+    "creative_passport": {
+      "style": "A vertical timeline mixed with a Notion-style verified log. Use 'Tracing Beam' border effect on the side of the timeline. Badges in Gold/Amber for 'Verified Institution' or 'Industry Label'.",
+      "typography": "Heavy use of JetBrains Mono for dates and verification hashes."
+    },
+    "shared_sessions": {
+      "style": "Live video tiles should have 1px solid border-white/10. Floating toolbar at the bottom (Glassmorphism). AI Assistant sidebar in a distinct darker panel (bg-black)."
+    }
+  },
+  "media_and_assets": {
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5, text-zinc-400, hover to text-white."
+    },
+    "images": {
+      "hero_background": {
+        "url": "https://images.unsplash.com/photo-1707730376818-a7a02fe896d5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjBnbGFzcyUyMHNwaGVyZXxlbnwwfHx8fDE3ODMzODk4Njh8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Abstract dark glass curves for the marketing hero background to give a premium OS feel.",
+        "usage": "Place behind a bg-black/60 overlay."
+      },
+      "shared_studios_cover": {
+        "url": "https://images.unsplash.com/photo-1518972559570-7cc1309f3229?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzNTl8MHwxfHNlYXJjaHwzfHxtdXNpYyUyMHByb2R1Y3Rpb24lMjBzdHVkaW8lMjBkYXJrfGVufDB8fHx8MTc4MzM4OTg2OHww&ixlib=rb-4.1.0&q=85",
+        "description": "Dark music production mixer for the Shared Studios preview card.",
+        "usage": "Use inside bento grid cards with object-cover and a dark gradient bottom overlay."
+      },
+      "creators_community": {
+        "url": "https://images.unsplash.com/photo-1612544409025-e1f6a56c1152?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTJ8MHwxfHNlYXJjaHwyfHxjcmVhdG9ycyUyMGNvbGxhYm9yYXRpbmclMjBzdHVkaW98ZW58MHx8fHwxNzgzMzg5ODY4fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Creators collaborating / band playing, for the community/sessions section.",
+        "usage": "Use as a background for 'Active Collaborations' with heavy blur or dark tint."
+      },
+      "logo_placeholder_1": {
+        "url": "https://images.unsplash.com/photo-1644166186783-35d911470ff0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTB8MHwxfHNlYXJjaHwxfHxicmFuZCUyMGxvZ28lMjB3aGl0ZSUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzgzMzg5ODY4fDA&ixlib=rb-4.1.0&q=85",
+        "description": "Partner brand logo.",
+        "usage": "Use in 'Trusted By' or 'Institutions' marquee. MUST be styled with css filter: grayscale(100%) invert(100%) brightness(200%) to match dark theme."
+      }
+    }
+  },
+  "instructions_to_main_agent": [
+    "Install 'lucide-react' for icons, 'framer-motion' for animations, and 'react-globe.gl' for the world map.",
+    "Ensure all Shadcn components are built manually with pure HTML/Tailwind if standard components feel too rigid, but use Shadcn's radix-ui logic for complex interactions (Dialog, Select).",
+    "Global layout must be strictly dark mode. Do not implement a light mode toggle.",
+    "Ensure the hero section highlights the ANCRSync™ typography powerfully using Cabinet Grotesk.",
+    "Do NOT use placeholder text or dummy image URLs (like via.placeholder). Use only the URLs provided in this JSON.",
+    "All buttons, inputs, and clickable cards MUST have data-testid attributes.",
+    "For the globe map visualization, make sure the wrapper has a fixed height or min-height so the canvas renders properly."
+  ]
+}

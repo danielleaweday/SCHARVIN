@@ -1,0 +1,95 @@
+{
+  "theme": "dark",
+  "typography": {
+    "primary_font": "Playfair Display",
+    "secondary_font": "JetBrains Mono",
+    "body_font": "Inter",
+    "headings": {
+      "learning_mode": "font-serif tracking-tight font-light",
+      "creation_mode": "font-mono tracking-tight font-medium",
+      "h1": "text-4xl sm:text-5xl lg:text-6xl leading-none",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl",
+      "h3": "text-xl sm:text-2xl",
+      "h4": "text-lg sm:text-xl"
+    },
+    "body": "text-base leading-relaxed",
+    "labels": "text-xs tracking-[0.2em] uppercase"
+  },
+  "colors": {
+    "background": "#050505",
+    "surface": "#0F0F11",
+    "surface_glass": "rgba(255, 255, 255, 0.03)",
+    "border": "rgba(255, 255, 255, 0.08)",
+    "primary": "#F8F9FA",
+    "secondary": "#A1A1AA",
+    "accent": "#E23A25",
+    "accent_glow": "rgba(226, 58, 37, 0.15)",
+    "success": "#10B981",
+    "warning": "#F59E0B"
+  },
+  "visual_enhancers": {
+    "glass_card_recipe": "bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "film_grain_overlay": "absolute inset-0 opacity-[0.04] mix-blend-screen pointer-events-none bg-[url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjV8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGRhcmslMjBmaWxtJTIwZ3JhaW4lMjB0ZXh0dXJlfGVufDB8fHx8MTc4MzU1Nzk3Nnww&ixlib=rb-4.1.0&q=85')] bg-repeat",
+    "button_primary": "bg-white text-black hover:bg-gray-200 transition-colors duration-300 rounded-full px-6 py-2 font-mono text-sm uppercase tracking-wider",
+    "button_secondary": "bg-transparent border border-white/20 text-white hover:bg-white/10 transition-colors duration-300 rounded-full px-6 py-2 font-mono text-sm uppercase tracking-wider"
+  },
+  "layouts": {
+    "shared_shell": {
+      "left_nav": "fixed left-0 top-0 h-screen w-64 border-r border-white/10 bg-[#050505]/80 backdrop-blur-xl z-50 p-6 flex flex-col gap-8",
+      "top_bar": "fixed top-0 left-64 right-0 h-20 border-b border-white/10 bg-[#050505]/80 backdrop-blur-xl z-40 flex items-center justify-between px-8",
+      "main_content": "ml-64 mt-20 p-8 min-h-screen bg-[#050505]",
+      "aiah_dock": "fixed bottom-8 right-8 w-16 h-16 rounded-full bg-white/5 border border-white/20 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center justify-center cursor-pointer hover:scale-105 transition-transform z-50 group"
+    },
+    "learning_mode": {
+      "grid": "grid grid-cols-1 md:grid-cols-12 gap-8",
+      "hero": "col-span-12 min-h-[60vh] relative rounded-3xl overflow-hidden flex items-end p-12 glass_card_recipe",
+      "journey_stepper": "col-span-12 md:col-span-4 flex flex-col gap-4",
+      "content_main": "col-span-12 md:col-span-8",
+      "cinematic_lesson_player": "w-full aspect-video bg-black rounded-2xl overflow-hidden relative border border-white/10"
+    },
+    "creation_mode": {
+      "grid": "grid grid-cols-1 md:grid-cols-4 gap-4",
+      "kpi_card": "col-span-1 p-6 rounded-xl bg-white/[0.02] border border-white/5",
+      "curriculum_canvas": "col-span-3 min-h-[70vh] rounded-xl border border-white/10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px] bg-black/50 p-8",
+      "sidebar_panel": "col-span-1 rounded-xl border border-white/10 bg-[#0A0A0C] p-6 h-[70vh] overflow-y-auto"
+    }
+  },
+  "motion": {
+    "page_transition": "framer-motion initial opacity-0 y-4 animate opacity-100 y-0 duration 0.6s ease-[0.22,1,0.36,1]",
+    "staggered_reveal": "framer-motion staggerChildren 0.1s",
+    "aiah_pulse": "animate-pulse shadow-[0_0_40px_rgba(255,255,255,0.2)]",
+    "hub_launch": "scale-up from 0.95 to 1, opacity 0 to 1, cubic-bezier(0.16, 1, 0.3, 1) duration 0.5s"
+  },
+  "media": {
+    "image_urls": {
+      "studio_hero": "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjByZWNvcmRpbmclMjBzdHVkaW8lMjBkYXJrfGVufDB8fHx8MTc4MzU1Nzk3Nnww&ixlib=rb-4.1.0&q=85",
+      "faculty_portrait": "https://images.unsplash.com/photo-1637059880830-59a90102de77?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHxjcmVhdGl2ZSUyMGVkaXRvcmlhbCUyMHBvcnRyYWl0JTIwZGFya3xlbnwwfHx8fDE3ODM1NTc5NzZ8MA&ixlib=rb-4.1.0&q=85",
+      "audio_mixer": "https://images.unsplash.com/photo-1574517947730-55cb23e608c2?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjByZWNvcmRpbmclMjBzdHVkaW8lMjBkYXJrfGVufDB8fHx8MTc4MzU1Nzk3Nnww&ixlib=rb-4.1.0&q=85",
+      "microphone": "https://images.unsplash.com/photo-1478737270239-2f02b77fc618?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwzfHxwcm9mZXNzaW9uYWwlMjByZWNvcmRpbmclMjBzdHVkaW8lMjBkYXJrfGVufDB8fHx8MTc4MzU1Nzk3Nnww&ixlib=rb-4.1.0&q=85",
+      "abstract_texture": "https://images.unsplash.com/photo-1596865249308-2472dc5807d7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjV8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGRhcmslMjBmaWxtJTIwZ3JhaW4lMjB0ZXh0dXJlfGVufDB8fHx8MTc4MzU1Nzk3Nnww&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "component_instructions": {
+    "general": "Use lucide-react for all icons. Use framer-motion for page transitions and staggering. Use sonner for toasts.",
+    "role_switcher": "A segmented control in the top bar. Smooth background slide animation when switching between 'Student' and 'Faculty' modes.",
+    "aiah_companion": "AIAH is contextual. Click the dock icon to expand a glassmorphism side panel (w-96) on the right. Content should relate to the current page (e.g., 'Analyze this portfolio' or 'Suggest next module').",
+    "curriculum_builder": "Implement using HTML5 drag and drop or a library like dnd-kit. Visuals should resemble Figma/Notion with technical dark mode aesthetics, 1px borders, and monospaced properties.",
+    "ecosystem_nav": "Permanent left nav. Active states should have a subtle #E23A25 left border glow and text color highlight.",
+    "course_tiles": "Cinematic. 16:9 ratio. Dark gradient overlay at the bottom to ensure text readability. Hover state slightly scales up the background image and reveals a 'Play' or 'Continue' icon."
+  },
+  "accessibility": {
+    "contrast": "Ensure all text against the dark #050505 background passes WCAG AA minimums. Use primary text #F8F9FA for high emphasis, #A1A1AA for medium emphasis.",
+    "focus_states": "All interactive elements must have a visible focus ring, e.g., focus:ring-2 focus:ring-white/50 focus:outline-none.",
+    "motion": "Respect prefers-reduced-motion media query by disabling framer-motion animations if set.",
+    "data_testid": "All interactive elements (links, buttons, inputs) MUST have data-testid attributes (e.g., data-testid='nav-hub-link', data-testid='role-switcher')."
+  },
+  "universal_guidelines_for_main_agent": [
+    "Do NOT use generic gradient backgrounds.",
+    "Do NOT center align text globally.",
+    "Create depth using the glass_card_recipe and drop shadows.",
+    "Ensure the film grain overlay is applied globally to the main layout for a cinematic feel.",
+    "Use Playfair Display for Learning Mode headings to give an editorial MasterClass vibe.",
+    "Use JetBrains Mono for Creation Mode data and labels to mimic professional studio software like Logic Pro or Figma.",
+    "Ensure ecosystem hubs (ANCRLAB, INHEIRA, etc.) have distinct launch animations when clicked."
+  ]
+}

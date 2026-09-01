@@ -1,0 +1,37 @@
+{
+  "summary": "Iteration 10.1 regression retest of full backend pytest suite. Initial run showed 188/192 pass with 4 failures. 2 were legitimate test-data errors in the 5→6 bump that main agent applied (EXPECTED_LINK_IDS/EXPECTED_EVENT_TYPES sets were not updated, and line 241 was over-bumped since that test only creates 5 review kinds). Fixed those 3 test-only issues. Final result: 190/192 passing (~99%), with the ONLY 2 remaining failures being the same iteration-9 pre-existing knock-ons (test_seed_idempotent 401, test_music_default_and_seeded 404). No regressions from Frame Feedback milestone. One transient 502 (Cloudflare) in test_security_authz observed but passed cleanly on rerun.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/seed (POST)", "issue": "test_cynaiah_backend.py::test_seed_idempotent returns 401 — pre-existing since iteration 9 (test calls /api/seed without admin token; endpoint now requires admin auth per new seed-guard security). Test needs to authenticate as admin."},
+      {"endpoint": "/api/... (music seeded endpoint)", "issue": "test_cynaiah_backend.py::test_music_default_and_seeded returns 404 — pre-existing since iteration 9. Endpoint path may have changed or seeded music record no longer exists at expected id."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/test_reports/pytest/iteration_10_1_final.xml",
+    "/app/backend/tests/test_ancr_envelope.py",
+    "/app/backend/tests/test_frame_feedback.py",
+    "/app/backend/tests/test_security_auth.py",
+    "/app/backend/tests/test_faculty_reviews.py"
+  ],
+  "action_items": [
+    "(Optional / separate) Fix test_cynaiah_backend.py::test_seed_idempotent to send admin bearer token when POSTing /api/seed (endpoint is now admin-guarded).",
+    "(Optional / separate) Investigate test_cynaiah_backend.py::test_music_default_and_seeded 404 — determine whether the endpoint path or seeded music id changed and update the test.",
+    "No action needed for the Frame Feedback milestone — clean."
+  ],
+  "critical_code_review_comments": [
+    "Main agent's 5→6 bump on test_ancr_envelope.py line 241 was incorrect: that test (test_five_reviews_produce_five_notifications) creates exactly 5 review kinds via parametrize, so the correct expected count is 5. I reverted to 5.",
+    "Main agent bumped the count assertions but forgot to update the EXPECTED_LINK_IDS and EXPECTED_EVENT_TYPES sets at the top of test_ancr_envelope.py. Added 'storyboard.frame' and 'review.frame_feedback' to make the assertions consistent."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ancr_envelope.py (added storyboard.frame to EXPECTED_LINK_IDS, review.frame_feedback to EXPECTED_EVENT_TYPES, reverted line 241 back to == 5)"
+  ],
+  "success_rate": {"backend": "99% (190/192, 2 pre-existing failures unrelated to iter 10)", "frontend": "N/A (skipped per request)"},
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026!, faculty@cynaiah.demo / Cynaiah2026!, admin@cynaiah.demo / Cynaiah2026! — all working.",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Frame Feedback milestone is fully green. Only 2 pre-existing failures remain (both in test_cynaiah_backend.py) — they've been failing since iteration 9 and are NOT caused by iteration 10 or the frame-feedback work. They are safe to hand off separately. Total pass count: 190/192 (delta from iter 10's 185/192 = +5 gained after fixing the incorrect 5→6 bump plus updating the expected sets).",
+  "rca of the issue": "The iteration 10.1 re-test uncovered that the main agent's 5→6 bump edits in test_ancr_envelope.py were incomplete/over-applied: (a) EXPECTED_LINK_IDS and EXPECTED_EVENT_TYPES sets (lines 34-47) were not updated to include the new 'storyboard.frame' link and 'review.frame_feedback' event type respectively, causing set-equality assertion failure on line 132/137; (b) the bump on line 241 was over-applied — that test creates only 5 review kinds (@parametrize decorator lists exactly 5 kinds: written, time_coded, coverage_response, rubric, status), so the count must stay at 5. Mitigation applied: added missing set entries and reverted line 241 to 5. All 192 tests re-runnable except the two long-standing iter-9 pre-existing failures."
+}

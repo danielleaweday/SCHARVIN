@@ -1,0 +1,37 @@
+{
+  "summary": "Iteration 4 (Creator Mobility + Professional Booking Packet) validated end-to-end. Backend pytest: 68/68 passed (15 new iter4 + 14 iter3 + 12 iter2 + 27 iter1 regression). New backend surface verified: GET /api/mobility/profile returns all 16 required sections (personal/airlines(4)/hotels(4)/rentals/preferences/dietary/medical/emergency/team/booking/riders/documents/global_history/calendar/ai_travel_suggestions/permissions), unauth->401. PATCH /api/mobility/profile 200 for valid section, 400 for unknown. GET /api/mobility/travel-suggestions returns 6 mocked items. POST /api/mobility/booking-packet returns {token,url:'/packet/<token>',permission_level,expires_at}; unauth->401. GET /api/public/packet/<token> (no auth) returns {creator,portfolio,achievements,mobility,permission_level,issued_at,expires_at}; invalid->404. include_emergency:true surfaces mobility.emergency (list, >=1); false omits it. permission_level='public' produces minimal payload (only preferences + dietary.restrictions) — team/booking/riders/agent all absent. GET /api/mobility/booking-packets returns metadata only (no payload). DELETE /api/mobility/booking-packet/<token> revokes and subsequent public GET returns 404. Regression: aaron@ancr.io/ancrid2026 login OK, /api/public/creator/aaron OK, /api/ancrid/journey returns 4 chapters, /api/sso/clients returns 9. Frontend Playwright: sidebar nav-creator-mobility present and routes to /app/mobility (mobility-page). All 15 tabs (mobility-tab-personal..packet) present. Personal tab shows P•••••2245, TT1234567, GE9876543, UK & Schengen visas. Programs tab shows United/Marriott/Hertz with 1K/Titanium/President's Circle (verified via case-insensitive check). Permissions tab renders all 4 perm-* nodes. Packet tab renders packet-generator + packet-level-{public,booking_only,team} + packet-emerg toggle + packet-generate. Generate creates new packet-row-<token> in Issued Packets list. Public /packet/<token> loads packet-page + packet-hero with 'Aaron Ellington' + 'ANCRID-2026-0001'; bad token shows 'Packet unavailable'. /@aaron public identity still renders.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter4.py",
+    "/app/backend/tests/test_iter3.py",
+    "/app/backend/tests/test_iter2.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/iter4_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py has grown to ~1213 lines with DEMO_MOBILITY now the largest seed block. Extract seed_data.py before adding more content packs — this was already flagged in iter3 and remains unaddressed.",
+    "/api/mobility/profile always returns shared DEMO_MOBILITY regardless of user. PATCH writes to db.users.<uid>.mobility.<section> but subsequent GET does not read it — the PATCH is effectively a black hole in the current implementation. Deferred per iter4 note, but must be resolved before onboarding real creators; add a TODO/warning header on the endpoint.",
+    "PacketRequest.permission_level is a free-form Optional[str] with no server-side allowlist. A caller can send permission_level='admin' and the packet will store/return that value verbatim (branching only differentiates 'public'). Constrain to Literal['public','booking_only','team'] with Pydantic and 400 on other values.",
+    "public_packet endpoint returns entire stored payload including agent phone/email even at 'public' level because the projection is baked at creation time — safe today, but future edits to the payload projection won't retroactively apply. Consider projecting on read as well.",
+    "BookingPacket.jsx parses token via pathname.slice(8) — trailing slash or query params (e.g. /packet/abc/) would include them in the token and cause 404s. Use useParams via a proper route ('/packet/:token').",
+    "revoke() in Mobility.jsx uses window.confirm which is blocked in some embedded/browser contexts. Prefer a small confirm dialog for consistency with the rest of the app.",
+    "Packet public URL is unguessable (secrets.token_urlsafe(12), ~72 bits) but has no rate-limit; add basic 404-throttling before exposing outside preview.",
+    "Sidebar auto-generates data-testids via kebab-case slug of the label; changing 'Creator Mobility' would silently break tests. Consider decoupling testid from label (already flagged in iter3)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter4.py",
+    "/app/test_reports/iteration_4.json"
+  ],
+  "success_rate": { "backend": "100% (68/68 pytest)", "frontend": "100% of enumerated flows" },
+  "test_credentials": "aaron@ancr.io / ancrid2026 (seeded, handle=aaron)",
+  "seed_data_creation": "None. Test creates+revokes transient booking packets in db.booking_packets; each test cleans up. One 'team' packet from list/revoke test and one 'emergency-included' + one 'public-minimal' packet remain briefly during run but are all deleted at end of their test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Four pytest files at /app/backend/tests/: backend_test.py (27), test_iter2.py (12), test_iter3.py (14), test_iter4.py (15) = 68 total. Mobility endpoints under /api/mobility/*, public packet at /api/public/packet/<token>. NOTE for future assertions using Playwright inner_text: many labels in Mobility.jsx and BookingPacket.jsx use CSS text-transform:uppercase (ribbon text 'Professional Booking Packet™ · Issued by ANCRID', all Chip labels, program status chips). inner_text returns the visually-transformed string, so compare against uppercase or use case-insensitive checks. Biography paragraph on public packet renders in normal case. PATCH /api/mobility/profile persistence-to-user is deferred: PATCH returns {ok:true,section} but subsequent GET still returns shared DEMO_MOBILITY — do not write tests asserting persistence yet."
+}

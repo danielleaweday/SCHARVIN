@@ -1,0 +1,40 @@
+{
+  "summary": "Full backend + frontend e2e testing of ANCRSHOP. 25/26 backend pytest cases pass. Frontend flows verified: home, departments (25 listed, matching seeded superset of 19), shop filters/sort/search, PDP + variant + add-to-cart, cart drawer, wishlist toggle, wishlist page, checkout with CREATOR10 coupon (discount applied and total updates), Stripe redirect to real checkout.stripe.com session, AIAH concierge returns contextual reply + 4 product recommendations, login/logout/register (except register 500 bug), RBAC redirect for non-admin /admin, admin dashboard shows stats + product list (42 rows on Products tab). Stripe hosted checkout could not be completed end-to-end in Playwright because card fields are inside cross-origin iframes with anti-automation protection - however the create-session flow, order persistence, and payment-status polling endpoint are all validated via backend tests.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "POST /api/auth/register", "issue": "Returns 500 Internal Server Error. Root cause: register() returns the raw `doc` dict which motor's insert_one mutates by injecting `_id: ObjectId`. FastAPI cannot JSON-encode ObjectId. Fix: use `serialize(doc)` before returning (like login does) or explicitly pop `_id`. Blocks new user signup entirely.", "priority": "CRITICAL"}
+    ],
+    "minor": [
+      {"endpoint": "GET /api/wishlist", "issue": "Called from Home for guest users, returns 401 and spams browser console. Guard frontend calls with auth state or return empty list for anonymous users."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Shop sort dropdown", "issue": "React hydration warning: '<span> cannot be a child of <option>'. Sort <select> options contain span elements which is invalid HTML.", "selector": "[data-testid='sort-select']", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Stripe payment completion", "issue": "Could not complete Stripe hosted checkout via automation (Stripe uses cross-origin iframes + hCaptcha). The redirect to checkout.stripe.com works and orders are persisted with pending status; suggest main agent verify /payment/success rendering + order-paid marking manually or via Stripe CLI trigger of checkout.session.completed webhook.", "affected_selectors": ["checkout-pay-button"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Fix POST /api/auth/register 500 — return serialize(doc) or pop _id before returning to avoid ObjectId serialization crash. Currently new-account signup is completely broken.",
+    "Manually verify Stripe test-card 4242 payment completes and /payment/success shows order confirmation with ANCR- number and order becomes payment_status=paid in DB (auto-test blocked by Stripe iframe/captcha).",
+    "Fix Shop sort-select: replace inline <span> children of <option> with plain text to remove React hydration warning.",
+    "Suppress or gate the /api/wishlist call for unauthenticated users on Home to avoid 401 console noise."
+  ],
+  "critical_code_review_comments": [
+    "auth.py register(): returning `doc` after `insert_one` leaks ObjectId `_id` from motor. Always call serialize() before returning; mirrors login() pattern.",
+    "payments.py _mark_paid uses __import__('bson').ObjectId inline — move to top-level import for readability and to fail-fast on missing dep.",
+    "aiah.py uses model gpt-5.4 (July-2026 non-canonical) — verify against current Emergent LLM model list; consider gpt-5 or claude-opus-5 for stability."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py", "/app/backend/tests/__init__.py"],
+  "success_rate": {"backend": "96% (25/26)", "frontend": "90% (blocked only by external Stripe iframe automation)"},
+  "seed_data_creation": "Created several TEST_* transient users/products/coupons via CRUD tests (self-cleaned by delete tests). Also created 3 pending orders in creator@ancrshop.com's history via unfinished Stripe checkouts.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "Admin admin@ancrshop.com / ANCRadmin2026! ; Demo creator@ancrshop.com / creator123 (per /app/memory/test_credentials.md)",
+  "context_for_next_testing_agent": "Backend tests live in /app/backend/tests/backend_test.py — run `pytest tests/backend_test.py -v` from /app/backend. All flows except registration and Stripe end-to-end payment completion are green. After main agent fixes /api/auth/register, re-run register test and then verify Stripe end-to-end (recommend using Stripe CLI to trigger `checkout.session.completed` webhook, then GET /api/payments/status/{session_id} and confirm order.payment_status='paid').",
+  "rca_of_the_issue": "Register 500: FastAPI runs jsonable_encoder on the returned dict. motor's insert_one mutates the input dict adding `_id: ObjectId`. ObjectId is not JSON-serializable causing TypeError. Fix in /app/backend/auth.py register(): replace `return doc` with `return serialize(doc)` OR add `doc.pop('_id', None)` after inserting. Reproduce: POST /api/auth/register {'email':'x@y.com','password':'pw','name':'x'} -> 500."
+}

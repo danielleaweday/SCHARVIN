@@ -1,0 +1,183 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ancr-obsidian: #050505;
+  --ancr-panel: #0a0a0a;
+  --ancr-glass: rgba(10, 10, 10, 0.65);
+  --ancr-blue: #00e5ff;
+  --ancr-violet: #8a2be2;
+  --ancr-orange: #ff6d00;
+  --ancr-line: rgba(255, 255, 255, 0.08);
+  --ancr-line-strong: rgba(255, 255, 255, 0.16);
+  --ancr-text: #ffffff;
+  --ancr-text-dim: rgba(255, 255, 255, 0.6);
+  --ancr-text-fainter: rgba(255, 255, 255, 0.4);
+  --radius: 1rem;
+}
+
+html, body, #root { background: #050505; color: var(--ancr-text); min-height: 100%; }
+body {
+  margin: 0;
+  font-family: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #050505;
+  background-image:
+    radial-gradient(1200px 600px at 15% -10%, rgba(0, 229, 255, 0.10), transparent 60%),
+    radial-gradient(900px 500px at 100% 20%, rgba(138, 43, 226, 0.10), transparent 60%),
+    radial-gradient(700px 400px at 60% 110%, rgba(255, 109, 0, 0.08), transparent 60%);
+  background-attachment: fixed;
+}
+
+/* Grain */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+}
+
+#root > * { position: relative; z-index: 2; }
+
+.font-display { font-family: "Cabinet Grotesk", "Satoshi", sans-serif; letter-spacing: -0.02em; }
+.font-mono { font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.ancr-gradient-text {
+  background: linear-gradient(135deg, #00e5ff 0%, #8a2be2 50%, #ff6d00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.ancr-gradient-bg {
+  background: linear-gradient(135deg, #00e5ff 0%, #8a2be2 50%, #ff6d00 100%);
+}
+.ancr-gradient-border {
+  position: relative;
+  background: #0a0a0a;
+  border-radius: 1rem;
+}
+.ancr-gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #00e5ff, #8a2be2, #ff6d00);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.glass {
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid var(--ancr-line);
+  border-radius: 1.25rem;
+}
+.glass-strong {
+  background: rgba(6, 6, 6, 0.75);
+  backdrop-filter: blur(24px) saturate(170%);
+  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border: 1px solid var(--ancr-line);
+  border-radius: 1.25rem;
+}
+
+.hover-lift {
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 300ms ease-out,
+              background-color 300ms ease-out;
+}
+.hover-lift:hover {
+  transform: translateY(-3px);
+  border-color: var(--ancr-line-strong);
+}
+
+.dot-pulse {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #00e5ff;
+  box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.7);
+  animation: ancr-pulse 2.4s infinite;
+}
+.dot-pulse.violet { background: #8a2be2; box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7); animation-name: ancr-pulse-v; }
+.dot-pulse.orange { background: #ff6d00; box-shadow: 0 0 0 0 rgba(255, 109, 0, 0.7); animation-name: ancr-pulse-o; }
+.dot-pulse.idle   { background: rgba(255,255,255,0.25); box-shadow: none; animation: none; }
+
+@keyframes ancr-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 229, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 229, 255, 0); }
+}
+@keyframes ancr-pulse-v {
+  0% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.55); }
+  70% { box-shadow: 0 0 0 10px rgba(138, 43, 226, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(138, 43, 226, 0); }
+}
+@keyframes ancr-pulse-o {
+  0% { box-shadow: 0 0 0 0 rgba(255, 109, 0, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 109, 0, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 109, 0, 0); }
+}
+
+::selection { background: rgba(0, 229, 255, 0.3); color: #fff; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+
+/* Shadcn base */
+@layer base {
+  :root {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 187 100% 50%;
+    --primary-foreground: 0 0% 3%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 4 90% 58%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 187 100% 50%;
+    --radius: 1rem;
+  }
+  * { @apply border-border; }
+}
+
+/* Marquee for landing hero rail */
+@keyframes ancr-drift {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee { animation: ancr-drift 40s linear infinite; }
+
+/* Cinematic entrance */
+@keyframes ancr-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: ancr-fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-up-2 { animation: ancr-fade-up 0.7s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-up-3 { animation: ancr-fade-up 0.7s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.fade-up-4 { animation: ancr-fade-up 0.7s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both; }

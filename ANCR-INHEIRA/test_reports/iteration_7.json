@@ -1,0 +1,20 @@
+{
+  "summary": "v1.0 Preservation Snapshot regression — all 4 requested checks PASS. Login via [data-testid=auth-submit-login] works, /dashboard loads with no ErrorBoundary, nav shows the uploaded portrait avatar next to 'Test Creator' (visible in screenshot). /profile hero avatar (w-40 h-40 rounded-full object-cover) and /creator/user_seed_test001 identity avatar both render the same customer-uploaded portrait (cw7xzj4o_Remove background project (7).jpeg). All 5 regression routes (/dashboard, /sessions, /sessions/sess_96285667fb26/studio, /sessions/sess_96285667fb26/release, /vaulta) load cleanly — 0 ErrorBoundary, 0 404. Violet freeze integrity: Array.from(...).filter(/violet-(300|400|500|600)/).length === 0 on /dashboard. Zero console errors captured. Freeze remains 100% GREEN.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100% (4/4 checks pass)"},
+  "seed_data_creation": "None — used pre-seeded test@songright.com account.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "test@songright.com / Test1234! (from /app/memory/test_credentials.md)",
+  "context_for_next_testing_agent": "v1.0 snapshot verified. Portrait URL now propagates through nav avatar (w-7 h-7 rounded-full), /profile hero (w-40/w-56 md), and Creator DNA identity avatar. All routes stable. Freeze baseline preserved.",
+  "rca_of_the_issue": "N/A — no issues found."
+}

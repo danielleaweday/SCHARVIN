@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Outfit:wght@300;400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+    margin: 0;
+    background: #050505;
+    color: #f9fafb;
+    font-family: "Outfit", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.005em;
+}
+
+.font-display {
+    font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+    letter-spacing: -0.01em;
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 2%;
+        --foreground: 210 20% 98%;
+        --card: 0 0% 4%;
+        --card-foreground: 210 20% 98%;
+        --popover: 0 0% 5%;
+        --popover-foreground: 210 20% 98%;
+        --primary: 172 66% 42%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 0 0% 10%;
+        --secondary-foreground: 210 20% 98%;
+        --muted: 0 0% 12%;
+        --muted-foreground: 220 10% 60%;
+        --accent: 271 81% 56%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 349 89% 46%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 100%;
+        --input: 0 0% 10%;
+        --ring: 172 66% 42%;
+        --radius: 1rem;
+        --chart-1: 172 66% 45%;
+        --chart-2: 271 81% 66%;
+        --chart-3: 349 89% 60%;
+        --chart-4: 22 92% 52%;
+        --chart-5: 35 92% 48%;
+    }
+}
+
+@layer base {
+    * {
+        border-color: hsl(var(--border) / 0.08);
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+    ::selection {
+        background: rgba(147, 51, 234, 0.35);
+        color: #fff;
+    }
+}
+
+/* Ambient glowing orbs */
+.orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.55;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Glass panel */
+.glass {
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+.glass-hover {
+    transition:
+        transform 0.35s ease,
+        border-color 0.35s ease,
+        background 0.35s ease;
+}
+.glass-hover:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+/* VIEARTA gradient text */
+.viearta-gradient {
+    background: linear-gradient(
+        95deg,
+        #14b8a6 0%,
+        #9333ea 30%,
+        #e11d48 55%,
+        #ea580c 80%,
+        #d97706 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.viearta-gradient-bg {
+    background: linear-gradient(
+        95deg,
+        #14b8a6 0%,
+        #9333ea 30%,
+        #e11d48 55%,
+        #ea580c 80%,
+        #d97706 100%
+    );
+}
+
+/* Staggered entrance */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.fade-up {
+    animation: fadeUp 0.7s ease both;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .fade-up,
+    .glass-hover {
+        animation: none !important;
+        transition: none !important;
+    }
+}

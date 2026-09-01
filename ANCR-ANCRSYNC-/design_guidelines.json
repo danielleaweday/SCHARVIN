@@ -1,0 +1,125 @@
+{
+  "theme": "dark",
+  "typography": {
+    "display": "Cabinet Grotesk, sans-serif",
+    "body": "Satoshi, sans-serif",
+    "mono": "JetBrains Mono, monospace",
+    "scale": {
+      "h1": "text-5xl md:text-6xl lg:text-7xl tracking-tighter font-black",
+      "h2": "text-3xl md:text-4xl lg:text-5xl tracking-tight font-bold",
+      "h3": "text-xl md:text-2xl font-semibold",
+      "body": "text-base leading-relaxed font-light",
+      "metrics": "text-4xl md:text-6xl font-mono tracking-tighter",
+      "labels": "text-xs uppercase tracking-[0.2em] font-medium"
+    }
+  },
+  "colors": {
+    "background": {
+      "primary": "#000000",
+      "secondary": "#050505",
+      "tertiary": "#0A0A0A"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "tertiary": "#71717A"
+    },
+    "accents": {
+      "gradient_primary": "bg-gradient-to-r from-[#00F0FF] via-[#8A2BE2] via-[#FF00FF] to-[#FFA500]",
+      "gradient_text": "bg-clip-text text-transparent bg-gradient-to-r from-[#00F0FF] via-[#8A2BE2] to-[#FF00FF]",
+      "gradient_border": "border-transparent bg-clip-border bg-gradient-to-r from-[#00F0FF] via-[#8A2BE2] to-[#FF00FF]"
+    },
+    "borders": {
+      "subtle": "border-white/5",
+      "standard": "border-white/10",
+      "strong": "border-white/20"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "cards": "bg-[#050505] border border-white/10 rounded-none",
+    "hover_states": "hover:bg-white/5 hover:border-white/20 transition-colors duration-300 ease-in-out",
+    "textures": "bg-[url('/noise.png')] opacity-20 mix-blend-overlay pointer-events-none"
+  },
+  "layouts": {
+    "app_shell": "flex min-h-screen bg-black text-white selection:bg-[#8A2BE2] selection:text-white",
+    "sidebar": "w-72 fixed left-0 top-0 h-screen bg-[#050505] border-r border-white/10 flex flex-col p-8 z-50",
+    "main_content": "flex-1 ml-72 min-h-screen pb-32",
+    "dashboard_grid": "grid grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8 p-8 md:p-16",
+    "bento_spans": {
+      "hero_module": "col-span-full lg:col-span-8 row-span-2",
+      "metric_module": "col-span-full md:col-span-4 row-span-1",
+      "list_module": "col-span-full lg:col-span-4 row-span-2"
+    }
+  },
+  "components": {
+    "button_primary": "rounded-none bg-white text-black font-semibold px-8 py-4 hover:bg-gray-200 transition-colors uppercase tracking-widest text-xs",
+    "button_outline": "rounded-none border border-white/20 text-white font-semibold px-8 py-4 hover:bg-white/10 transition-colors uppercase tracking-widest text-xs",
+    "input": "bg-[#0A0A0A] border-b border-white/20 text-white rounded-none px-0 py-3 focus:border-[#00F0FF] focus:outline-none focus:ring-0 transition-colors",
+    "badge": "px-4 py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] uppercase tracking-[0.2em] font-mono text-white/70"
+  },
+  "specific_sections": {
+    "career_readiness": "Display as a massive cinematic module. Use a radial progress chart (via Recharts or custom SVG) with the accent gradient stroke. The score itself must use JetBrains Mono in a large scale (text-6xl). Wrap in a pristine glassmorphic container.",
+    "portfolio_assembly": "Editorial magazine layout. Break standard grids. Use overlapping images, large Cabinet Grotesk typography for project titles, and high-contrast tags. Do not use standard equal-height cards.",
+    "jobs_internships": "Curated editorial listings, not a standard job board. Each listing is a massive horizontal row with py-12, border-b border-white/10. Use high-contrast hover states that dim siblings (group-hover focus).",
+    "employer_network": "Cinematic candidate/employer profile views. Full-bleed dark imagery, bottom-up linear gradients for text legibility. Large, bold name typography with mono-spaced stats underneath.",
+    "aiah_coach": "Minimalist, floating, or side-panel chat interface. Staggered Framer Motion entrances for messages. Use the provided abstract futuristic AI avatar. Messages from AIAH have a subtle gradient border.",
+    "sidebar_nav": "Shared ecosystem navigation. Dark, minimal, utilizing Lucide icons with a 1px stroke. Active state features a 2px left-border glow using the primary gradient.",
+    "footer": "Official ANCR footer. Massive py-32 border-t border-white/10. Use a large typographic 'ANCR™' logo and a strict, minimalist grid of links."
+  },
+  "motion": {
+    "page_transition": "Initial opacity 0, y 20 -> opacity 1, y 0 (duration 0.6s, ease out)",
+    "hover_lift": "hover:-translate-y-1 hover:shadow-2xl",
+    "staggered_list": "Framer Motion container with staggerChildren: 0.1"
+  },
+  "image_urls": {
+    "portfolio_creative": {
+      "url": "https://images.unsplash.com/photo-1769713569350-8da3473eed3a",
+      "description": "Camera equipment laid out on a desk, representing a creative portfolio."
+    },
+    "portfolio_music": {
+      "url": "https://images.pexels.com/photos/28003176/pexels-photo-28003176.jpeg",
+      "description": "Music producer in a recording studio, for portfolio or project examples."
+    },
+    "employer_profile_1": {
+      "url": "https://images.pexels.com/photos/28446973/pexels-photo-28446973.jpeg",
+      "description": "Executive portrait for employer or candidate profiles."
+    },
+    "employer_profile_2": {
+      "url": "https://images.pexels.com/photos/37148345/pexels-photo-37148345.jpeg",
+      "description": "Close-up portrait of an executive for candidate profiles."
+    },
+    "aiah_coach_avatar": {
+      "url": "https://images.unsplash.com/photo-1654140785899-6148f8fa06f9",
+      "description": "Futuristic AI glowing avatar for the AIAH Career Coach."
+    },
+    "readiness_abstract": {
+      "url": "https://images.unsplash.com/photo-1617791160505-6f00504e3519",
+      "description": "Abstract gradient 3D shape for background visual enhancements in the Readiness Score module."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Initialize React with Tailwind CSS, Framer Motion, and Recharts. Ensure you are using .js extensions (not .tsx).",
+    "Install 'lucide-react' for all iconography. Use 1px or 1.5px strokeWidth for an elegant look.",
+    "Use 'framer-motion' for all list staggers, tab changes, and micro-interactions.",
+    "Implement Shadcn UI components but entirely override their default Vercel/startup aesthetics. Make them brutalist and cinematic: border-white/10, bg-black, zero border radius (rounded-none).",
+    "The primary background color must strictly be obsidian black (#000000 to #050505). NO full-screen or large background gradients.",
+    "Use the Electric Blue -> Violet -> Magenta -> Orange gradient ONLY for highly specific highlights (e.g., the Readiness Score chart stroke, primary CTA hover state, or a subtle glowing border).",
+    "Typography MUST follow the exact mapping: Cabinet Grotesk for headings, Satoshi for body text, and JetBrains Mono for data/metrics. Include them via Google Fonts or standard imports in index.css.",
+    "Do not build a standard LinkedIn-style job board. Make it feel like an exclusive executive career center. Items must have excessive padding and huge typography.",
+    "Test all interactive elements and include data-testid attributes formatted in kebab-case."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Avoid 'AI slop' aesthetic: no generic centered layouts, uniform styling, or default shadows. Use asymmetric bento grids.",
+    "Create depth with layered design elements and explicit z-index hierarchy.",
+    "Use high-end glass-morphism effects with backdrop-blur-2xl and 1px white/10 borders.",
+    "Do NOT apply universal transitions (e.g., transition: all). Target specific properties (transition-colors, transition-transform).",
+    "Do NOT center align the app container. Text should naturally flow left-aligned.",
+    "Avoid pill-shaped buttons for this specific executive layout; use sharp edges (rounded-none) for a brutalist, cinematic editorial feel.",
+    "No AI emoji icons (🤖🧠💭). Use clean SVG icons.",
+    "Use 2-3x more spacing than typical for an editorial feel (e.g., p-12, py-24).",
+    "All interactive elements MUST have data-testid attributes.",
+    "Use sonner for toasts at /app/src/components/ui/sonner.js",
+    "Do not use complete transparent background in header or dropdown overlays; always use solid #050505 or glassmorphism (bg-white/5 backdrop-blur-2xl)."
+  ]
+}

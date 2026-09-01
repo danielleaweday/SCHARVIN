@@ -1,0 +1,162 @@
+{
+  "theme": "dark",
+  "design_philosophy": "COHEIR™ is a premium professional operating system. The design must feel like a Grammy-caliber press kit. It uses an Obsidian interface with cinematic lighting, premium glassmorphism, and Apple-quality micro-interactions. The aesthetic is elite, verified, and deeply professional.",
+  "colors": {
+    "backgrounds": {
+      "obsidian_base": "#000000",
+      "obsidian_surface": "#0A0A0A",
+      "obsidian_elevated": "#111111",
+      "glass_panel": "rgba(255, 255, 255, 0.03)"
+    },
+    "accents": {
+      "electric_blue": "#00F0FF",
+      "violet": "#8B5CF6",
+      "orange": "#F97316",
+      "gradient_primary": "linear-gradient(to right, #00F0FF, #8B5CF6, #F97316)"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "tertiary": "#71717A",
+      "accent": "#00F0FF"
+    },
+    "borders": {
+      "glass": "rgba(255, 255, 255, 0.08)",
+      "accent": "rgba(0, 240, 255, 0.3)"
+    },
+    "forbidden": [
+      "Any bright/light backgrounds",
+      "Purple gradients on white surfaces",
+      "Flat, untextured pure grays without blue/orange tint"
+    ]
+  },
+  "typography": {
+    "font_families": {
+      "heading": "'Cabinet Grotesk', sans-serif",
+      "body": "'Satoshi', sans-serif",
+      "mono": "'JetBrains Mono', monospace"
+    },
+    "scale": {
+      "h1_hero": "text-5xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none font-heading",
+      "h2_section": "text-3xl md:text-4xl font-bold tracking-tight font-heading",
+      "h3_card": "text-xl md:text-2xl font-bold tracking-tight font-heading",
+      "h4_sub": "text-lg font-semibold font-heading",
+      "body_large": "text-lg leading-relaxed font-body text-zinc-300",
+      "body_base": "text-base leading-relaxed font-body text-zinc-400",
+      "body_small": "text-sm leading-normal font-body text-zinc-500",
+      "label_mono": "text-xs font-mono uppercase tracking-[0.2em] text-zinc-500",
+      "chip_text": "text-xs font-mono tracking-wider text-zinc-300"
+    }
+  },
+  "surfaces_and_glassmorphism": {
+    "premium_glass": "bg-white/[0.02] backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)] rounded-2xl",
+    "heavy_glass": "bg-black/60 backdrop-blur-2xl border-b border-white/[0.05]",
+    "interactive_glass": "bg-white/[0.03] hover:bg-white/[0.06] backdrop-blur-lg border border-white/[0.05] hover:border-white/[0.15] transition-all duration-300 rounded-xl"
+  },
+  "components": {
+    "mentor_card": {
+      "layout": "Flex column or horizontal row. Must use interactive_glass container.",
+      "elements": "Avatar with electric blue gradient ring, JetBrains Mono role chip, Verified Checkmark (Electric Blue), Cabinet Grotesk name, credit line, disciplines, location pin.",
+      "cta": "Outlined pill button 'View Profile' or 'Request Mentorship'"
+    },
+    "role_chip": {
+      "style": "bg-white/[0.05] border border-white/[0.1] text-xs font-mono text-zinc-300 px-3 py-1 rounded-full inline-flex items-center",
+      "usage": "Used for 'Producer', 'Engineer', 'Creative Director', etc."
+    },
+    "verified_badge": {
+      "style": "text-electric_blue inline-flex items-center drop-shadow-[0_0_8px_rgba(0,240,255,0.5)] ml-2",
+      "usage": "Always placed immediately to the right of the professional's name."
+    },
+    "stat_row": {
+      "layout": "Grid cols-2 md:cols-4 gap-4, using premium_glass container for each item with generous p-6 padding.",
+      "elements": "Large glowing numbers (Cabinet Grotesk text-3xl), tiny mono labels (JetBrains Mono text-xs) below."
+    },
+    "buttons": {
+      "primary_gradient": "bg-gradient-to-r from-[#00F0FF] via-[#8B5CF6] to-[#F97316] text-white font-bold rounded-full px-8 py-3 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] transition-all",
+      "secondary_outline": "bg-transparent border border-white/[0.2] text-white hover:bg-white/[0.05] rounded-full px-6 py-3 transition-all",
+      "sidebar_nav_active": "bg-white/[0.05] border-l-2 border-blue-500 text-white",
+      "sidebar_nav_idle": "text-zinc-500 hover:text-zinc-300 hover:bg-white/[0.02]"
+    }
+  },
+  "layouts": {
+    "app_shell": {
+      "sidebar": "Fixed left, w-64, pure black (#000) or ultra-dark obsidian. Contains ecosystem nav (Home, ANCRA, ANCRLAB, ANCRSync, COHEIR active, ANCRLaunch, Passport, AIAH, Calendar, Conversations, Library, ANCRID, Settings).",
+      "header": "Sticky top, heavy_glass z-50. Contains search command bar (⌘K), notifications, messages, user profile.",
+      "main_content": "bg-black text-white min-h-screen pt-20 pl-64"
+    },
+    "professional_profile_flagship": {
+      "description": "Centerpiece of COHEIR. Feels like a Grammy-caliber press kit.",
+      "hero": "Cinematic wide hero image max-h-[40vh], max overlay black/50, glowing gradient accents.",
+      "header_section": "Avatar, Name + Verified Badge, Role chips, 'Request Mentorship' primary CTA. Negative margin to overlap hero.",
+      "body": "Bento grid layout for Credits, Awards, Mentoring Philosophy, Portfolio, Availability."
+    },
+    "dashboard": {
+      "layout": "Bento grid protocol (Tetris or High Density). Generous internal card padding (p-6 or p-8).",
+      "sections": "Stat row, Upcoming Sessions, Assigned Students, Creative Alerts, Industry Meetings."
+    }
+  },
+  "motion_and_interaction": {
+    "cinematic_reveals": "Staggered fade-up animations on load (using framer-motion variants).",
+    "hover_states": "Soft scale (scale-105 for images, scale-[1.02] for cards). Border glow intensifies on hover.",
+    "transitions": "Apple-quality fluid transitions. transition-all duration-300 ease-out."
+  },
+  "image_assets": {
+    "instructions": "Use these specifically sourced images for the prototype to maintain the cinematic dark aesthetic. NEVER use placeholder text images.",
+    "assets": [
+      {
+        "category": "Mentor Portrait / Producer Profile",
+        "url": "https://images.pexels.com/photos/5749192/pexels-photo-5749192.jpeg",
+        "description": "Music producer focused on composing tracks in a dimly lit studio"
+      },
+      {
+        "category": "Mentor Portrait / Creative Director",
+        "url": "https://images.unsplash.com/photo-1584940120505-117038d90b05?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODd8MHwxfHNlYXJjaHw0fHxjcmVhdGl2ZSUyMGRpcmVjdG9yJTIwcG9ydHJhaXQlMjBkYXJrfGVufDB8fHx8MTc4MzUzNTczOXww&ixlib=rb-4.1.0&q=85",
+        "description": "Creative director portrait in dark setting"
+      },
+      {
+        "category": "Session / Studio Background / Hero",
+        "url": "https://images.pexels.com/photos/10933688/pexels-photo-10933688.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Close-up of professional microphone in a dimly lit recording studio"
+      },
+      {
+        "category": "Cohort / Team Meeting Background",
+        "url": "https://images.unsplash.com/photo-1691491918178-8a2e68b44919?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzR8MHwxfHNlYXJjaHwyfHxjcmVhdGl2ZSUyMHRlYW0lMjBtZWV0aW5nJTIwZGFya3xlbnwwfHx8fDE3ODM1MzU3Mzh8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Creative team meeting in a dark cinematic room"
+      }
+    ]
+  },
+  "accessibility_and_testing": {
+    "data_testid_conventions": {
+      "rule": "All interactive and key informational elements MUST include a data-testid attribute in kebab-case based on role.",
+      "examples": [
+        "data-testid='nav-home-link'",
+        "data-testid='global-search-input'",
+        "data-testid='mentor-card-request-btn'",
+        "data-testid='profile-verified-badge'",
+        "data-testid='session-join-live-btn'"
+      ]
+    },
+    "contrast": "Ensure text against obsidian backgrounds meets minimum APCA/WCAG ratios. Use text-white for primary, text-zinc-400 for secondary."
+  },
+  "instructions_to_main_agent": [
+    "You MUST use Tailwind CSS for all styling.",
+    "DO NOT use generic fonts like Inter, Roboto, or Open Sans. You MUST use Cabinet Grotesk (headings), Satoshi (body), and JetBrains Mono (labels/code). IMPORTANT: Import them in index.css from Fontshare and Google Fonts (@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@900,800,700,500,400&f[]=satoshi@900,700,500,400&display=swap'); @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');).",
+    "Implement the layout using a fixed left sidebar and a sticky top header.",
+    "The Professional Profile must be built as a flagship page with a cinematic hero, verified badge, and bento grid for credits/awards.",
+    "Ensure all glassmorphism uses backdrop-blur-xl and subtle white/opacity borders.",
+    "DO NOT use any pure white backgrounds or light mode themes. The entire app is locked to the Obsidian theme.",
+    "Apply Framer Motion for staggered list reveals and hover interactions.",
+    "Use Lucide-React or Phosphor Icons for UI iconography."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Do not use default generic centered layouts or simplistic gradients.",
+    "Create depth through layered design elements with z-index hierarchy and glassmorphism (12-24px blur).",
+    "Never apply universal transitions (e.g., transition: all). Target specific properties like opacity, transform, or colors.",
+    "Do not center-align the app container. Text reading flow must remain natural (left-aligned).",
+    "Use 2-3x more spacing than typical. Generous padding creates a premium feel.",
+    "No AI emojis (🤖🧠💭💡) for icons.",
+    "Use the provided image URLs to prevent the use of placeholders.",
+    "Always explicitly set text color on hover. Do not rely on inheritance.",
+    "Avoid fully transparent backgrounds in sticky headers; use heavy glassmorphism instead."
+  ]
+}

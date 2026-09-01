@@ -1,0 +1,35 @@
+{
+  "summary": "Backend-only pytest run against external REACT_APP_BACKEND_URL for ANCR PASSPORT (46 tests, /app/backend/tests/backend_test.py). All 40 non-AI tests pass: /api/me, /api/dashboard, destinations (6 + japan guide + save toggle persistence + saved-destinations), courses (5 lessons -> certificate + badge on /api/passport), phrases CRUD, checklist (default vs Filmmaker adaptive, PATCH true/false, percent), trips/trip-mode/safety (location-sharing PUT persists), network filters + connect toggle, journal CRUD, classroom + assignment creation, passport masking, and ALL 12 static Music Compass endpoints (overview 9 traditions, traditions, hindustani full profile with gov block, comparisons, rhythms, instruments, session-phrases, classroom, pathways/us-to-india, plus 404s). AI endpoints: POST /api/translate, /api/translate/lyrics, /api/music/session-translate and /api/music/knowledge-translate returned 200 with correct JSON shapes early in the run; POST /api/music/compare and /api/music/rehearsal-plan returned 502 after ~60s (gateway timeout). Mid-run the Emergent LLM key budget was exhausted (Max budget 4.4 exceeded) so ALL AI endpoints now return HTTP 500 and could not be re-verified.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "ALL AI endpoints (/api/translate, /api/translate/lyrics, /api/music/compare, /api/music/session-translate, /api/music/rehearsal-plan, /api/music/knowledge-translate)", "issue": "Emergent LLM budget exhausted: litellm BadRequestError 'Budget has been exceeded! Current cost: 4.48, Max budget: 4.4'. Every AI call now fails. FastAPI returns bare 500 'Internal Server Error' (unhandled emergentintegrations ChatError) with no JSON error body, so the UI cannot show a meaningful message.", "priority": "CRITICAL"},
+      {"endpoint": "POST /api/music/compare and POST /api/music/rehearsal-plan", "issue": "Reproducible 502 from the ingress at exactly ~60.1s (Cloudflare bad gateway) while the LLM was still generating. These two prompts request the largest JSON payloads (11-13 keys incl. many arrays) and exceed the ~60s external gateway timeout. Users will always see a 502 on these two features even with budget available.", "priority": "HIGH"}
+    ],
+    "minor": [
+      {"endpoint": "POST /api/courses/{id}/complete-lesson", "issue": "lesson_id is not validated against course['lessons']; posting 5 arbitrary unique ids awards certificate + badge. Also certificate/badge_earned in the response are computed as all_done only, so a later single-lesson POST on an already-certified course returns certificate=false while DB stays true (inconsistent response)."},
+      {"endpoint": "llm_json helper (server.py:257)", "issue": "No try/except around chat.send_message and no timeout/max_tokens; any provider error (budget, rate limit, network) surfaces as an unhandled 500 instead of 503 + structured error."},
+      {"endpoint": "GET /api/checklist", "issue": "percent uses round(done/total*100) - fine, but no guard if total==0 (ZeroDivisionError if seed for a discipline is empty)."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Top up / replace the Emergent LLM key budget - all 6 AI endpoints are currently hard-failing with 500 (budget exceeded).",
+    "Wrap LLM calls (llm_json) in try/except ChatError/Exception and return HTTP 503 with {'error': message}; add UI fallback so translator/Music Compass degrade gracefully instead of showing a generic 500.",
+    "Reduce response size / add max_tokens or split /api/music/compare and /api/music/rehearsal-plan into 2-3 smaller calls (or a background job + polling) so they complete well under the 60s ingress timeout.",
+    "Validate lesson_id against the course's lesson list in complete-lesson before awarding certificate/badge."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 734 lines and mixes core app, translator, safety, network, classroom and the entire Music Compass surface - split into routers (core, learning, music, translator).",
+    "No error handling around emergentintegrations LlmChat; provider failures leak as 500 with HTML/plaintext body.",
+    "AI prompts request very large JSON objects in a single call -> latency exceeds the 60s gateway limit; cap output or parallelize.",
+    "complete-lesson trusts client-supplied lesson_id (certificate can be farmed)."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "87% (40/46 tests; 6 failures all caused by exhausted LLM budget)", "frontend": "not tested (backend-only request)"},
+  "seed_data_creation": "No new seed data. Test artifacts (TEST_ phrase, TEST_entry journal) were created and deleted. Added a reset_course_progress fixture that clears maya's course_progress/badge for creative-collaboration-japan before the lesson test, then re-completes the course (certificate + badge restored). japan remains saved; location_sharing left false; network n1 connect state toggled twice (net-zero).",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run: cd /app/backend && python -m pytest tests/backend_test.py -q (pytest.ini already sets -n 2 --dist loadscope). All non-AI classes are green and idempotent. The 6 AI tests (TestTranslator, TestMusicAI) will keep failing with 500 until the Emergent LLM budget is restored - check /var/log/supervisor/backend.err.log for 'Budget has been exceeded'. Once restored, re-verify /api/music/compare and /api/music/rehearsal-plan specifically for the ~60s ingress 502; they were the only two AI endpoints that timed out. AI_TIMEOUT in the test file is 180s but the gateway caps at 60s.",
+  "rca_of_the_issue": "1) Budget: emergentintegrations -> litellm -> proxy returns 400 budget_exceeded; server.py llm_json has no exception handling so FastAPI raises 500. 2) 502s: single LLM call per request generating 11-13 key JSON (compare/rehearsal-plan) takes >60s; the Kubernetes/Cloudflare ingress terminates the connection at 60s and returns a Cloudflare 502 page (backend never logs a completed response). Mitigation: smaller/segmented prompts, max_tokens, or async job + polling."
+}

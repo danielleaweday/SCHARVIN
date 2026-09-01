@@ -1,0 +1,27 @@
+{
+  "summary": "Iteration 14 — Edit & Finish frontend wire-up + query-token media auth regression. Route `/edit-finish` now renders EditFinish page (was ComingSoon). Verified end-to-end: student login → sidebar → page mounts with `Neon Heart` preselected, all 5 tabs present, new version creation works, dummy MP4 upload → `<video>` renders with `?token=<jwt>` in src, video URL returns 200 with token and 401 without. Accessibility checklist has 7 items, delivery has 8 items, final gate initially RED with correct blockers. Credits (opening + closing), finishing (category/body/add + 4 buckets), captions add-btn all present. Story Lab + Sync Studio smoke passed with 0 console errors — resolveAssetUrl token-append does not break any existing media. Backend regression: 222/222 pytest (220 existing + 2 new in test_edit_finish_iteration14.py covering upload flow + final-gate red→green transition + rough_cut faculty approval + final approval blocked→green). No fixes required, no code changed by testing agent.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_edit_finish_iteration14.py",
+    "/app/test_reports/pytest/iteration_14.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EditFinish.jsx uses `api.delete('/finish/' + 'version' + '/' + id)` (line 166) — the concatenation with a literal 'version' via template interpolation is confusing dead-style code. Should be `api.delete('/finish/version/' + id)` for readability.",
+    "server.py has grown to 2284 lines — carrying the same recommendation as iteration 13: split media / finish / ai endpoints into modules.",
+    "EditFinish page loads the entire finish overview then makes a SECOND request to `/finish/final-gate` inside DeliveryTab (line 429). Could be consolidated into the overview payload to reduce network chatter — the overview already computes rights/accessibility/delivery state.",
+    "The `<video>` src now embeds the JWT as a query string — this token WILL land in nginx access logs and any Referer header if the video is embedded elsewhere. Acceptable for demo; document in security README before production.",
+    "resolveAssetUrl reads getToken() at render time on every asset URL — if the token is rotated mid-session, existing <video>/<img> tags will keep stale tokens until re-render. Fine for JWT lifetime, but worth noting."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_edit_finish_iteration14.py (new — 2 tests: video upload + query-token auth 200/401; final-gate red→green transition on flagship with state snapshot/restore)"
+  ],
+  "success_rate": {"backend": "100% (222/222)", "frontend": "100% — all data-testids resolved, upload+player+token flow verified, zero console errors"},
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026! ; faculty@cynaiah.demo / Cynaiah2026!",
+  "seed_data_creation": "Test 1 creates + deletes one rough_cut version on proj-mv-neon-heart (with a 96-byte MP4 upload to /app/backend/uploaded_video/<vid>.mp4 — not cleaned from disk but the DB row is removed). Test 2 snapshots+restores rights and both checklists on proj-mv-neon-heart: temporarily adds a TEST rights record + flips all not-yet-done accessibility+delivery items to done, then restores. UI smoke created + deleted one `IT14 v <hex>` version on the flagship. Note: the flagship already had 32 seeded/prior-iteration versions; UI test observed v32 during the run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 14 is fully green. test_edit_finish_iteration14.py runs cleanly against the flagship because it snapshots/restores rights + checklists — do NOT mutate this file to skip the snapshot dance or you'll flip the flagship's default RED gate state and break test_media_authz.py::test_faculty_final_approval_blocked_by_gate. The MP4 file left in /app/backend/uploaded_video after test1 is orphaned (version row deleted); a periodic janitor could clean these but it's a demo concern. resolveAssetUrl (/app/frontend/src/lib/api.js) auto-appends ?token= for /api/generated/, /api/music-audio/, and /api/finish/video/ — verified working end-to-end from a real HTML5 <video> tag.",
+  "rca of the issue": "N/A — no bugs found this iteration. Confirmations only."
+}

@@ -1,0 +1,15 @@
+{
+  "short_name": "INHEIRA",
+  "name": "INHEIRA — From Creation to Legacy",
+  "icons": [
+    {
+      "src": "https://customer-assets.emergentagent.com/job_ownership-os-1/artifacts/4ga63df1_ChatGPT%20Image%20Jul%206%2C%202026%2C%2007_50_48%20PM.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#04040a",
+  "background_color": "#04040a"
+}

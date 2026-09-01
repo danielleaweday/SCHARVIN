@@ -1,0 +1,25 @@
+{
+  "summary": "Verified ANCRD logo replacement across 3 placements and static asset freshness. All 4 verifications PASS.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verifications": {
+    "V1_hero_logo": {"status": "PASS", "src": "/brand/ancrd-logo.png", "naturalWidth": 1983, "complete": true, "mixBlendMode": "screen", "position": {"x": 24, "y": 87, "w": 520, "h": 208}},
+    "V2_signin_logo": {"status": "PASS", "src": "/brand/ancrd-logo.png", "naturalWidth": 1983, "complete": true, "mixBlendMode": "screen", "x": 1452, "note": "x=1452 > 1000, correctly on right half"},
+    "V3_sidebar_logo": {"status": "PASS", "src": "/brand/ancrd-logo.png", "naturalWidth": 1983, "complete": true, "mixBlendMode": "screen", "position": {"x": 16, "y": 24, "w": 240, "h": 96}, "note": "Verified after login as aaron@ancrd.io on /feed"},
+    "V4_static_file": {"status": "PASS", "http_status": 200, "content_length": 533362, "content_type": "image/png", "note": "Exactly matches expected 533,362 bytes - new file being served"}
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "test_credentials": "aaron@ancrd.io / ancrd2026 (login works)",
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 3 ANCRD logo <img> elements (brand-logo-hero, brand-logo-signin, brand-logo-sidebar) confirmed loading the new 533KB dark-background PNG with mix-blend-mode: screen applied. Static asset serves fresh 533,362 bytes. Screenshots confirm logo visually blends with dark theme."
+}

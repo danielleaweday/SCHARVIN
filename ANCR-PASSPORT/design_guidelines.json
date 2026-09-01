@@ -1,0 +1,114 @@
+{
+  "theme_strategy": "dark_only",
+  "archetype": "Luxury Cinematic Dashboard (Elite Travel & Creative Mobility)",
+  "colors": {
+    "background": {
+      "base": "#05050A",
+      "surface": "#0B1021",
+      "surface_glass": "rgba(11, 16, 33, 0.6)",
+      "surface_elevated": "#131B2F"
+    },
+    "text": {
+      "primary": "#F8FAFC",
+      "secondary": "#94A3B8",
+      "muted": "#475569",
+      "inverse": "#05050A"
+    },
+    "accents": {
+      "cyan": "#06B6D4",
+      "violet": "#8B5CF6",
+      "magenta": "#D946EF",
+      "amber": "#F59E0B",
+      "blue": "#3B82F6"
+    },
+    "gradients": {
+      "translator_glow": "linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(217,70,239,0.2) 50%, rgba(6,182,212,0.2) 100%)",
+      "destination_overlay": "linear-gradient(to top, #05050A 0%, rgba(5,5,10,0.4) 50%, rgba(5,5,10,0) 100%)"
+    }
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Playfair Display, serif",
+      "weights": [400, 500, 600, 700],
+      "usage": "H1, H2, Hero statements, Destination Names, Editorial Cards. Use tracking-tight or tracking-tighter."
+    },
+    "body": {
+      "font_family": "Manrope, sans-serif",
+      "weights": [400, 500, 600],
+      "usage": "Dashboard data, lists, UI elements, button text. Clean and legible."
+    },
+    "mono": {
+      "font_family": "JetBrains Mono, monospace",
+      "usage": "Travel codes, passport masked data, timezones, flight numbers, technical readiness scores."
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "Use 'backdrop-blur-xl bg-white/5' or 'bg-[#0B1021]/60'. MANDATORY: 1px inner border using 'border-white/10' to separate it from the background.",
+    "shadows": "Ambient glows rather than drop shadows. E.g., 'box-shadow: 0 0 40px -10px rgba(139,92,246,0.3)' for the Translator.",
+    "borders": "Minimal 1px borders using 'border-white/10'. Avoid heavy colored lines.",
+    "radii": "Restrained curves. Use 'rounded-xl' or 'rounded-2xl' for cards, 'rounded-full' for pills/buttons.",
+    "textures": "Subtle noise overlay on the base background to remove digital flatness."
+  },
+  "layouts": {
+    "spacing": "Generous spacing. 'p-6' to 'p-10' for dashboard cards. 'gap-6' to 'gap-8' for grids.",
+    "dashboard_grid": "Bento-style grids. Use 'grid-cols-1 md:grid-cols-3 lg:grid-cols-4' or 12-column spans. Maintain optical alignment.",
+    "mobile_first": "Trip Mode must be heavily optimized for bottom-thumb navigation and extreme high-contrast readability."
+  },
+  "motion": {
+    "transitions": "Smooth cinematic eases. Apply 'transition-all duration-500 ease-out' specifically to transforms, opacity, colors.",
+    "hover_states": "Slight lift ('-translate-y-1'), border color brightens, subtle inner glow activates. Text must remain WCAG AA compliant.",
+    "microinteractions": "Translator activation should have a ripple or glowing sound-wave effect. Destination cards gently scale up image ('scale-105') on hover."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.unsplash.com/photo-1542051841857-5f90071e7989?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHw0fHxjaW5lbWF0aWMlMjB0b2t5byUyMG5pZ2h0JTIwY2l0eXxlbnwwfHx8fDE3ODcxNTY5NzR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Cars driving through neon-lit intersection Tokyo",
+      "category": "Destination Showcase"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwyfHxjaW5lbWF0aWMlMjB0b2t5byUyMG5pZ2h0JTIwY2l0eXxlbnwwfHx8fDE3ODcxNTY5NzR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Wet street neon Tokyo",
+      "category": "Destination/Culture Focus"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1565035010268-a3816f98589a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODh8MHwxfHNlYXJjaHwyfHxtdXNpY2lhbiUyMGNvbmNlcnQlMjBzdGFnZXxlbnwwfHx8fDE3ODcxNTY5NzV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "People watching band on the stage",
+      "category": "Creative Mobility (Music/Live)"
+    },
+    {
+      "url": "https://images.pexels.com/photos/24205162/pexels-photo-24205162.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Chef lantern light street food",
+      "category": "Culture/Food Insight"
+    },
+    {
+      "url": "https://images.pexels.com/photos/27019194/pexels-photo-27019194.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Woman backpack airport silhouette",
+      "category": "Travel Readiness / Trip Mode"
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1700689881255-18a5e31d649d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHw0fHxjb2xvcmZ1bCUyMHNvdW5kJTIwd2F2ZXMlMjBhYnN0cmFjdHxlbnwwfHx8fDE3ODcxNTY5NzR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Colorful abstract wavy lines",
+      "category": "Translator Feature Background Element"
+    }
+  ],
+  "components": {
+    "Translator": "SIGNATURE FEATURE. Must be visually distinct. Use an elevated glass card with an animated gradient border (cyan to magenta). Include a 'listening' or 'translating' sound wave micro-animation. Deep violet/cyan ambient glow. UI should reflect an intelligent, high-tech creative tool.",
+    "Destination_Card": "Editorial style. Large image filling the card, dark gradient overlay from bottom, Playfair Display for city name. Subtle amber or cyan pill for 'Match Score' or 'Readiness'.",
+    "Passport_Profile": "Masked data using monospace font. Tech-luxury feel. Clean 1px borders, subtle data charts using Axiom-style cyan/blue accents.",
+    "Trip_Mode": "High urgency mobile view. Use dark canvas with electric cyan/amber for active steps. 'I Need Help' button in solid Amber/Red for immediate visibility without breaking the premium feel.",
+    "Sidebar_Nav": "Elegant glassmorphic sidebar. Non-intrusive. Use lucide-react icons with 1.5 stroke width."
+  },
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic outputs. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "DO NOT use Inter, Roboto, or Space Grotesk. strictly use Playfair Display (headings) and Manrope (body). Include Google Fonts links in HTML.",
+    "DO NOT use generic centered layouts, simplistic gradients, or uniform styling.",
+    "NEVER use pure transparent backgrounds for components overlaid on images. Use backdrop-blur with a tint.",
+    "Create depth through layered design elements with z-index hierarchy and ambient drop-shadow glows.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Add 'data-testid' to ALL interactive elements.",
+    "Use Phosphor Icons or Lucide-React. Do NOT use emojis.",
+    "Implement Sonner for toast notifications.",
+    "Build Shadcn components directly into the UI directory if needed but heavily strip the 'Vercel-look' to match this Luxury Cinematic dark mode.",
+    "Translator needs massive emphasis: consider using framer-motion for a smooth entering sequence or pulse effect."
+  ]
+}

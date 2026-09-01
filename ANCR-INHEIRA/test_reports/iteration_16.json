@@ -1,0 +1,22 @@
+{
+  "summary": "Narrow follow-up verification of v3.1 Comparison Engine after the two frontend fixes (Radix a11y title + user-facing 404/422 toast + inline error block). Ran the 16 backend pytests in test_comparison_v3_1.py and executed an end-to-end Playwright flow covering: happy-path open + all 10 sections + a11y wiring, 404 intercept, 422 intercept, and post-error re-open regression. Every acceptance criterion in the review request was met.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_comparison_v3_1.py",
+    "/app/test_reports/pytest/comparison_v3_1.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Nit-only (not blocking): on the 404 path the backend detail 'Version not found' is used verbatim as BOTH the toast/inline title AND the description, so the description just repeats the title. Consider having the frontend fall back to a longer human sentence when detail === title (already implemented for the case where detail is missing).",
+    "Nit-only: sonner toast title+description are concatenated with no separator in the a11y tree ('Version not foundVersion not found'). Cosmetic only; visually they render on two lines."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (16/16 test_comparison_v3_1.py)", "frontend": "100% (all 5 targeted acceptance checks pass)"},
+  "seed_data_creation": "None. Reused seeded session sess_96285667fb26 and known versions ver_eebac44b33f1 / ver_5a40bd309888.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "test@songright.com / Test1234!",
+  "context_for_next_testing_agent": "v3.1 Comparison Engine is now fully locked. Verified: (1) SheetContent has aria-labelledby -> a VisuallyHidden Radix Title reading 'Comparing <A title> with <B title>' (dynamic on data load) and aria-describedby -> a VisuallyHidden Radix Description with the legal disclaimer language. Zero Radix a11y console warnings during the entire flow. (2) 404 path: toast fires with title 'Version not found', inline block with data-testid comparison-error / comparison-error-title / comparison-error-description renders, amber `comparison-disclaimer` is NOT rendered in error state. (3) 422 path: toast + inline block title 'Invalid comparison request' with a full sentence description. (4) Happy path still renders all 10 sections (METADATA, WHAT & WHY, DECISIONS, PARTICIPANTS, EVIDENCE ARTIFACTS, ACKNOWLEDGEMENTS, BETWEEN-WINDOW, VOICE EVIDENCE, MCI, INTEGRITY) and amber disclaimer; Escape closes the sheet and reopening after an error correctly clears the error state. (5) Backend contract unchanged: 16/16 pytests green in ~2s.",
+  "rca_of_the_issue": "N/A — no new issues found. Iteration_15's two non-blocking findings are both resolved and verified."
+}

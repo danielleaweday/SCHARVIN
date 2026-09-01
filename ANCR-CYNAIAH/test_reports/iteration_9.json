@@ -1,0 +1,26 @@
+{
+  "summary": "Iteration 9 — Admin bootstrap hardening. Created /app/backend/tests/test_admin_bootstrap.py covering GET /api/environment posture signal (demo mode, no secret leak, exact 4 documented keys), demo-mode WARN log emission at seed time, production-mode refusal when demo credentials are supplied via env, production-mode successful bootstrap with strong ops credentials (unique uid, verify_password check), production-mode skip when env vars are missing, demo-mode idempotency, and regression on elevated-registration path (faculty create with demo admin token → 200; without token → 403). All 11 new tests pass. Full regression across test_security_authz.py, test_review_notifications.py, test_ancr_envelope.py, test_security_auth.py — 118/118 pass. Backend log confirms the exact WARN line 'demo mode — seeding admin@cynaiah.demo …' is present.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_admin_bootstrap.py",
+    "/app/test_reports/pytest/iter9_admin_bootstrap.xml",
+    "/app/test_reports/pytest/iter9_regression.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "seed_data._ensure_admin_user correctly reads CYNAIAH_ENV/ADMIN_* at call time via os.environ.get — monkeypatch-friendly, no module-scope caching. Good.",
+    "GET /api/environment exposes only the 4 documented booleans/strings and no secrets. Good.",
+    "In production, refusal branch matches on either ADMIN_EMAIL == DEMO_ADMIN_EMAIL OR ADMIN_PASSWORD == DEMO_ADMIN_PASSWORD, which is the correct strict contract.",
+    "Minor: prod admin bootstrap does not enforce _validate_password_strength on ADMIN_PASSWORD — a very weak (but non-demo) password could still be seeded. Consider running the same password-strength check used on /api/auth/register for ADMIN_PASSWORD to close the last gap.",
+    "server.py is 1894 lines — beyond the 700-line guideline; consider modularising by router in a future iteration (not blocking this security work)."
+  ],
+  "updated_files": ["/app/backend/tests/test_admin_bootstrap.py"],
+  "success_rate": {"backend": "100% (11/11 new + 118/118 regression)", "frontend": "skipped per instructions"},
+  "test_credentials": "admin@cynaiah.demo / Cynaiah2026! (demo-mode platform_admin), student@cynaiah.demo / Cynaiah2026!, faculty@cynaiah.demo / Cynaiah2026!",
+  "seed_data_creation": "Tests use ephemeral scratch DBs ({DB_NAME}_iter9_*) and drop them after each test; no impact on live demo data. TEST_ prefixed users created via /auth/register are deleted in the test's finally block.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 9 landed the admin bootstrap hardening. New test file /app/backend/tests/test_admin_bootstrap.py uses asyncio.new_event_loop() (pytest-asyncio is NOT installed here) and monkeypatches CYNAIAH_ENV/ADMIN_* per test. Do NOT edit /app/backend/.env to flip env at rest — it breaks other suites. Regression baseline: 118 tests across test_security_authz/test_review_notifications/test_ancr_envelope/test_security_auth all green. Public URL /api/environment is now the canonical way to detect demo vs production from the frontend.",
+  "rca of the issue": "N/A — no defects found. All 11 new tests + 118 regression tests pass. The one advisory (not a bug) is that ADMIN_PASSWORD in production bypasses _validate_password_strength; recommend E1 wire that in for defense-in-depth."
+}

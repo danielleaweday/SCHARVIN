@@ -1,0 +1,30 @@
+# Original repository metadata retained while consolidating into SCHARVIN.
+**/.git.nested-backup/
+
+# Machine-local dependencies and build output.
+**/node_modules/
+**/.next/
+**/dist/
+**/build/
+**/out/
+**/coverage/
+**/.cache/
+**/.pytest_cache/
+**/__pycache__/
+**/.venv/
+**/venv/
+
+# Editors, logs, and operating-system files.
+**/.vscode/
+**/.idea/
+*.log
+.DS_Store
+
+# Local secrets. Committed examples remain allowed.
+**/.env
+**/.env.*
+!**/.env.example
+**/*token.json*
+**/*credentials.json*
+**/*.pem
+**/*.key

@@ -1,0 +1,55 @@
+{
+  "summary": "Frontend-only testing of CCDP institutional homepage. All sections, testids, nav, ecosystem cards, metric counters, investment CTAs, final CTAs, images, and contact form success flow verified working. Two minor issues found: mobile nav link testids use 'mobile-nav-*' instead of requested 'mobile-nav-link-*'; contact form invalid-email path relies on native HTML5 validation (blocks JS toast) for values without '@'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {
+        "flow": "Footer contact form invalid email",
+        "issue": "Input has type=email + required. Values without '@' (e.g. 'invalid-email') are blocked by native HTML5 validation and the JS onSubmit never fires, so the sonner error toast is not shown. Values that pass HTML5 but fail the stricter regex (e.g. 'foo@bar') DO show the expected 'Please enter a valid email address.' toast, and the success toast for 'partner@university.edu' works and clears the input.",
+        "affected_selectors": ["[data-testid=contact-input]", "[data-testid=contact-submit]"]
+      }
+    ],
+    "design_issues": []
+  },
+  "testid_mismatches": [
+    {
+      "expected": "mobile-nav-link-{challenge|solution|technology|partnerships|impact|investment|leadership|contact}",
+      "actual": "mobile-nav-{challenge|solution|technology|partnerships|impact|investment|leadership|contact}",
+      "file": "src/components/Navbar.jsx",
+      "priority": "LOW",
+      "note": "Mobile menu opens correctly, links are visible/clickable, only the data-testid naming differs from the review request."
+    }
+  ],
+  "verified": {
+    "hero_section_and_headline": true,
+    "hero_ctas": ["hero-briefing-btn", "hero-deck-btn"],
+    "sticky_navbar_and_brand_logo": true,
+    "desktop_nav_links_all_present_and_scroll": true,
+    "sections_rendered": ["challenge-section","solution-section","technology-section","partnerships-section","impact-section","investment-section","research-section","leadership-section","partners-section","finalcta-section"],
+    "ecosystem_cards": ["ancra","ancrlab","ancrsync","ancrlaunch","ancrid","coheir","passport","adca"],
+    "metric_counters_values": {"metric-now-0":"12+","metric-now-1":"9","metric-now-2":"150+","metric-now-3":"92%"},
+    "projections_present": ["projection-0","projection-1","projection-2","projection-3"],
+    "investment_ctas": ["investment-cta-btn","investment-deck-btn"],
+    "final_cta_cards": ["cta-0","cta-1","cta-2","cta-3","cta-4"],
+    "images_loaded": "8/8 (naturalWidth>0). Brand images ccdp-mark, ccdp-dashboard, ancr, adca, adca-logo all render.",
+    "console_errors": "None (only benign net::ERR_ABORTED entries for cached/preloaded assets — final images render fine).",
+    "mobile_menu_trigger_and_briefing_btn": true,
+    "contact_form_success_partner_university_edu": "Success toast shown, input cleared"
+  },
+  "test_report_links": ["/app/test_reports/home_desktop.png", "/app/test_reports/home_mobile.png"],
+  "action_items": [
+    "OPTIONAL: Rename mobile nav testids in src/components/Navbar.jsx from 'mobile-nav-{name}' to 'mobile-nav-link-{name}' to match spec.",
+    "OPTIONAL: To make the sonner error toast reachable for all invalid inputs, either remove the required attribute or change input type from 'email' to 'text' on contact-input (JS regex already validates). Currently, values without '@' are silently blocked by browser-native validation instead of showing the branded error toast."
+  ],
+  "critical_code_review_comments": [
+    "Footer.jsx: input type='email' + required causes native HTML5 validation to short-circuit the custom JS validation for common invalid inputs (e.g. 'invalid-email'), leading to inconsistent UX between browser popup and sonner toast.",
+    "Navbar.jsx: mobile nav-link testids do not match the documented spec (mobile-nav-* vs mobile-nav-link-*)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested per request)", "frontend": "~97% (all functionality works; 2 minor spec/UX deviations)"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Static marketing site, no backend. Desktop nav uses 'nav-link-*', mobile menu uses 'mobile-nav-*' (spec expected 'mobile-nav-link-*'). Contact form uses type=email+required, so use inputs like 'foo@bar' to trigger the sonner error toast rather than 'invalid-email'."
+}

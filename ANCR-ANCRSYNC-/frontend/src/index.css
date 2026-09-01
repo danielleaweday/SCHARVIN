@@ -1,0 +1,182 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900,700,500&f[]=satoshi@400,500,700,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --bg: #000000;
+    --bg-1: #050505;
+    --bg-2: #0a0a0a;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text: #ffffff;
+    --text-muted: #a1a1aa;
+    --text-dim: #71717a;
+    --electric: #00f0ff;
+    --violet: #8a2be2;
+    --magenta: #ff00ff;
+    --orange: #ffa500;
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 0%;
+        --foreground: 0 0% 100%;
+        --card: 0 0% 3%;
+        --card-foreground: 0 0% 100%;
+        --popover: 0 0% 4%;
+        --popover-foreground: 0 0% 100%;
+        --primary: 0 0% 100%;
+        --primary-foreground: 0 0% 0%;
+        --secondary: 0 0% 10%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 0 0% 8%;
+        --muted-foreground: 240 5% 65%;
+        --accent: 0 0% 10%;
+        --accent-foreground: 0 0% 100%;
+        --destructive: 0 60% 45%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 15%;
+        --input: 0 0% 12%;
+        --ring: 190 100% 50%;
+        --radius: 0px;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    html,
+    body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 300;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    ::selection {
+        background: var(--violet);
+        color: white;
+    }
+
+    /* subtle noise texture layered globally */
+    body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.035;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+}
+
+@layer utilities {
+    .font-display {
+        font-family: 'Cabinet Grotesk', 'Satoshi', sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+    }
+
+    .font-body {
+        font-family: 'Satoshi', sans-serif;
+    }
+
+    .font-mono {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    .label-eyebrow {
+        font-family: 'JetBrains Mono', ui-monospace, monospace;
+        font-size: 10px;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    .grad-text {
+        background: linear-gradient(90deg, #00f0ff 0%, #8a2be2 40%, #ff00ff 70%, #ffa500 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .grad-stroke {
+        background: linear-gradient(90deg, #00f0ff, #8a2be2, #ff00ff, #ffa500);
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hair {
+        border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    .hair-strong {
+        border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .glow-ring {
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.06),
+            0 30px 80px -20px rgba(138, 43, 226, 0.25);
+    }
+
+    .stagger-in {
+        opacity: 0;
+        transform: translateY(12px);
+        animation: stagger-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes stagger-in {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* radial score chart */
+    .score-ring {
+        --p: 0;
+        background:
+            conic-gradient(from -90deg,
+                #00f0ff 0%,
+                #8a2be2 35%,
+                #ff00ff 65%,
+                #ffa500 calc(var(--p) * 1%),
+                rgba(255, 255, 255, 0.06) calc(var(--p) * 1%));
+    }
+
+    /* thin scrollbars */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 0;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+}
+
+/* Kill default rounding on shadcn overrides for that brutalist executive feel */
+[data-brutalist='true'] * {
+    border-radius: 0 !important;
+}

@@ -1,0 +1,176 @@
+{
+  "theme_and_archetype": {
+    "archetype": "5 (Luxury) mixed with 4 (Swiss & High-Contrast)",
+    "theme": "Editorial Rhythm (Alternating Dark and Light sections)",
+    "rationale": "CCDP aims to feel like a prestigious university combined with a modern tech company and premium creative brand. This requires 'Old Money Tech' aesthetics: extreme whitespace, high-contrast structural typography (Swiss), and cinematic, moody, and deep colors (Luxury). We avoid the standard non-profit/education template by utilizing 'Godly-level' design patterns: tactical asymmetry, oversized display text, and rhythmic color blocking."
+  },
+  "colors": {
+    "primary": {
+      "hex": "#990000",
+      "name": "Deep Crimson Red",
+      "usage": "Primary brand moments, main CTA buttons, dynamic accents. Use sparingly to maintain luxury feel. Do not use for large backgrounds unless it's a dramatic hero/impact section."
+    },
+    "base_light": {
+      "bg": "#FDFBF7",
+      "text": "#1A1A1A",
+      "border": "rgba(26, 26, 26, 0.1)",
+      "name": "Cream & Charcoal",
+      "usage": "Used for content-heavy sections like Programs, Mission, and Curriculum to ensure maximum legibility and an editorial 'magazine' feel."
+    },
+    "base_dark": {
+      "bg": "#121212",
+      "surface": "#1A1A1A",
+      "text": "#FDFBF7",
+      "border": "rgba(253, 251, 247, 0.1)",
+      "name": "Charcoal & Cream",
+      "usage": "Used for immersive, cinematic sections like the Hero, Technology ecosystem, Impact stats, and Footer."
+    },
+    "accent": {
+      "hex": "#D4AF37",
+      "name": "Warm Gold",
+      "usage": "Highlights only. Small icons, subtle underlines, or numeric stat highlights. Do NOT use as a background color for large elements."
+    },
+    "neutrals": {
+      "soft_gray": "#F0F0F0",
+      "dark_gray": "#2D2D2D"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Cabinet Grotesk",
+      "body": "Manrope",
+      "fallback": "sans-serif"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-6xl lg:text-[5rem] leading-[0.95] tracking-tighter font-medium",
+      "h2": "text-4xl md:text-5xl lg:text-6xl leading-none tracking-tight font-medium",
+      "h3": "text-2xl md:text-3xl leading-tight tracking-tight font-medium",
+      "h4": "text-xl font-medium tracking-tight",
+      "body_large": "text-lg md:text-xl leading-relaxed text-opacity-80",
+      "body_base": "text-base md:text-lg leading-relaxed text-opacity-70",
+      "label": "text-xs md:text-sm uppercase tracking-[0.2em] font-bold"
+    },
+    "rules": [
+      "Headings MUST use tight tracking (tracking-tighter) and reduced line-height (leading-none or leading-[0.95]).",
+      "Labels/Overlines MUST be uppercase with very wide tracking (tracking-[0.2em]).",
+      "Use optical alignment. Do not center everything. Align left for authority, use asymmetrical staggering for creativity.",
+      "Max width for body copy: max-w-2xl to maintain readability."
+    ]
+  },
+  "layout_and_spacing": {
+    "spacing_scale": {
+      "section_padding": "py-24 md:py-32 lg:py-40",
+      "container_padding": "px-6 md:px-12 lg:px-24",
+      "gap_large": "gap-16 md:gap-24",
+      "gap_medium": "gap-8 md:gap-12"
+    },
+    "grids": {
+      "editorial_bento": "Asymmetrical layouts. grid-cols-1 md:grid-cols-12 gap-8. Mix col-span-4, col-span-8, col-span-12.",
+      "control_room": "For Tech section: tight gaps (gap-4), strict col-span alignment, full height cards."
+    },
+    "rules": [
+      "Generous spacing: Use 2-3x more whitespace than typical designs.",
+      "Rhythm: Alternate between base_light and base_dark sections.",
+      "Mobile-first: All grids stack to col-span-1 on mobile."
+    ]
+  },
+  "components": {
+    "navigation": {
+      "style": "Sticky glassmorphism. backdrop-blur-2xl bg-white/70 dark:bg-[#121212]/70 border-b border-black/5 dark:border-white/5.",
+      "layout": "Flex space-between. Logo left, Desktop Links center, Apply CTA right. Hidden hamburger on desktop.",
+      "interaction": "Hover states on links: text color shifts to Crimson Red. Smooth transition."
+    },
+    "buttons": {
+      "primary": "bg-[#990000] text-white hover:bg-[#7A0000] transition-colors rounded-full px-8 py-4 font-medium text-sm tracking-wide",
+      "secondary": "bg-transparent border border-black/20 dark:border-white/20 text-current hover:border-[#990000] hover:text-[#990000] transition-colors rounded-full px-8 py-4 font-medium text-sm tracking-wide",
+      "text_link": "group inline-flex items-center gap-2 font-medium hover:text-[#990000] transition-colors. Add a small arrow that translates right on hover."
+    },
+    "cards": {
+      "program_card": "Minimalist. Solid bg with 1px subtle border. No heavy drop shadows. Hover: -translate-y-1, border darkens, subtle ambient shadow. Inner padding: p-8 or p-10.",
+      "tech_card": "Grid border style. border-r border-b border-white/10. Sharp corners or max rounded-md. 'Terminal/Tactile' aesthetic."
+    },
+    "footer": {
+      "style": "Dark background. py-24 md:py-32. Multi-column grid.",
+      "typography": "Massive brand text 'CCDP' at the bottom (text-[15vw] leading-none text-white/5)."
+    }
+  },
+  "motion_and_interactions": {
+    "scroll": "Use Lenis for smooth scrolling if possible. Reveal elements on scroll (opacity 0 to 1, translate-y 20px to 0).",
+    "hover": "Buttons and links must have clear, elegant transitions. Use transform 0.3s ease, opacity 0.3s ease.",
+    "micro": "Animated stat counters for the Impact section. Marquee for Partners section (slow, smooth drift)."
+  },
+  "media": {
+    "rules": [
+      "Hero image MUST use a gradient overlay for text readability. e.g., bg-black/40.",
+      "Images should feel cinematic, moody, and highly professional.",
+      "All logos must be pure white (in dark sections) or pure black (in light sections) to maintain a premium look."
+    ],
+    "assets": {
+      "hero_background": "https://images.unsplash.com/photo-1781127445118-8140677fdea1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBjcmVhdGl2ZSUyMHN0dWRpbyUyMHBlb3BsZSUyMHdvcmtpbmd8ZW58MHx8fHwxNzgzMjAzOTAwfDA&ixlib=rb-4.1.0&q=85",
+      "tech_office": "https://images.unsplash.com/photo-1616386261012-8a328c89d5b6?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDJ8MHwxfHNlYXJjaHw0fHxjaW5lbWF0aWMlMjBtb2Rlcm4lMjB0ZWNoJTIwb2ZmaWNlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgzMjAzODg0fDA&ixlib=rb-4.1.0&q=85",
+      "community_portraits": [
+        "https://images.unsplash.com/photo-1532170579297-281918c8ae72?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwxfHxjcmVhdGl2ZSUyMHN0dWRlbnQlMjBwb3J0cmFpdCUyMHN0dWRpbyUyMGxpZ2h0aW5nfGVufDB8fHx8MTc4MzIwMzg4NHww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1612242879330-cd06b2696e56?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHwzfHxjcmVhdGl2ZSUyMHN0dWRlbnQlMjBwb3J0cmFpdCUyMHN0dWRpbyUyMGxpZ2h0aW5nfGVufDB8fHx8MTc4MzIwMzg4NHww&ixlib=rb-4.1.0&q=85",
+        "https://images.unsplash.com/photo-1517462964-21fdcec3f25b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODF8MHwxfHNlYXJjaHw0fHxjcmVhdGl2ZSUyMHN0dWRlbnQlMjBwb3J0cmFpdCUyMHN0dWRpbyUyMGxpZ2h0aW5nfGVufDB8fHx8MTc4MzIwMzg4NHww&ixlib=rb-4.1.0&q=85"
+      ],
+      "partner_logos_reference": "https://images.pexels.com/photos/9973170/pexels-photo-9973170.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    }
+  },
+  "page_structure": {
+    "Home": [
+      {
+        "section": "Hero",
+        "theme": "Dark",
+        "content": "Headline: 'Creating the Future of Creative Careers'. Subheadline: 'Education. Technology. Community. Opportunity.' CTAs: 'Apply Now' (Primary), 'Partner With Us' (Secondary). Background: Cinematic Image overlay with black/40.",
+        "layout": "Center aligned content. Full viewport height (h-screen)."
+      },
+      {
+        "section": "Mission",
+        "theme": "Light",
+        "content": "Large, bold editorial typography defining the CCDP philosophy.",
+        "layout": "Massive left-aligned text. Minimal UI. Max-w-5xl."
+      },
+      {
+        "section": "Programs",
+        "theme": "Light",
+        "content": "12 Creative Pathways: Music Business, Music Production, Songwriting, Audio Engineering, Film & Television, Animation, Graphic Design, Content Creation, Photography, Creative Entrepreneurship, Marketing, AI for Creatives.",
+        "layout": "Bento/Grid structure. 1px borders, generous padding. Clean cards."
+      },
+      {
+        "section": "Technology",
+        "theme": "Dark",
+        "content": "Showcase ANCR, Vaulta, Culta, and future student platforms.",
+        "layout": "Control Room grid. Sharp, technical aesthetic. Dark mode exclusively. Use dashboard-style illustrations or tech_office image."
+      },
+      {
+        "section": "Impact & Community",
+        "theme": "Light",
+        "content": "Animated stat counters + Student/Mentor success.",
+        "layout": "Side-by-side: Giant stats (Gold accent) next to clean portrait cards."
+      },
+      {
+        "section": "Partners",
+        "theme": "Light",
+        "content": "Universities, tech companies, nonprofits, employers.",
+        "layout": "Slow continuous Marquee. Low contrast/grayscale logos. Massive padding."
+      },
+      {
+        "section": "Application CTA",
+        "theme": "Dark",
+        "content": "Final push to apply.",
+        "layout": "Deep Crimson Red background. Bold typography."
+      },
+      {
+        "section": "Footer",
+        "theme": "Dark",
+        "content": "Social links, newsletter signup (static form), privacy/terms.",
+        "layout": "Multi-column grid, giant 'CCDP' text watermark at the bottom."
+      }
+    ]
+  },
+  "accessibility_and_testing": {
+    "contrast": "Ensure APCA/WCAG AA contrast ratios. Especially for text over hero images.",
+    "focus": "All interactive elements MUST have focus states: focus:outline-none focus:ring-2 focus:ring-[#990000] focus:ring-offset-2.",
+    "testing": "All interactive and key informational elements MUST include a data-testid attribute (e.g., data-testid='hero-apply-btn', data-testid='program-card-music')."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "summary": "First iteration full e2e of Vaulta. Backend: 22/22 pytest cases pass (auth, dashboard, transactions CRUD, income/expenses summary, royalties, publishing, contracts, invoices, budgets, taxes, business, funding, reports, vault, ecosystem, AIAH SSE stream). Frontend: quick-login-artist works, all 15 sidebar routes navigate cleanly, all 7 KPI cards render, invoice creation modal creates & lists new invoice (TEST_UI_Client visible), AIAH streams Claude Sonnet 4.5 response via suggested prompts (2514 char response received), logout returns to /login.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "CORS", "issue": "CORSMiddleware uses allow_origins=['*'] with allow_credentials=False. Fine now because frontend and backend share the same emergent proxy origin, but if the app is ever accessed from a different origin the withCredentials:true cookie flow will silently break. Recommend explicit origins + allow_credentials=True."},
+      {"endpoint": "cookies", "issue": "set_cookie uses secure=False. Works over the proxy today but should be secure=True samesite='none' for cross-site production usage."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Invoices modal", "issue": "data-testids differ from the review-request spec. Actual: invoice-client-name, invoice-client-email, invoice-amount, invoice-due-date. Spec asked for invoice-*-input suffix. Not blocking functionality; tests were adapted, but consider aligning testids.", "selector": "[data-testid='invoice-amount'] vs 'invoice-amount-input'", "priority": "LOW"},
+      {"component": "Dashboard chart", "issue": "Recharts warning 'width(-1) and height(-1) of chart should be greater than 0' printed on load. Chart still renders but the ResponsiveContainer is briefly initialised with 0 height. Consider giving container an explicit min-height.", "selector": "cash-flow chart wrapper", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Optional: align invoice modal data-testids to the 'invoice-*-input' naming used in the review request (invoice-client-input, invoice-amount-input, invoice-due-input).",
+    "Optional: fix Recharts ResponsiveContainer 0-size warning on Dashboard.",
+    "Optional: tighten CORS (explicit origin + allow_credentials=True) and cookies (secure=True, samesite='none') for cross-site production."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 733 lines with all routes inline. Consider splitting per-resource routers for maintainability once beyond MVP.",
+    "owner_id_for() silently rewrites reads to the Artist's data for every non-Artist role. This is fine for demo showcase but must not ship to production without a permission model.",
+    "Business/Ecosystem endpoints return hardcoded static data — flagged for information; expected in MVP demo."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "artist@vaulta.io / Vaulta2026! (used for all tests). Admin: admin@vaulta.io / Vaulta2026!",
+  "seed_data_creation": "None manually; server seeds admin + demo users + full artist financial dataset on startup. A few TEST_ prefixed items (invoices, budgets, transactions, users) were created during tests; transactions test is self-cleaning, others left intentionally.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend tests live at /app/backend/tests/backend_test.py (pytest). Frontend Playwright covered login, all 15 sidebar routes, invoice creation, AIAH streaming, logout. Invoice modal testids are invoice-client-name / invoice-amount / invoice-due-date (NOT invoice-*-input as originally spec'd). AIAH SSE endpoint /api/aiah/chat streams delta events successfully with EMERGENT_LLM_KEY."
+}

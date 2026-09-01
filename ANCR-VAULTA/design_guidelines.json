@@ -1,0 +1,168 @@
+{
+  "brand": {
+    "name": "Vaulta™",
+    "description": "The Financial Operating System of the ANCR ecosystem",
+    "aesthetic": "Bloomberg Terminal + Stripe Dashboard + Ramp + Linear + Apple Wallet. Obsidian black canvas with glassmorphism cards, electric blue → violet → orange gradient accents used sparingly for premium moments. Editorial typography scale. Data-dense but breathing. Every screen must feel executive, institutional, and enterprise-grade.",
+    "roles": [
+      "Student",
+      "Faculty",
+      "Artist",
+      "Manager",
+      "Accountant",
+      "Attorney",
+      "Publisher",
+      "Administrator",
+      "Employer",
+      "Institution"
+    ]
+  },
+  "typography": {
+    "headings": {
+      "fontFamily": "Cabinet Grotesk, sans-serif",
+      "weights": [
+        400,
+        500,
+        700,
+        800
+      ],
+      "usage": "H1-H4, KPI values, major section headers, editorial moments"
+    },
+    "body": {
+      "fontFamily": "Satoshi, sans-serif",
+      "weights": [
+        300,
+        400,
+        500,
+        700
+      ],
+      "usage": "Data tables, UI labels, body text, financial details"
+    },
+    "scale": {
+      "h1": "text-4xl sm:text-5xl tracking-tight leading-none text-white",
+      "h2": "text-2xl sm:text-3xl tracking-tight text-gray-100",
+      "h3": "text-xl sm:text-2xl tracking-tight text-gray-200",
+      "kpi": "text-4xl sm:text-5xl font-bold tracking-tighter text-white",
+      "body": "text-sm text-gray-400",
+      "label": "text-xs tracking-[0.2em] uppercase text-gray-500 font-semibold"
+    }
+  },
+  "colors": {
+    "backgrounds": {
+      "obsidian_base": "#050505",
+      "obsidian_surface": "#0A0A0A",
+      "obsidian_elevated": "#111111",
+      "glass": "rgba(255, 255, 255, 0.03)"
+    },
+    "accents": {
+      "electric_blue": "#00F0FF",
+      "violet": "#8B5CF6",
+      "orange": "#FF5F1F",
+      "gradient_primary": "linear-gradient(135deg, #00F0FF 0%, #8B5CF6 50%, #FF5F1F 100%)",
+      "success": "#10B981",
+      "warning": "#F59E0B",
+      "danger": "#EF4444"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "tertiary": "#71717A",
+      "disabled": "#3F3F46"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.1)",
+      "strong": "rgba(255, 255, 255, 0.2)"
+    }
+  },
+  "layouts": {
+    "navigation": "Left ecosystem navigation (same as every ANCR module), fixed 240px-280px sidebar. Solid obsidian base (#050505) to anchor the UI. ANCR logo positioned at the bottom of the sidebar. User will provide Vaulta logo for the top.",
+    "dashboard_grid": "High Density Grid. Use CSS Grid with varying spans (col-span-1 for summaries, col-span-2 or 3 for primary charts). Data-dense but breathable with p-6 or p-8 inside containers.",
+    "cards": "Glassmorphism cards with `backdrop-blur-xl`, `bg-white/[0.02]`, `border border-white/10`. Inside padding must be generous (p-6). DO NOT USE FULL TRANSPARENT BACKGROUNDS.",
+    "tables": "Executive data tables. Minimalist, left-aligned, border-b only for rows (`border-white/10`), hover states lift slightly with `bg-white/[0.04]`.",
+    "spacing_scale": "p-2, p-4, p-6 (inner cards), p-8 (sections), p-12, p-16. Use generous padding inside borders."
+  },
+  "visual_enhancers": {
+    "glassmorphism": "Used for sticky headers, modal overlays, toasts, and KPI cards. Formula: `bg-white/[0.03] backdrop-blur-2xl border border-white/[0.08]`. Never use 100% transparent backgrounds.",
+    "glow_effects": "Use subtle colored drop shadows for accent elements (e.g., `drop-shadow-[0_0_12px_rgba(0,240,255,0.3)]` on electric blue elements).",
+    "gradients": "Apply the Electric Blue -> Violet -> Orange gradient sparingly. Use it for premium moments: primary CTA borders, progress bars, active state lines, or subtle glowing orbs in the background. Avoid full background gradients.",
+    "no_emojis": "CRITICAL: Do not use emojis anywhere in the application. Use crisp, premium SVGs from Phosphor Icons or Lucide."
+  },
+  "motion": {
+    "hover_states": "Cards lift slightly (`-translate-y-1`), borders become slightly more opaque, subtle ambient shadow increases.",
+    "page_transitions": "Smooth fade in, slight upward translation (`translate-y-4` to `translate-y-0`) for lists and cards in a staggered fashion.",
+    "buttons": "Gradient-trimmed buttons have a glowing active state. Use `transition-[transform,opacity,box-shadow] duration-300 ease-in-out` (avoid transition-all)."
+  },
+  "components": {
+    "buttons": "Pill-shaped or sharp rectangular with 1px border. Primary CTA uses the gradient trim or solid electric blue text with a glowing hover. No solid colored backgrounds except for critical actions.",
+    "kpi_tiles": "Display Net Worth, Cash Available, etc. Label on top (uppercase, tracking wide), large numbers in Cabinet Grotesk, small sparkline or trend indicator below. Backdrop-blur-xl with obsidian surface.",
+    "sidebar": "Left fixed layout. Darker than main content (`#050505`). Highlight active route with a thin gradient left border or subtle glass background.",
+    "charts": "Translucent fills, thin bright lines. Recharts or Shadcn charts with colors mapped to the accent palette (Electric Blue, Violet, Orange)."
+  },
+  "accessibility": {
+    "contrast": "Text must pass WCAG AA. Use off-white (#e5e7eb) for primary text instead of pure white to reduce eye strain. Secondary text must have sufficient contrast against #0A0A0A.",
+    "focus": "Clear focus rings on inputs (`focus:ring-2 focus:ring-violet-500 focus:outline-none focus:ring-offset-2 focus:ring-offset-black`).",
+    "reduced_motion": "Respect `prefers-reduced-motion` for all transitions.",
+    "testing": "All interactive and key informational elements MUST include a `data-testid` attribute (e.g., `data-testid=\"sidebar-nav-dashboard\"`)."
+  },
+  "media": {
+    "image_urls": [
+      {
+        "category": "texture_dark_cracked_glass",
+        "url": "https://images.pexels.com/photos/9966703/pexels-photo-9966703.jpeg",
+        "description": "Close-up of cracked glass pieces on a black surface. Use sparingly as a masked background texture in premium empty states, auth screen, or loading screens."
+      },
+      {
+        "category": "texture_dark_glass_office",
+        "url": "https://images.unsplash.com/photo-1515703944563-dbcfbf121b3d",
+        "description": "A dark room with clear glass wall panel. Can be used as a low-opacity background for the Vault or Settings modules to add depth."
+      },
+      {
+        "category": "texture_cinematic_fog",
+        "url": "https://images.pexels.com/photos/19943722/pexels-photo-19943722.jpeg",
+        "description": "Eerie silhouettes in a foggy alleyway, captured at night. Can be used for cinematic, moody login/auth backgrounds."
+      }
+    ],
+    "icons": "Use @phosphor-icons/react (Duotone or Regular) or lucide-react. Phosphor Icons preferred for dense dashboards. DO NOT USE EMOJIS.",
+    "logos": "Use official Vaulta logo throughout (user will provide). ANCR logo at the bottom of the sidebar."
+  },
+  "modules": [
+    "Overview/Dashboard",
+    "Income",
+    "Expenses",
+    "Budget",
+    "Royalties",
+    "Publishing",
+    "Contracts",
+    "Invoices",
+    "Taxes",
+    "Business",
+    "Funding",
+    "Reports",
+    "Vault",
+    "Settings",
+    "AI Financial Advisor (AIAH)"
+  ],
+  "ecosystem_integrations": [
+    "ANCRID",
+    "ANCRA",
+    "ANCRLAB",
+    "ANCRSync",
+    "INHEIRA",
+    "COHEIR",
+    "ANCRLaunch",
+    "ANCRVIEW",
+    "ANCRWAV",
+    "Passport"
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "GENERAL UI UX DESIGN GUIDELINES: You tend to converge toward generic outputs. Avoid 'AI slop'. Make this look like an executive, professional financial operating system, similar to Bloomberg Terminal or Ramp.",
+    "DO NOT use dark colors as gradients. Use dark colors independently as solid background variants (Obsidian Black).",
+    "DO NOT apply universal transition (`transition: all`). Target specific properties like `transform`, `opacity`, `color`.",
+    "DO NOT center align the app container. Keep it left-aligned, standard web app layout.",
+    "DO NOT use emojis anywhere in the UI. Use high-quality SVGs.",
+    "Create depth through layered design elements with z-index hierarchy and glassmorphism (12-24px blur).",
+    "CRITICAL: DO NOT use complete `transparent` background in header, overlays, dropdowns, or any surface that has content under it. Example: Dropdown with transparent background is strictly forbidden. Use `bg-black/90` or solid.",
+    "Use `sonner` for toast notifications.",
+    "All interactive and key informational elements MUST include `data-testid` (kebab-case, role-based).",
+    "You have .js files not .tsx file, so share the guideline for .js files not for .tsx files."
+  ]
+}

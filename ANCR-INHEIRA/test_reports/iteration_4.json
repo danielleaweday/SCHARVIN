@@ -1,0 +1,53 @@
+{
+  "summary": "Frontend-only Final Review & Freeze QA pass on INHEIRA. Logged in as test@songright.com and walked every route: /, /auth, /dashboard, /sessions, /sessions/new, /sessions/:id (redirect), /sessions/:id/studio, /sessions/:id/dna, /sessions/:id/release, /sessions/:id/intelligence, /sessions/:id/split-sheet, /writing-rooms, /creator/user_seed_test001, /profile, /vaulta, /settings/integrations, plus mobile 375x812. Overall the platform PASSES the freeze walkthrough for the critical must-flag categories: no user-facing 'Songright' text, no '1 collaborators' grammar bug (singular/plural is correct: '1 CREATOR' / '2 CREATORS'), /sessions/:id correctly redirects to /studio, all 11 Release-Path stages render, SongDNA eyebrow + 'CONTINUE TO RELEASE PATH' cross-link present, Landing 'POWERED BY ANCR' footer present, Vaulta hero + GMR tile present, Writing Rooms shows all 6 cities (Atlanta rendered as uppercase 'ATLANTA'), all spot-check test IDs resolve (under their actual names in constants). Two real must-fix items remain: residual violet-300/400/500 from the SONGRIGHT era in StudioSession + SongIntelligence + the Life-of-Song progress gradient, and Dashboard horizontal-scroll overflow at 375px caused by the Life-of-Song 10-stage strip not being overflow-x-scroll on mobile.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "StudioSession.jsx — chapter/section nav + IDE panels", "issue": "Active-chapter left rail item and multiple section eyebrows/buttons still use bg-violet-500/10, text-violet-400, border-violet-500, bg-violet-500 (see StudioSession.jsx lines 223, 574–581, 607, 615, 626, 645, 679, 748–825, 905, 1050, 1067, 1111–1117, 1134, 1197, 1271–1305, 1344–1380, 1413, 1432, 1453, 1503–1582). Palette-freeze rule requires NO violet-300/400/500/600 anywhere.", "selector": "[data-testid=studio-root] .text-violet-400, .bg-violet-500, .border-violet-500", "priority": "HIGH"},
+      {"component": "SongIntelligence.jsx", "issue": "Renders 5 violet-400/500 classes (tab pill selected state + card border/bg). Task requires no visible violet color drift on /intelligence.", "selector": "[data-testid=studio-insights], .text-violet-400", "priority": "HIGH"},
+      {"component": "Life-of-Song progress-bar gradient (used in Dashboard, Studio, Release Path)", "issue": "Gradient bar uses `bg-gradient-to-r from-sky-300 via-indigo-300 to-violet-300` — the `to-violet-300` stop violates the palette freeze (should end in indigo or sky). Appears 3x on /dashboard, 3x on /studio, 6x on /release.", "selector": ".bg-gradient-to-r.to-violet-300", "priority": "MEDIUM"},
+      {"component": "Dashboard.jsx (mobile 375x812)", "issue": "Horizontal scroll on the whole page: document.scrollWidth = 484px on 375px viewport (~109px overflow). Root cause: the Life-of-Song 10-stage node strip (10 nodes × ~60px + gaps) renders wider than the viewport and is not wrapped in an overflow-x-auto container, so it stretches its parent. Mobile Studio does NOT overflow, so the Studio version is scrollable — apply the same pattern to Dashboard.", "selector": "[data-testid=dashboard-root] .flex (Life-of-Song strip)", "priority": "HIGH"},
+      {"component": "Studio chapter sub-tab strip (Write / Release chapters)", "issue": "After clicking [data-testid=studio-chapter-write] only the 'Lyrics' section renders — 'Melody', 'Chords', 'Arrangement' sub-tab labels are not visible in the DOM text (task expects all four as sub-tabs). Same for [data-testid=studio-chapter-release]: only 'Publishing' visible, 'Rights' and 'Analytics' sub-tabs are missing from the rendered strip. Either the sub-tab labels have been renamed or the strip only shows the active panel body. PLEASE VERIFY intended behaviour.", "selector": "[data-testid=studio-chapter-write], [data-testid=studio-chapter-release]", "priority": "MEDIUM"},
+      {"component": "Vaulta hero payout chip", "issue": "'Next payout ~90 days' chip described in review is NOT present on /vaulta — the string 'payout' appears elsewhere but the '~90 days' hint is absent. Cosmetic gap, please confirm intended copy.", "selector": "[data-testid=vaulta-root]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/vaulta hero", "issues": ["'every dollar' correctly uses sky/indigo gradient (no violet-300 hit on Vaulta) — palette OK here."]},
+      {"screen": "/writing-rooms cast", "issues": ["City labels are uppercased (ATLANTA, NASHVILLE, LONDON, LAGOS, TOKYO, KINGSTON) — matches design system. All 6 rooms rendering."]}
+    ],
+    "observations_only": [
+      "Test-ID naming drift between review checklist and code constants (not broken, just different names): review lists `session-list-root` → code uses `sessions-list-root`; review lists `creator-passport-root` → code uses `passport-root`; review lists `release-root` → code uses `release-dashboard-root`. All three roots DO render in the DOM under their actual names, so this is a documentation drift, not a bug. Recommend syncing the freeze checklist to constants/testIds/phase2.js.",
+      "`studio-insights` and `studio-chat-send` testids exist in code but are inside specific chapter panels — they only appear when their chapter is active (Idea overview / Collaborate chat). Not a bug.",
+      "AuthPage split-screen renders 'Where creativity becomes\\nlegacy.' (with a newline between 'becomes' and 'legacy.') — visually correct in screenshot, just multi-line so substring 'creativity becomes legacy' won't match against innerText.",
+      "Landing page has 'POWERED BY ANCR™' footer ✅ and NO 'Songright' text anywhere user-facing ✅.",
+      "Sessions list singular/plural grammar is CORRECT ('1 CREATOR' vs '2 CREATORS') — no '1 collaborators' bug.",
+      "/sessions/:id redirect to /studio confirmed (no page render on old URL).",
+      "All 11 Release-Path stages render in order: Creative Evidence™, RightsPrint™, Ownership, Split Sheet, Publishing, Vaulta™, Song Intelligence™, Commercial Readiness, Release Readiness, Distribution, Life of a Song™.",
+      "SongDNA page shows 'SONG DNA™ · IMMUTABLE HISTORY · 67FB26' eyebrow + 'CONTINUE TO RELEASE PATH' cross-link ✅.",
+      "Creator DNA `/creator/user_seed_test001` renders passport-root + passport-header + passport-discography test IDs.",
+      "Localstorage token key is still `songright_token` (internal, not user-facing) — safe to keep for backward compatibility of existing sessions but a future migration to `inheira_token` would be cleaner.",
+      "Mobile Studio (/studio at 375px) does NOT horizontally scroll ✅ — model to copy for Dashboard."
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Strip remaining `text-violet-400 / bg-violet-500 / border-violet-500 / bg-violet-500/10 / bg-violet-500/5 / border-violet-500/20 / border-violet-500/30 / border-violet-500/40` classes from StudioSession.jsx (highest concentration) and SongIntelligence.jsx to complete the palette freeze. Suggested replacement: `sky-400` or `indigo-400` to match the rest of Phase-1 surfaces.",
+    "Change the Life-of-Song progress gradient `from-sky-300 via-indigo-300 to-violet-300` → `from-sky-300 via-indigo-300 to-indigo-400` (or sky-400) so it stops before violet. Occurs on Dashboard, Studio, Release.",
+    "Wrap the Dashboard Life-of-Song 10-stage node strip in `overflow-x-auto` (like Studio already does) so /dashboard stops horizontally overflowing at 375px width. Currently causes 109px document overflow.",
+    "Verify Studio Chapter Write and Chapter Release sub-tab strips: task expects Lyrics/Melody/Chords/Arrangement sub-tabs for Write and Rights/Publishing/Analytics for Release. Only Lyrics / Publishing render today — confirm whether the other sub-tabs were intentionally consolidated or are missing.",
+    "Sync the freeze checklist test-id names with actual constants (sessions-list-root, passport-root, release-dashboard-root).",
+    "Optional: add the 'Next payout ~90 days' hint chip on the Vaulta Estimated Earnings card (referenced in review, not in DOM)."
+  ],
+  "critical_code_review_comments": [
+    "StudioSession.jsx is ~1600+ lines and carries the bulk of the remaining palette drift; splitting it into per-chapter modules would make future palette sweeps a one-line change.",
+    "Palette lint: add a simple grep-based check to CI: `grep -rEl 'violet-(300|400|500|600)' src/` and fail if non-empty — would have caught this before freeze."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "85%"},
+  "seed_data_creation": "None. Used existing seed session sess_96285667fb26 and user_seed_test001.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "test@songright.com / Test1234! (user_id: user_seed_test001). Auth submit selector must use [data-testid=auth-submit-login] — a generic `button:has-text('Sign in')` matches the tab button first and will not log in.",
+  "context_for_next_testing_agent": "Login MUST use [data-testid=auth-submit-login] (there is also a 'Sign in' tab button that will steal a text-based selector). All spot-check surfaces render; the only remaining hard issues before freeze are (1) residual violet in StudioSession + SongIntelligence + the Life-of-Song gradient stop, and (2) mobile horizontal overflow on /dashboard (Life-of-Song strip). After main agent fixes those two, re-run only Dashboard mobile + Studio + Intelligence + Release visual passes.",
+  "rca_of_the_issue": "Palette freeze was applied to most surfaces (Sessions, Vaulta, Profile, Creator DNA, Integrations, SplitSheet, SongDNA, Writing Rooms are all violet-free at runtime) but StudioSession.jsx and SongIntelligence.jsx were not touched, and a shared Life-of-Song progress gradient still ends in `to-violet-300` — that gradient is rendered on every page that shows the 10-stage spine (Dashboard, Studio, Release), so a single class change eliminates the majority of remaining violet hits. Mobile /dashboard overflow is caused by the Life-of-Song 10-stage node row lacking overflow-x-auto on the mobile breakpoint — Studio already does this correctly."
+}

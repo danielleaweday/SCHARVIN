@@ -1,0 +1,103 @@
+{
+  "theme": "dark",
+  "archetype": "Archetype 5 (Luxury) + Archetype 4 (Swiss & High-Contrast)",
+  "design_philosophy": "Premium, Apple/Linear/Notion/Spotify inspired. No clutter, no spreadsheets. Generous spacing, sharp accents, subtle grain textures, optical clarity glassmorphism. Left-aligned, asymmetric layouts. Beautiful enough for creators, powerful enough for publishers.",
+  "colors": {
+    "background": "#09090B",
+    "surface": "#18181B",
+    "surface_elevated": "#27272A",
+    "border": "#3F3F46",
+    "border_subtle": "rgba(255, 255, 255, 0.1)",
+    "text_primary": "#FAFAFA",
+    "text_secondary": "#A1A1AA",
+    "accent_primary": "#F59E0B",
+    "accent_hover": "#D97706",
+    "accent_subtle": "rgba(245, 158, 11, 0.15)",
+    "status_success": "#10B981",
+    "status_error": "#EF4444"
+  },
+  "typography": {
+    "fonts": [
+      {
+        "name": "Cabinet Grotesk",
+        "type": "Headings (Marketing, Dashboard Titles)",
+        "link": "https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,500,700,400,300&display=swap"
+      },
+      {
+        "name": "Manrope",
+        "type": "Body, UI, Components",
+        "link": "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap"
+      },
+      {
+        "name": "JetBrains Mono",
+        "type": "Metadata, Timeline codes, Split Percentages",
+        "link": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap"
+      }
+    ],
+    "hierarchy": {
+      "h1": "font-['Cabinet_Grotesk'] text-5xl md:text-7xl font-black tracking-tighter leading-[1.1]",
+      "h2": "font-['Cabinet_Grotesk'] text-3xl md:text-4xl font-bold tracking-tight leading-tight",
+      "h3": "font-['Cabinet_Grotesk'] text-xl md:text-2xl font-semibold tracking-tight",
+      "body": "font-['Manrope'] text-base font-normal leading-relaxed text-zinc-300",
+      "overline": "font-['Manrope'] text-xs font-bold uppercase tracking-[0.2em] text-zinc-500",
+      "metadata": "font-['JetBrains_Mono'] text-sm font-medium text-zinc-400"
+    }
+  },
+  "spacing_and_layout": {
+    "generous_spacing": "Use p-8 to p-12 for major containers. Maintain high padding inside bordered containers to avoid text collision.",
+    "alignment": "Strictly left-aligned asymmetry for marketing and hero text. Center alignment ONLY for standalone modals.",
+    "dashboard_grid": "Mode B (Control Room): grid-cols-1 md:grid-cols-4 lg:grid-cols-12, tight gaps (gap-4 to gap-6). Use h-full to stretch children.",
+    "marketing_grid": "Mode A (Tetris): grid-cols-1 md:grid-cols-12, gap-8. Mix tall and wide cards, leaving intentional negative space.",
+    "surfaces": {
+      "glassmorphism": "backdrop-blur-2xl bg-zinc-950/70 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] - Use for sticky headers, nav bars, overlays.",
+      "neumorphism_tactile": "Flat bg-zinc-900 with 1px border-zinc-800, no shadow. Hover: slight lift (-translate-y-1) and inner glow via border-zinc-600.",
+      "tracing_beam": "For pricing or active session recording cards, use subtle animated gradient borders."
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-white text-zinc-950 hover:bg-zinc-200 rounded-md font-semibold px-6 py-2 transition-all",
+      "secondary": "bg-zinc-900 border border-zinc-800 text-white hover:bg-zinc-800 hover:text-white rounded-md px-6 py-2 transition-all",
+      "accent": "bg-amber-500 text-zinc-950 hover:bg-amber-600 rounded-md font-bold px-6 py-2 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all"
+    },
+    "cards": "Cardless layout or sharp rectangle look. rounded-lg max, border-zinc-800/60 bg-zinc-900/40. No heavy Vercel-style drop shadows.",
+    "inputs_and_forms": "Customize Shadcn primitives: bg-zinc-950 border-zinc-800 focus:ring-1 focus:ring-amber-500. Keep labels left-aligned and crisp.",
+    "timeline": "Vertical left-aligned track (border-l border-zinc-800). Nodes are glass circles with glowing amber inner dots to denote verified creative history.",
+    "split_sheets": "High-density view using Manrope for names, JetBrains Mono for percentage splits. 1px solid row borders, stark white text for active values."
+  },
+  "motion_and_interactions": {
+    "hover_states": "Interactive elements MUST have explicit hover text colors (e.g., hover:text-white). Focus states must use higher contrast ring (focus:ring-white or focus:ring-amber-500).",
+    "transitions": "transition-all duration-300 ease-out for standard interactions.",
+    "marquee": "Use for collaborator network display or publishing partners. Slow, smooth drift, font-mono, low contrast text (text-zinc-700)."
+  },
+  "media_and_images": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1638376776402-9a4b75fe21bb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Nzh8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGRhcmslMjBzb3VuZCUyMHdhdmUlMjB0ZXh0dXJlfGVufDB8fHx8MTc4MzM3Mjg0NHww&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract dark sound wave. Use for landing page hero background with heavy bg-zinc-950/80 overlay."
+    },
+    "creator_portrait": {
+      "url": "https://images.unsplash.com/photo-1610716632424-4d45990bcd48?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxOTF8MHwxfHNlYXJjaHwyfHxtdXNpYyUyMHByb2R1Y2VyJTIwZGFyayUyMHN0dWRpb3xlbnwwfHx8fDE3ODMzNzI4NDR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Music producer in dark studio. Use for Creator Identity / RightPrint profile showcase."
+    },
+    "session_image": {
+      "url": "https://images.unsplash.com/photo-1579797990179-4ca11c8b47fd?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwxfHxzb25nd3JpdGVyJTIwcGxheWluZyUyMGFjb3VzdGljJTIwZ3VpdGFyJTIwZGFya3xlbnwwfHx8fDE3ODMzNzI4NDR8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Songwriter playing acoustic guitar. Use for live collaboration session visual."
+    },
+    "overlay_rules": "Always apply max overlay opacity bg-zinc-950/50 to images to ensure text readability (WCAG AA). Never completely obscure, ensure contrast."
+  },
+  "testing_attributes": {
+    "requirement": "All interactive and key informational elements MUST include a data-testid attribute in kebab-case based on role (e.g., data-testid='create-session-button')."
+  },
+  "iconography": {
+    "library": "lucide-react",
+    "style": "Clean, linear, thin stroke width (1.5px). Never use solid fill unless indicating an 'active' or 'recording' state."
+  },
+  "instructions_to_main_agent": [
+    "1. Initialize the project with Dark Mode as the absolute default. Ensure the body background is #09090B (zinc-950).",
+    "2. Inject external fonts (Cabinet Grotesk, Manrope, JetBrains Mono) via <style> imports in index.css.",
+    "3. Build the Landing Page ('Write. Own. Protect.') prioritizing large typography, heavy negative space, and a premium editorial tech aesthetic (like Linear meets Spotify).",
+    "4. For Dashboard and Live Session flows, customize Shadcn components heavily: remove default card borders and shadows, replace with sharp 1px borders (border-zinc-800) and flat surfaces.",
+    "5. Utilize the 'LCH/Apple' inspired glassmorphism for sticky navs and dialog modals (backdrop-blur-2xl, bg-zinc-950/70, subtle top/left border highlight).",
+    "6. Include data-testid attributes on ALL buttons, links, inputs, and tab triggers for robust testing."
+  ]
+}

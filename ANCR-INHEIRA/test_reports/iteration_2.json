@@ -1,0 +1,57 @@
+{
+  "summary": "RC1 sign-off UI validation for SONGRIGHT. Auth (login/register/logout), protected route redirects, session creation, 12-tab studio, Lyrics editor, Song DNA, Release dashboard, Song Intelligence + share link + public /report/:token, Creator Passport, Connected Services (search + category filter + Manage dialog + audit log), Ownership Dashboard, Overview 10-milestone Song Journey, Mobile (375x812) responsive checks — all functionally rendered. Two findings block a clean sign-off: (1) uncaught clipboard exception on Share dialog crashes React error overlay, (2) five sidebar entries in the Studio left rail are dead links.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "SongIntelligence share dialog", "issue": "Clicking 'Generate share link' triggers an uncaught 'NotAllowedError: Failed to execute writeText on Clipboard: Write permission denied' that surfaces the React dev error overlay. The share link IS created server-side and the public /report/:token page opens correctly, but the user sees a full-screen red 'Uncaught runtime errors' overlay in preview environments. Wrap navigator.clipboard.writeText in try/catch and fall back to selectable text.", "selector": "button:has-text('Generate share link')", "priority": "P1"},
+      {"component": "StudioSession sidebar (left rail)", "issue": "Five sidebar entries are rendered as non-navigable divs (to: null): Collaborators, Rights Center, Publishing, Analytics, Templates. Review explicitly requires 'Sidebar links ... all resolve to real routes with no dead links.'", "selector": "aside nav div (Collaborators/Rights Center/Publishing/Analytics/Templates)", "priority": "P1"},
+      {"component": "NewSession redirect", "issue": "After creating a session, user is navigated to /sessions/:id (session detail) instead of /sessions/:id/studio (studio workspace) as specified in the review request.", "selector": "session-submit-create", "priority": "P2"}
+    ],
+    "integration_issues": [
+      {"flow": "Landing / initial load", "issue": "Two 404 console errors on first paint (favicon/asset misses).", "affected_selectors": []}
+    ],
+    "design_issues": [
+      {"screen": "Public Intelligence report /report/:token", "issues": ["Renders correctly view-only, but the top ribbon 'VIEW-ONLY · SHARED WITH LABEL' green text on black is fine on desktop; verify contrast on very small viewports."]}
+    ]
+  },
+  "verified_working": [
+    "Login with test@songright.com / Test1234! -> /dashboard",
+    "Register new account (rc1_reg_{ts}@songright.com) succeeds -> /profile",
+    "Logout via data-testid=nav-sign-out clears session; /sessions redirects to /auth",
+    "Protected routes /sessions, /settings/integrations, /sessions/:id/studio all redirect logged-out users to /auth",
+    "Public /report/:token accessible without auth and renders view-only report",
+    "/report/BOGUS_TOKEN shows clean 'Link not found' page (no crash)",
+    "Bogus /sessions/BOGUS_ID/studio shows 'Failed to load session' toast + redirect to /sessions (no white screen)",
+    "Studio workspace loads with all 12 tabs: Overview, Lyrics, Melody, Chords, Arrangement, Voice Memos, Files, Collaborators, Chat, Rights, Publishing, Analytics",
+    "Overview: 10-step Song Journey renders (Idea→Royalties); 3 donut charts render; Interactive Ownership Dashboard renders with 6 lens buttons (Lyrics/Composition/Publishing/Master/Producer Credits/Performance); Connected Services widget shows 6/90 active",
+    "Lyrics editor: sections render (Verse 1/Pre-Chorus/Chorus/Verse 2/Bridge/Outro), textarea accepts input",
+    "Song DNA at /sessions/:id/dna: signature card, event-type chips (ALL·1, SONG CREATED·1), timeline groups by date",
+    "Release Dashboard: streaming line chart, DSP share bars (Spotify 42%…), performance/mechanical/sync/neighboring cards render",
+    "Song Intelligence report cover + summary + share dialog renders; POST share generates token; public /report/:token opens",
+    "Creator Passport /creator/user_seed_test001: hero, stats (Songs 5 / Collaborators 2 / Verified Yes / Royalty Rail Active), Discography/Timeline/Team/Publishing tabs",
+    "Connected Services /settings/integrations: 90 Manage buttons found across 13 categories, search filters live (Spotify), category chips filter, Manage dialog opens with 9 permission toggles + audit log + Disconnect/Re-sync",
+    "Mobile 375x812: dashboard, studio, integrations — no horizontal scroll; studio shows hamburger toggle",
+    "12-tab preservation: state persists when switching tabs"
+  ],
+  "test_report_links": ["/app/test_reports/iteration_2.json"],
+  "action_items": [
+    "P1: Wrap `navigator.clipboard.writeText(...)` in SongIntelligence.jsx share dialog with try/catch + user-facing toast fallback (avoid uncaught NotAllowedError crashing React dev overlay in preview)",
+    "P1: Fix Studio sidebar dead links — route Collaborators/Rights Center/Publishing/Analytics/Templates to real pages or hide until pages exist. Currently rendered as inert divs (to: null in StudioSession.jsx L202-207).",
+    "P2: On successful session create, navigate to `/sessions/${id}/studio` (studio workspace) rather than `/sessions/${id}` per review spec.",
+    "P3: Investigate 2x 404 asset requests on landing (favicon or preload asset)."
+  ],
+  "critical_code_review_comments": [
+    "StudioSession.jsx is 1636 lines — the sidebar model, 12 tab renderers, ownership dashboard, journey and rights sections should be split into siblings under /components/studio/*",
+    "Sidebar item `active: true` is only checked for the current 'Studio' entry — other items with to=null are rendered as opacity-70 divs which look intentional but are user-clickable without feedback (accessibility + UX confusion).",
+    "Share dialog fires an unguarded clipboard write and does not degrade — pattern should be shared with any other copy-to-clipboard in the app (Invite code, share links).",
+    "Register form and Login form share the same testids (auth-email-input / auth-password-input) — this is fine, but automation frameworks that key on stable name+role selectors would collide."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (out of scope)", "frontend": "~92% of RC1 checklist passed; 2 P1 issues block a clean sign-off"},
+  "test_credentials": "test@songright.com / Test1234!",
+  "seed_data_creation": "Created session 'RC1_Skyline' (sess_620bb793a15a) in /RC1_Album project; generated public share token e00f0a418cf64ebfbabcfab2f50acaab. Registered ephemeral rc1_reg_{ts}@songright.com accounts.",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Studio session id sess_620bb793a15a persists. Public share token e00f0a418cf64ebfbabcfab2f50acaab is view-only (no password). Share dialog clipboard bug reproduces reliably in Playwright/headless because clipboard permission is not granted — fix must degrade gracefully. Sidebar dead-links are wired at StudioSession.jsx lines 197-208 (to: null entries). New-session redirect target is set in NewSession.jsx after POST /api/sessions.",
+  "rca of the issue": "Share dialog crash: SongIntelligence generates the share link successfully via POST /sessions/:id/share, then attempts navigator.clipboard.writeText(link). In preview/headless contexts (and any browser where clipboard-write permission is not granted or the doc is not focused), writeText rejects with NotAllowedError. Because the promise rejection is not caught, React's error boundary/dev overlay surfaces the exception. Fix: `try { await navigator.clipboard.writeText(link); toast('Copied'); } catch { toast('Copy failed — link shown below'); }` and show the link in a selectable read-only input. Studio sidebar dead links: intentional placeholders authored with to:null in StudioSession.jsx should either be routed to existing pages (/sessions for Collaborators; /settings/integrations for Publishing; /vaulta or /profile fallbacks) or removed from the sidebar until routes exist. Given feature-freeze, safest change is to hide these entries or make them non-interactive with visible 'coming soon' affordance."
+}

@@ -1,0 +1,2 @@
+/* ANCRA v2.0 — see index.css for the core design tokens. */
+.App { min-height: 100vh; background: var(--ancra-bg); color: var(--ancra-text); }

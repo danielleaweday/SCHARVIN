@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 19 (backend-focused, deployment-readiness verification of pagination in admin inquiries). Wrote /app/backend/tests/test_admin_inquiries_pagination.py hitting the public preview (REACT_APP_BACKEND_URL=https://studio-ancr.preview.emergentagent.com). 9/9 tests passed. Verified: (1) POST /api/auth/login with danielle@aweday.org returns a JWT token (200). (2) GET /api/admin/inquiries returns 200 with the exact expected shape {inquiries, total, byStatus, statuses, sheetsEnabled}, types validated, default result size <=200, and inquiries sorted by created_at desc. total (via count_documents) = 15 in the live DB. sheetsEnabled=false, statuses list intact. (3) Pagination: ?limit=5 returns <=5 items; ?limit=5&skip=5 returns the next page with no id overlap and preserves desc sort across the combined pages. (4) Bounds validation is enforced by FastAPI Query(ge=1, le=500 / ge=0): limit=501, limit=0, and skip=-1 each return 422 (no 500s). (5) Filters ?status=New and ?search=aweday return 200; every doc in the status filter has status=='New'. (6) Public POST /api/inquiries succeeds (200 status:success) and the new inquiry appears as the top-most item in GET /api/admin/inquiries?limit=10 (upsert-by-email still works). (7) PATCH /api/admin/inquiries/{id} with {status:'Contacted'} returns the updated doc with status=='Contacted'. (8) CSV export GET /api/admin/inquiries/export returns 200 with Content-Type text/csv and >= header + 1 data row (limit=5000 path). (9) Unauthenticated /api/admin/inquiries and /export both return 401/403. Bonus UI check: Playwright login → /admin/inquiries loaded successfully, sidebar shows Total leads=15, New=11, Contacted=4, list rows render, 'Sheets off' indicator visible, no console/page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_admin_inquiries_pagination.py",
+    "/app/test_reports/pytest/iteration_19.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Optional: consider paginating the /api/admin/inquiries/export path as well or streaming it — currently it eagerly loads up to 5000 docs into memory via to_list(length=5000) before writing the CSV. Fine now, but if total ever grows past ~5k, this endpoint will silently truncate the export (no pagination signal to caller)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_admin_inquiries_pagination.py"
+  ],
+  "success_rate": {"backend": "100% (9/9)", "frontend": "loaded OK (bonus check)"},
+  "seed_data_creation": "Created 2 TEST inquiries via public POST /api/inquiries (qa-<uid>@example.com, orgs 'TEST Org <uid>') — one to verify list-top-append, one to verify PATCH. Per instructions no existing CRM records were deleted; new test rows remain in DB.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "danielle@aweday.org / QnCggaMbqI4PjUl8XiisRrhW (from /app/memory/test_credentials.md)",
+  "context_for_next_testing_agent": "Deployment-readiness pagination change is verified end-to-end on the preview URL. Admin login is POST /api/auth/login (NOT /api/admin/login) and returns {token}. FastAPI Query bounds on limit(1..500) and skip(>=0) are enforced (422). Public inquiry email domains must not be reserved TLDs — pydantic EmailStr rejects '@example.test'; use @example.com. Two TEST_* inquiries were seeded in DB by this run (do not delete existing CRM data). CSV export currently hard-caps at 5000 rows without pagination signalling — noted as future concern only.",
+  "rca_of_the_issue": "N/A — no issues found. The _filtered() helper correctly bounds the Mongo query with .skip(skip).limit(limit).to_list(length=limit), and admin_list threads Query(200, ge=1, le=500) / Query(0, ge=0) params through, while admin_export pins limit=5000. total is computed independently via count_documents so pagination doesn't shadow the true count in the response."
+}

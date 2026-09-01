@@ -1,0 +1,31 @@
+{
+  "summary": "First-pass full-stack review of COHEIR. All 27 backend pytest cases pass (auth, directory, students/supervision, cohorts, sessions, reviews, opportunities, recommendations, teams, calendar, resources, messaging, dashboard/institution overview, AIAH generate, notifications). Frontend E2E flows verified: landing hero + Enter COHEIR CTA, /login page with 6 demo buttons + Google SSO + email form pre-filled, demo-login-student sign-in navigates to /dashboard, dashboard shows personalised greeting for Danielle, 4 stat tiles with non-zero values (12 professionals, 26 categories, 9 countries, 1 mentorship), Upcoming Sessions panel with live/scheduled items, Featured Mentors carousel with 5 cards + View Profile buttons, Industry Directory shows 12 mentor cards and clicking through opens Professional Profile with Verified badge, ANCRID, Mentorship & Ecosystem sections. Cam Rivers producer demo login works; /students shows Danielle under My Supervised, opening supervision surface shows ANCRID/Reviews/Recommendations/ANCRLAB/ANCRSync/INHEIRA sections, student-add-review-btn opens form with 9 sliders + 3 textareas. Messages page has msg-send-btn and 2 thread items, Settings has all 8 sample third-party integration chips (Google Calendar/Zoom/ASCAP/BMI/SESAC/MLC/Songtrust/Frame.io etc.), sign-out clears session and redirects to login. AIAH /api/aiah/generate returns 200 with markdown output via Claude Sonnet 4.5 (or fallback).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend auth cookie uses SameSite=None + Secure — good for cross-origin. Also returns session_token in body for bearer fallback — matches frontend axios withCredentials pattern.",
+    "routes.py is ~515 lines with 30+ endpoints; consider splitting into resource modules (professionals.py, sessions.py, messaging.py) for maintainability but not blocking.",
+    "dashboard/overview loads distinct disciplines + all users into memory to count countries — fine for seeded scale but should be paginated/aggregated at real scale.",
+    "AIAH endpoint returns both 'insight' and 'output' — frontend can render markdown directly from 'output'. Fallback branch is deterministic per spec (acceptable).",
+    "MongoDB _id is consistently excluded via projections {'_id': 0} in all queries — good."
+  ],
+  "updated_files": [
+    "/app/backend/tests/backend_test.py (new)"
+  ],
+  "success_rate": {"backend": "100% (27/27)", "frontend": "100% of tested critical flows"},
+  "test_credentials": "See /app/memory/test_credentials.md — all demo accounts use password demo1234. Primary accounts tested: danielle.mcmillan@ccdp.edu (student), cam.rivers@coheir.industry (producer). Demo-login buttons on /login: demo-login-student, demo-login-grammy-producer, demo-login-a-r-director, demo-login-dept--chair, demo-login-institution-admin, demo-login-employer.",
+  "seed_data_creation": "None — used existing seeded data (22 users, 6 cohorts, 8 sessions, 3 reviews, 6 opportunities, 3 recommendations, 2 teams, 5 events, 4 threads, 6 messages, 5 resources). Test-created review is prefixed with TEST_ and left in-place for retest reuse.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All flagship flows verified. If regressions arise: (1) re-run `pytest /app/backend/tests/backend_test.py -v` — should stay 27/27. (2) The frontend uses cookie coheir_session (httpOnly, SameSite=None, Secure) plus Authorization: Bearer fallback from localStorage. (3) Emergent LLM key is live so AIAH returns real Claude output; if key is revoked the /api/aiah/generate route falls back to a static deterministic block (still 200). (4) demo-login data-testids include a double hyphen for 'dept--chair'. (5) Note the /students card exposes an 'Open Supervision Surface' link (not a whole-card click) — use that to navigate to /students/{userId}.",
+  "rca of the issue": "No blocking issues found."
+}

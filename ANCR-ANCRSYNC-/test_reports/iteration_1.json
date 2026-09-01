@@ -1,0 +1,30 @@
+{
+  "summary": "Full backend + frontend testing for ANCRLaunch. Backend: 16/16 pytest tests pass (health, auth+JWT, dashboard, readiness with 10 components, portfolio assembly, resume GET/PUT with completion, opportunities+filters, applications lifecycle incl. 409 duplicate, PATCH stage, interviews, graduate outcomes+stats, employers list, RBAC (student 403 vs employer 200 for /employers/candidates sorted by readiness), AIAH /coach/stream SSE with session/data/done events + Claude Sonnet 4.5 via emergentintegrations, /coach/messages persistence). Frontend: login demo picker pre-fills correctly, all 13 sidebar routes navigate cleanly, dashboard renders readiness ring + metrics, resume PUT persists and completion updates, applications kanban stage update works, employer role sees both tabs and candidate search returns results, student role's candidate access correctly 403 on backend, coach streams tokens live and shows assistant response. Design language (obsidian black + Cabinet Grotesk display + gradient accents) verified in screenshots. Fixed one runtime bug (see updated_files).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "None critical. Consider adding an <ErrorBoundary> around routed pages so a single component failure does not crash navigation (context: the Applications runtime error described below broke the entire sidebar until fixed)."
+  ],
+  "critical_code_review_comments": [
+    "Applications.jsx and OpportunityList.jsx used `useEffect(load, [])` where `load` returns a Promise via `.then()` chain. React treated the returned Promise as a cleanup function and threw `destroy is not a function` on unmount, corrupting the router state and breaking subsequent sidebar navigation. Fixed by wrapping: `useEffect(() => { load(); }, [])`. Recommend a lint rule (react-hooks/exhaustive-deps + a custom check) to prevent this footgun elsewhere.",
+    "Backend uses `@app.on_event(startup)` (deprecated in FastAPI). Consider migrating to lifespan handlers.",
+    "seed_all() only runs when users collection is empty; changes to seed logic will not re-apply automatically — this is intentional but worth documenting for developers."
+  ],
+  "updated_files": [
+    "/app/frontend/src/pages/Applications.jsx (fix useEffect returning Promise)",
+    "/app/frontend/src/pages/OpportunityList.jsx (fix useEffect returning Promise)",
+    "/app/backend/tests/backend_test.py (new regression pytest suite)"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "student@ancrlaunch.demo / ancrlaunch2026 (and 7 other roles) — all confirmed working",
+  "seed_data_creation": "Used existing auto-seeded demo data. Added a TEST_ prefixed resume update and one TEST_ note application, then moved to archived. No cleanup required — TEST_ prefix isolates.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All 16 backend endpoints pass via /app/backend/tests/backend_test.py. Coach SSE emits 'event: session' + N data lines + 'event: done'. Frontend uses data-testid convention (nav-*, demo-account-<role>, login-email/password/submit, coach-input/send/messages, stage-<name>, app-<id>, tab-employers/candidates, btn-search-candidates, btn-logout). Fixed a critical useEffect promise-return bug in Applications.jsx and OpportunityList.jsx that was crashing router navigation. Re-run playwright end-to-end after any pages/*.jsx changes to catch similar useEffect issues.",
+  "rca_of_the_issue": "Symptom: PageError 'destroy is not a function' + <Applications> component error boundary trigger + subsequent sidebar clicks (e.g. nav-interviews) hung with 30s timeout. Root cause: `useEffect(load, [])` passed a function that returns a Promise (from `api.get().then()`). React interprets any non-undefined return value from an effect as a cleanup function, so on unmount it attempted to call `.destroy()` on the Promise and threw, corrupting effect tracking and blocking further renders. Fix: wrap in arrow that calls load() without returning its Promise."
+}

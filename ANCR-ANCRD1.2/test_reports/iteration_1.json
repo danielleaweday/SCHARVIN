@@ -1,0 +1,54 @@
+{
+  "summary": "First-pass smoke test of ANCRD MVP. Backend: all critical /api endpoints working (login, me, users=49, posts=60, communities=12, events=18, opportunities=12, marketplace=12, institutions=12, notifications, threads=6, admin stats, create post, react, comment, join, rsvp, apply, book, send message, AIAH Claude 4.5 streaming). Frontend: login flow works, feed composer creates posts, reactions increment, ecosystem sidebar navigation works, communities join, events RSVP, opportunities apply, marketplace book, messages send, notifications render 12 items, admin stat cards show correct counts, Discover Leaflet map renders with filters, AIAH FAB opens panel and initiates streaming to Claude 4.5.",
+  "tested_scope": ["backend", "frontend", "auth", "integration"],
+  "passed": [
+    "POST /api/auth/login returns JWT + user",
+    "GET /api/auth/me returns current user",
+    "GET /api/users returns 49 seeded users with full profile fields (avatar, banner, disciplines, portfolio_score, verification_level)",
+    "GET /api/posts returns 60 posts each with author object attached",
+    "POST /api/posts creates new post",
+    "POST /api/posts/{id}/react with {reaction:'like'} returns ok",
+    "POST /api/posts/{id}/comment appends comment",
+    "GET /api/communities returns 12; POST join returns ok",
+    "GET /api/events returns 18; POST rsvp returns ok",
+    "GET /api/opportunities returns 12; POST apply returns ok",
+    "GET /api/marketplace returns 12; POST book creates booking",
+    "GET /api/messages/threads returns 6 threads with 'other' user attached; GET /api/messages/{tid} returns messages; POST /api/messages creates message",
+    "GET /api/institutions returns 12 with lat/lng",
+    "GET /api/notifications returns 12 items",
+    "GET /api/admin/stats returns correct counts",
+    "POST /api/aiah/ask streams non-empty plain-text response from Claude Sonnet 4.5 within <2s (curl produced 'Hello, Aaron Sterling.')",
+    "Frontend login redirects to /feed with demo creds",
+    "Feed composer creates a post; new post appears at top",
+    "Reaction react-like-<postId> increments count 0 -> 1",
+    "Ecosystem sidebar visible; nav-communities navigates to /communities",
+    "Community join-<id> button works",
+    "Events rsvp-<id>, Opportunities apply-<id>, Marketplace book-<id> buttons work",
+    "Messages: 6 threads render, msg-input/msg-send send message",
+    "Notifications page renders 12 notif-<id> items",
+    "Admin page shows stat-users=49 and stat-institutions=12",
+    "Discover /discover renders global-map (Leaflet) and filter-country/discipline/role selects",
+    "AIAH FAB opens aiah-panel; aiah-input+aiah-send trigger streaming (streaming indicator visible)"
+  ],
+  "failed": [
+    {
+      "area": "frontend/ui-overlay",
+      "issue": "Emergent preview badge (#emergent-badge) sits in the bottom-right corner and intercepts pointer events on the AIAH FAB (also fixed bottom-6 right-6). Playwright required force=True / badge-removal to click. Real users may have partial overlap on smaller viewports.",
+      "evidence": "Playwright click on [data-testid=aiah-fab] failed: '<p>Made with Emergent</p> from <a id=emergent-badge> subtree intercepts pointer events'. Only reproducible in Emergent preview environment.",
+      "priority": "LOW"
+    },
+    {
+      "area": "backend/api-contract-doc",
+      "issue": "POST /api/posts/{id}/react body field name mismatch with review request wording. Server (and frontend) use {reaction: 'like'}; review doc said 'kind'. Frontend and backend agree; only doc wording is off.",
+      "evidence": "curl with {kind:'like'} -> 422 'Field required reaction'. With {reaction:'like'} -> {ok:true}. Frontend FeedPage.jsx already sends { reaction: key }.",
+      "priority": "LOW"
+    }
+  ],
+  "action_items": [
+    "Optional: increase AIAH FAB z-index above the Emergent badge or shift it (e.g., bottom-24) so it isn't overlapped by preview badge in Emergent preview.",
+    "Optional: consider raising AIAH FAB to right-24 on desktop to fully clear the preview badge overlay region."
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "retest_needed": false,
+  "full_testing_deferred": true
+}

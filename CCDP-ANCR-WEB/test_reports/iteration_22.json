@@ -1,0 +1,24 @@
+{
+  "summary": "Iteration 22 — Inventory (variant/SKU) feature verification. Full backend + frontend coverage. 14/14 pytest cases in test_store_inventory.py green. Admin UI (/admin/inventory) renders 306 SKUs, filters (collection/search/lowOnly), stock edit + blur triggers PATCH → 'Updated.' toast, value persists across reload. Storefront correctly shows Sold Out badge (sold-out-ccdp-hoodie) when every variant of a product is at 0, disables/removes Add-to-Cart & Buy-Now on detail via detail-sold-out, shows low-stock badge (low-stock-ancr-crewneck) when a size is below threshold, and product-detail 'Only 3 left in M — order soon.' (low-stock-note) renders when a low-stock size is selected. Oversell returns 409 with a helpful detail; in-stock checkout still returns checkout_url. Product hide (/api/store/admin/products/{id} active=false) removes it from GET /api/store/catalog and restore re-adds it. All mutated SKUs and hidden products were restored (post-run catalog shows 0 sold-out variants across 96 products, all stock=50).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_store_inventory.py",
+    "/app/test_reports/pytest/iteration_22_inventory.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "store_inventory.check_availability correctly returns before checkout with a stock-based message; store.checkout wires it to HTTP 409 with the detail string — matches acceptance.",
+    "store_inventory.decrement uses a filtered update ({stock: {$gte: qty}}) so it can never go negative, and only mutates trackInventory=true variants. Good.",
+    "enrich_catalog excludes products whose product_meta.active=false OR whose every variant is unavailable — matches admin-hide semantics.",
+    "PATCH /admin/inventory/{sku} correctly ignores delta when stock is provided (elif branch) and clamps delta to >=0. Unknown SKU → 404. Nice."
+  ],
+  "updated_files": ["/app/backend/tests/test_store_inventory.py"],
+  "success_rate": {"backend": "100% (14/14 inventory tests + prior 36/36 store tests intact)", "frontend": "100% of tested inventory flows (admin edit+persist, sold-out badge, low-stock badge, detail-sold-out, low-stock-note, disabled add/buy, header nav, /store home load, regression add-to-cart on in-stock size)"},
+  "seed_data_creation": "Temporary during test: set CCDP-HOODIE all sizes stock=0, CCDP-HOODIE-M stock=3, CCDP-HAT-ONESIZE stock=0/20, ANCR-CREWNECK-M stock=3, and briefly hid ccdp-hat. ALL RESTORED after tests (verified via GET /api/store/catalog — 0 sold-out variants, all 96 products present). Left one benign PATCH: CCDP-HOODIE-L is at stock=50 (originally 50, so unchanged).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": false,
+  "test_credentials": "Admin: danielle@aweday.org / QnCggaMbqI4PjUl8XiisRrhW (from /app/memory/test_credentials.md).",
+  "context_for_next_testing_agent": "Inventory feature ships clean. All testids verified live: stat-total-skus (306), stat-low-stock, stat-sold-out, inv-collection-filter, inv-search, inv-low-toggle, inv-row-{sku}, inv-stock-{sku}, inv-active-{sku}. Storefront testids: sold-out-{id}, low-stock-{id}, detail-sold-out, low-stock-note. When restoring stock via API after tests, PATCH /api/store/admin/inventory/{sku} with {stock:50, lowStockThreshold:5, trackInventory:true, active:true} and, if product was hidden, PATCH /api/store/admin/products/{id} {active:true}. Default seed values are stock=50, threshold=5, DEFAULT_COLOR='Default', SKU pattern {PRODUCTID}-{SIZE} uppercased.",
+  "rca_of_the_issue": "N/A — no defects found."
+}

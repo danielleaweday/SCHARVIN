@@ -1,0 +1,20 @@
+{
+  "summary": "Iteration 2 (V1.0 completion) full e2e. Backend: 29/29 pytest cases pass — all 22 iteration_1 tests still green, plus 7 new tests covering /api/grants/opportunities (25+ opps with all required fields + categories), /api/grants/applications (statuses), /api/grants/summary (secured/pipeline/counts/win_rate/upcoming_deadlines<=120d), /api/projects list (>=5 with computed P&L, timeline cumulatives, health), /api/projects/{id} detail with break_even_show, POST /api/projects with correct computed totals, and 404 handling. Frontend: /login shows Vualta h-20 logo + ANCR logo. Sidebar shows Vualta at top and ANCR at bottom on every page. Sidebar nav items sidebar-nav-projects and sidebar-nav-funding present. /funding renders all 7 required testids (KPI-secured, KPI-inprogress, deadlines, applications, AIAH advisor, opportunities, search). /projects renders projects-page, projects-list, KPIs and 6 project cards. Clicking a card navigates to /projects/{id} and renders all 9 pd-* testids (revenue, net, cashflow-timeline, revenue-breakdown, expense-breakdown, milestones, risks, ai-strategist, detail-page). All 15 existing routes (dashboard/income/expenses/budget/royalties/publishing/contracts/invoices/taxes/business/reports/vault/settings/aiah/ecosystem) load with zero console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "server.py has grown to ~895 lines; consider splitting into per-resource routers (grants.py, projects.py, dashboard.py) before further growth.",
+    "owner_id_for() still silently rewrites reads to Artist data for non-Artist roles — acceptable for demo but must be replaced by a real permission model before production.",
+    "grants_summary computes total_pipeline via a nested comprehension that iterates apps twice; small but easy readability win to extract active_names once.",
+    "_compute_pnl mutates by spreading full project dict into the return payload (returns entire seeded doc including risks/milestones raw). Consider trimming or versioning the response shape."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py"],
+  "success_rate": {"backend": "100% (29/29)", "frontend": "100%"},
+  "test_credentials": "artist@vaulta.io / Vaulta2026!",
+  "seed_data_creation": "seed_grants_and_projects runs idempotently at backend startup. Test suite created one TEST_Project and one TEST_Client invoice (retained).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All V1.0 endpoints and pages verified. New backend endpoints live under /api/grants/* and /api/projects/*. Login post-redirect goes to '/' (root), not '/dashboard' — dashboard still renders because '/' is the dashboard route. Project list currently returns 6 projects (spec said 5+); one extra came from test_project_create leaving TEST_Project. If cleanup desired, delete projects where name starts with 'TEST_'. No console errors on any page."
+}

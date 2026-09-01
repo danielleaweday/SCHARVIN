@@ -1,0 +1,31 @@
+{
+  "summary": "Frontend-only smoke + integration test of the CCDP static marketing homepage. All main sections, testids, cards, nav smooth-scroll, counters, images and newsletter success flow work correctly on desktop and mobile.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Footer newsletter", "issue": "Invalid-email toast does not appear because <input type=email required> triggers native HTML5 validation before the JS regex runs. Any value without '@' (e.g., 'notanemail') is blocked by the browser; values with '@' but bad format (e.g. 'invalid@') also fail to trigger the sonner error toast in tests. Consider using type='text' + JS validation, or noValidate on the form so the custom toast can fire.", "selector": "[data-testid=newsletter-input]", "priority": "LOW"}
+    ],
+    "integration_issues": [
+      {"flow": "Mobile nav testids", "issue": "Review request expected data-testid='mobile-nav-link-*' but implementation uses 'mobile-nav-*' (e.g., mobile-nav-about, mobile-nav-programs). 9 mobile links render and are clickable, but naming diverges from spec. Align naming for consistency.", "affected_selectors": ["[data-testid^=mobile-nav-]"]}
+    ],
+    "design_issues": [
+      {"screen": "Mobile Sheet menu (Radix Dialog)", "issues": ["Console a11y warnings: 'DialogContent requires a DialogTitle' and 'Missing Description or aria-describedby'. Add a VisuallyHidden DialogTitle/Description inside SheetContent for a11y."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/desktop_home.png", "/app/test_reports/mobile_home.png"],
+  "action_items": [
+    "Fix newsletter invalid-email path: add noValidate to the form or switch input type so the custom toast.error is reachable.",
+    "Rename mobile menu testids to 'mobile-nav-link-*' to match the review spec (or update spec).",
+    "Add VisuallyHidden DialogTitle/Description to SheetContent to remove Radix a11y console warnings."
+  ],
+  "critical_code_review_comments": [
+    "Footer email regex is fine but unreachable due to native HTML5 validation on type=email required.",
+    "Sheet (Radix Dialog) needs an accessible title — add <SheetTitle> or VisuallyHidden."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested per request)", "frontend": "95%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Home at / renders correctly. Verified: hero H1 'Creating the Future of Creative Careers.', hero-apply-btn, hero-partner-btn, all 6 nav-link-* smooth scroll to their sections, all 9 sections (mission/programs/curriculum/technology/impact/community/partners/news/apply) present, 12 program-card-*, 8 ecosystem-card-*, 3 news-card-*, stat-0..3 counters animate to real values (12+, 9, 150+, 92%), 0 broken images. Newsletter valid email shows success toast 'You're on the list. Welcome to CCDP.' and clears input. Mobile menu opens with 9 mobile-nav-* links plus mobile-apply-btn. Only issues: invalid-email toast unreachable due to HTML5 validation, mobile testid naming mismatch vs spec (mobile-nav-* vs mobile-nav-link-*), and Radix Sheet a11y warnings."
+}

@@ -1,0 +1,113 @@
+{
+  "project_name": "ANCRMEDIA™",
+  "theme": "dark",
+  "colors": {
+    "base": {
+      "obsidian_black": "#0A0A0A",
+      "surface_dark": "#121212",
+      "surface_glass": "rgba(255, 255, 255, 0.03)"
+    },
+    "accents": {
+      "electric_blue": "#0052FF",
+      "violet": "#7000FF",
+      "orange": "#FF6B00",
+      "gradient_primary": "linear-gradient(90deg, #0052FF 0%, #7000FF 50%, #FF6B00 100%)"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "#A1A1AA",
+      "muted": "#52525B"
+    },
+    "rules": [
+      "Use Obsidian Black (#0A0A0A) as the global background.",
+      "Never use purple/violet gradients on white backgrounds.",
+      "Apply the primary gradient (Electric Blue -> Violet -> Orange) sparingly: for active states, hover borders, text masks, or progress bars.",
+      "Ensure text contrast ratios meet APCA standards. Use white for primary text, gray for secondary."
+    ]
+  },
+  "typography": {
+    "import_cdn": "@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@100,200,300,400,500,700,800,900&f[]=satoshi@300,400,500,700,900&display=swap');",
+    "primary_font": "Cabinet Grotesk, sans-serif",
+    "secondary_font": "Satoshi, sans-serif",
+    "scale": {
+      "h1": "text-5xl sm:text-6xl font-display font-black tracking-tighter",
+      "h2": "text-3xl sm:text-4xl font-display font-bold tracking-tight",
+      "h3": "text-2xl font-display font-medium",
+      "body": "text-base font-sans text-secondary leading-relaxed",
+      "small": "text-sm font-sans tracking-wide uppercase"
+    },
+    "rules": [
+      "Cabinet Grotesk is for all display text (H1, H2, H3) to provide a cinematic, premium feel.",
+      "Satoshi is for all body text, UI labels, and meta-data.",
+      "Tighten letter spacing (tracking-tight or tracking-tighter) on all large headings."
+    ]
+  },
+  "visual_enhancers": {
+    "glassmorphism": [
+      "Use 'Optical Clarity' glassmorphism for floating navs, sidebars, and cards over images.",
+      "Implementation: backdrop-blur-2xl bg-white/[0.03] border border-white/[0.05].",
+      "Never use completely transparent backgrounds where text overlays images; always use a glass blur or gradient scrim."
+    ],
+    "shadows": [
+      "Use diffuse ambient shadows instead of sharp box shadows.",
+      "glow: shadow-[0_0_30px_rgba(112,0,255,0.15)] for active states."
+    ],
+    "cinematic_lighting": [
+      "Use subtle noise or grain over large dark backgrounds to prevent banding and increase texture.",
+      "Images should have gradient overlays (from black to transparent) at the bottom to transition smoothly into the page."
+    ]
+  },
+  "component_patterns": {
+    "sidebar": "Persistent left sidebar across the ANCR Ecosystem. Dark surface with glassmorphic active states. Contains Home, Discover, Live, Analytics, Library, etc.",
+    "top_bar": "Sticky header with backdrop-blur-xl bg-[#0A0A0A]/70. Global search bar (glassmorphic input) and user profile.",
+    "ancrwav_player": "Persistent bottom bar audio player. Includes dynamic waveform, queue, current track info, and playback controls. Accent color is the Electric Blue -> Orange gradient for the progress bar.",
+    "ancrview_player": "Cinematic theater mode video player with custom controls, live badge, and embedded interactive playlist/series queue.",
+    "cards": "Glassmorphic bento cards. No hard borders, just 1px white/[0.05] strokes. Inner padding p-6 to p-8.",
+    "world_map": "Interactive D3 or React-Simple-Maps global map with glowing nodes (nodes colored in Electric Blue/Orange) for CCDP hubs (Tokyo, London, etc.)."
+  },
+  "layouts": {
+    "spacing": "Generous spacing. Use gap-8 to gap-12 for sections. py-24 for main page sections.",
+    "grids": "Use the Bento Grid Protocol. Mix col-span-full for heroes, col-span-4 for standard cards. Never use perfectly equal squares; embrace asymmetry.",
+    "blueprints": {
+      "home": "Cinematic Hero (trending release) -> Bento grid of New Releases -> World Map preview -> Live Events carousel.",
+      "creator_page": "Massive editorial cover photo -> Floating glassmorphic profile card -> Split layout (ANCRWAV audio portfolio on left, ANCRVIEW video portfolio on right).",
+      "discover": "Masonry grid of genre/discipline cards -> Trending charts -> Curated faculty picks."
+    }
+  },
+  "motion": {
+    "page_load": "Staggered entrance animations. motion.div with y: 20, opacity: 0 -> y: 0, opacity: 1.",
+    "hover_states": "Slight scale (scale-105) for media covers. Border color transitions to gradient on hover.",
+    "players": "Smooth height expansion for queue/lyrics opening. Continuous slow progress bar animation."
+  },
+  "media": {
+    "icons": "lucide-react. Use light weights (strokeWidth={1.5}).",
+    "image_urls": {
+      "editorial_musician_1": "https://images.unsplash.com/photo-1595335784560-7494c415ce45?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1Mjh8MHwxfHNlYXJjaHwzfHxlZGl0b3JpYWwlMjBtdXNpY2lhbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc4MzU2NjMyMnww&ixlib=rb-4.1.0&q=85",
+      "editorial_musician_2": "https://images.unsplash.com/photo-1574892591041-905fbbd00515?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1Mjh8MHwxfHNlYXJjaHwyfHxlZGl0b3JpYWwlMjBtdXNpY2lhbiUyMHBvcnRyYWl0fGVufDB8fHx8MTc4MzU2NjMyMnww&ixlib=rb-4.1.0&q=85",
+      "recording_studio_1": "https://images.unsplash.com/photo-1633933757597-2d09c360c2ad?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwyfHxyZWNvcmRpbmclMjBzdHVkaW8lMjBuZW9ufGVufDB8fHx8MTc4MzU2NjMyMnww&ixlib=rb-4.1.0&q=85",
+      "recording_studio_2": "https://images.unsplash.com/photo-1646206346896-14367dee001b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzl8MHwxfHNlYXJjaHwzfHxyZWNvcmRpbmclMjBzdHVkaW8lMjBuZW9ufGVufDB8fHx8MTc4MzU2NjMyMnww&ixlib=rb-4.1.0&q=85",
+      "film_set_1": "https://images.unsplash.com/photo-1621993646147-8cde7b9cc031?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwzfHxjaW5lbWF0aWMlMjBmaWxtJTIwc2V0fGVufDB8fHx8MTc4MzU2NjMyMnww&ixlib=rb-4.1.0&q=85",
+      "film_set_2": "https://images.pexels.com/photos/19224454/pexels-photo-19224454.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "live_concert_1": "https://images.pexels.com/photos/26447525/pexels-photo-26447525.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "live_concert_2": "https://images.pexels.com/photos/30215324/pexels-photo-30215324.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "global_city_tokyo": "https://images.unsplash.com/photo-1513407030348-c983a97b98d8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NjZ8MHwxfHNlYXJjaHwxfHx0b2t5byUyMHNreWxpbmUlMjBuaWdodHxlbnwwfHx8fDE3ODM1NjYzMjJ8MA&ixlib=rb-4.1.0&q=85",
+      "global_city_london": "https://images.unsplash.com/photo-1625237235111-a2443db3c8a4?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwxfHxsb25kb24lMjBza3lsaW5lJTIwbmlnaHR8ZW58MHx8fHwxNzgzNTY2MzIyfDA&ixlib=rb-4.1.0&q=85"
+    }
+  },
+  "instructions_to_main_agent": [
+    "DO NOT use raw transparent backgrounds in headers or overlays. Always use a blur/scrim to ensure readability.",
+    "Never center align the main App container. Left align text content by default.",
+    "Do not use absolute generic transition classes like 'transition-all'. Target specific properties (e.g., transition-colors, transition-transform).",
+    "Use Lucide-React for icons, DO NOT use emojis for icons.",
+    "Utilize Sonner for all toast notifications. Ensure the toast matches the dark premium aesthetic.",
+    "Every interactive or informational element MUST have a 'data-testid' attribute (e.g., data-testid='play-button', data-testid='discover-nav-link').",
+    "Use pre-existing Shadcn components where applicable, but heavily style them to match the Obsidian Black/Glassmorphism theme.",
+    "Avoid plain 'SaaS' blocky components; everything should feel editorial, cinematic, and tailored for creators.",
+    "Files should be created as .js/.jsx as requested, NOT .tsx."
+  ],
+  "accessibility": [
+    "Ensure contrast ratios are at least 4.5:1 for small text and 3:1 for large text.",
+    "Focus states must be prominent. Suggestion: ring-2 ring-[#0052FF] ring-offset-2 ring-offset-[#0A0A0A].",
+    "Support prefers-reduced-motion for large parallax or entry animations."
+  ]
+}

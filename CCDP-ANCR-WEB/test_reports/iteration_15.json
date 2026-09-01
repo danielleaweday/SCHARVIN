@@ -1,0 +1,19 @@
+{
+  "summary": "Ninth-round targeted verification (frontend only). All three corrections verified on preview: (1) /framework now includes data-testid='schools-pathways' section above the six pillars with school-ancra, school-cynaiah, school-viearta cards; each logo <img> loads with naturalWidth=1536 (no broken images). (2) Public footer displays awe@aweday.org and no longer contains danielle@aweday.org. (3) Negative phrases removed: 'CCDP is not one school...' absent from /platform (affirmative 'unites schools... comprehensive ecosystem' present), and 'ANCR doesn't add AI' absent from homepage. No regressions: node-cynaiah and node-ancrmedia ecosystem nodes render, pillars section still visible, no horizontal overflow at 1440 or 390, no console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped per request)", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All three CCDP corrections verified passing on https://studio-ancr.preview.emergentagent.com. Framework /schools-pathways cards use data-testids school-ancra/school-cynaiah/school-viearta. Footer email = awe@aweday.org. Note: Leadership founder card intentionally retains danielle@aweday.org (not verified in this pass, out of scope). Inquiry form was not exercised end-to-end here — no visible inquiry-trigger button on homepage via [data-testid*='inquiry']; if regression coverage is needed, main agent should surface the trigger selector.",
+  "rca_of_the_issue": "N/A - all verifications passed."
+}

@@ -1,0 +1,37 @@
+{
+  "summary": "CEI v2.0 Creative Evidence Intelligence Phase 1 — comprehensive backend + frontend E2E QA. Backend: 26/26 pytest cases pass (test_cei_v2.py) covering full version create, legacy label/notes shape, empty title rejection, parent backfill of child_version_ids, unknown-parent 400, GET list/single hydration, 404, 15 evidence artifact kinds architecturally accepted (verified rich_text/lyrics/audio/cloud_link + rejection of invalid kind), all 8 acknowledgement kinds accepted + invalid kind rejected, confidence_status/mci_status permanently frozen at 'awaiting_evidence_analysis'/'awaiting_musical_contribution_analysis' even after 4 artifacts + 8 acknowledgements attached, completeness ratio ≤ 1.0, SHA-256 integrity_hash is 64 chars. Frontend: login → /studio → WRITE chapter → Evolution tab loads with hero copy 'Every moment. Every voice. Immutable. Forever.', baseline clarification banner, 4 stat counters, view switcher with all 4 buttons (documentary/filmstrip/graph/session) all render without JS errors. 'Document a new version' opens 8-step modal, docver-next advances, step 8 shows both 'Awaiting Evidence Analysis' + 'Awaiting Musical Contribution Analysis' labels, docver-submit immortalizes and closes modal. Clicking a version card opens VersionDetailSheet with all 8 sections (THE MOMENT, WHO WAS IN THE ROOM, WHAT & WHY, DECISIONS & QUESTIONS, EVIDENCE ARTIFACTS, ACKNOWLEDGEMENTS, CONTINUITY, INTEGRITY). copy-hash-btn present on v2 records (absent on legacy — expected). Add-evidence and Add-acknowledgement sheets open with all 8 ack kinds in the Kind dropdown and Yes/No radio + 3 textareas for 4 questions (Q3 is radio). Regression: legacy label/notes shape still renders and versions still open the detail sheet.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "VersionDetailSheet.copyHash", "issue": "navigator.clipboard.writeText Promise rejection (permission denied / preview env) was unhandled and triggered React runtime-error overlay. Fixed in-place by wrapping in try/catch and surfacing a toast.", "selector": "[data-testid=\"copy-hash-btn\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "AcknowledgeSheet + AddEvidenceSheet + DocumentVersionModal", "issues": ["Radix a11y warning in console: 'DialogContent requires a DialogTitle for the component to be accessible for screen reader users.' — add <DialogTitle> (visually hidden if needed) inside each DialogContent."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_cei_v2.py",
+    "/app/test_reports/pytest/cei_v2_results.xml"
+  ],
+  "action_items": [
+    "Add <DialogTitle> (VisuallyHidden) to DocumentVersionModal, AddEvidenceSheet, and AcknowledgeSheet DialogContent to silence Radix a11y warnings and improve screen-reader UX."
+  ],
+  "critical_code_review_comments": [
+    "server.py is now 1791 lines — CEI section (~1390-1743) should be extracted into /app/backend/routers/cei.py to stay under the 700-line guideline.",
+    "GET /api/sessions/{session_id}/versions has no pagination cap beyond to_list(500); consider explicit limit/skip query params before real users hit it.",
+    "_hydrate_version issues two additional queries per version (artifacts + acks) — for sessions with many versions this becomes N+1. Consider a single aggregation lookup or batched fetch.",
+    "The clipboard call site (now fixed) is a pattern — any other component using navigator.clipboard.writeText should also await + try/catch."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_cei_v2.py",
+    "/app/frontend/src/components/studio/evolution/VersionDetailSheet.jsx"
+  ],
+  "success_rate": {"backend": "100% (26/26)", "frontend": "100% of listed UI checks; 1 low-severity clipboard bug fixed"},
+  "seed_data_creation": "Used pre-seeded test@songright.com on session sess_96285667fb26. Test created ~5 TEST_CEI_* / TEST_UI_* versions + numerous artifacts/acks (append-only ledger — cannot be deleted by design).",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "test_credentials": "test@songright.com / Test1234! · session_id sess_96285667fb26",
+  "context_for_next_testing_agent": "CEI v2.0 (POST/GET versions, POST evidence, POST acknowledgements) is fully green. Test suite lives at /app/backend/tests/test_cei_v2.py (26 tests, ~2s). Ledger is append-only so re-running the suite grows the version count on sess_96285667fb26 — this is intentional and harmless. For any future work on Evolution UI, remember: (a) chapter buttons are data-testid='studio-chapter-write' before the evolution sub-tab is reachable; (b) legacy versions (no integrity_hash) will not render copy-hash-btn — that's by design; (c) Radix warns about missing DialogTitle in three sheets — worth adding a VisuallyHidden title.",
+  "rca_of_the_issue": "copy-hash-btn overlay error: navigator.clipboard.writeText() returns a Promise that rejects with NotAllowedError when clipboard-write permission is not granted (typical in headless / preview iframes). The original synchronous fire-and-forget call bubbled the rejection to window and React's dev overlay caught it. Fixed by making copyHash async and wrapping the call in try/catch."
+}

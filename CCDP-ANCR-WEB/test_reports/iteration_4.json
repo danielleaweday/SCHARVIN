@@ -1,0 +1,22 @@
+{
+  "summary": "Frontend-only regression for CCDP polish iteration 4. All 11 acceptance flows PASS. No fabricated data present, real leadership + faculty rendered, ANCRD module added, Culta fully removed, nav order matches spec, /ecosystem and /platform pages render correctly, hash cross-page nav + brand logo work, mobile menu navigates, contact form validates invalid email and clears on success with toast. No console errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "App.js ScrollManager uses fixed 80ms timeout for hash scroll — reliable in tests but consider rAF + short retry if a target renders lazily.",
+    "Footer contact form success text 'Thank you — we'll be in touch shortly.' works; consider adding data-testid on toast root for more robust assertions.",
+    "Radix Sheet has SheetTitle sr-only now — a11y warning gone."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified on https://studio-ancr.preview.emergentagent.com : NAV order = challenge, solution, ecosystem, platform, partnerships, investment, leadership, contact (all data-testids present). Home ecosystem-section has node-ancr + 12 modules including node-ancrd; NO node-culta. Clicking node-ancrd updates ecosystem-detail with 'ANCRD' + 'Artist discovery & development'. Impact section shows 5 impact-placeholder-* cards; NO 50K/100+/500+/92% strings anywhere in body. Leadership section: leader-mcmillan/shimpan/king/wilson/griffin + music-parker/fletcher + faculty-section (Coming Soon). Partners: 8 partner-category-* placeholders, NO Adobe/Spotify/Google/Apple/Microsoft in body. FinalCTA cta-0..4 texts confirmed as spec. /ecosystem shows ecosystem-page-hero + org-academy/ancr/adca/vaulta. /platform shows platform-hero + branch-platform-ancrd, NO branch-platform-culta. Hash nav from /platform via nav-link-contact goes to /#contact. brand-logo returns to /. Mobile 390px: mobile-menu-trigger opens sheet; mobile-nav-link-ecosystem -> /ecosystem. Contact form (data-testid=contact-input/contact-submit): 'notanemail' triggers invalid toast; valid email 'partner@university.edu' triggers success toast and clears input. Zero console errors."
+}

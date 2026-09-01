@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 8 SECURITY-ONLY re-verification. Ran full security suite plus regression across iterations 4/5/6. All 28 tests in test_security_auth.py pass with the updated 400 (was 422) expectation on the three password-strength cases. Full regression (90/90) still green. Confirmed POST /api/auth/register with weak password returns HTTP 400 with detail as plain string 'Password must be at least 8 characters'.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_security_auth.py",
+    "/app/backend/tests/test_security_authz.py",
+    "/app/backend/tests/test_review_notifications.py",
+    "/app/backend/tests/test_ancr_envelope.py",
+    "/app/test_reports/pytest/iter8_security_auth.xml",
+    "/app/test_reports/pytest/iter8_regression.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "100% (28/28 security + 90/90 regression = 118/118)", "frontend": "N/A - skipped per request"},
+  "test_credentials": "student@cynaiah.demo / faculty@cynaiah.demo / admin@cynaiah.demo (Cynaiah2026!)",
+  "seed_data_creation": "None - used existing seeded accounts",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 8 confirms the 422->400 change for password strength errors. Detail is plain string, frontend single-string error handler will work uniformly. Nothing regressed. Ready for next feature work.",
+  "rca of the issue": "N/A - prior minor cosmetic issue (422 vs 400 for password strength) is now closed."
+}

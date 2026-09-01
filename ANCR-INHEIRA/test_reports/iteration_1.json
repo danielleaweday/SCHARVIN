@@ -1,0 +1,39 @@
+{
+  "summary": "First e2e test run for SONGRIGHT. Backend: 21/21 pytest tests passed covering auth (login, register, /me, logout, duplicate email), profile update+persist, sessions CRUD, join-by-code, contributions, AI splits suggest (returned AI source with sum=100), splits set + approve (dual signature -> finalized), royalties. Frontend: all critical flows exercised end-to-end - landing hero, login as seed user, dashboard, profile update+persistence, session create, add contribution, suggest AI splits, save+approve splits, split-sheet button appears, Vaulta page, sign-out. Google auth button present. No blocking bugs found.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/auth/register", "issue": "Emails are silently lowercased server-side; register response returns lowercased email even if client sent mixed case. Not a bug, but worth documenting."},
+      {"endpoint": "/api/sessions/{id}/splits/approve", "issue": "Any collaborator can call approve even before splits are set (splits==None). Would benefit from a 400 guard when splits are missing."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Add Contribution dialog", "issues": ["Radix DialogContent missing Description/aria-describedby -> a11y warning in console. Add DialogDescription for screen-reader support."]},
+      {"screen": "Global", "issues": ["Two 401 console errors on landing (likely /api/auth/me probe before token exists). Consider suppressing or checking token presence before firing the request."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_songright_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Add DialogDescription to Add-Contribution DialogContent to remove a11y warning",
+    "Skip /api/auth/me call on public routes when no songright_token is in localStorage (removes noisy 401s)",
+    "Optionally: reject /splits/approve with 400 if session.splits is null"
+  ],
+  "critical_code_review_comments": [
+    "server.py is ~770 lines and mixes storage, auth, sessions, splits, royalties, uploads - consider splitting into modules (auth.py, sessions.py, splits.py, royalties.py) for maintainability",
+    "AI splits code path parses model output via find('{')/rfind('}') without validating percentages sum ~100; existing normalization saves it but strict schema validation via pydantic would be safer",
+    "startup seeded user has fixed user_id 'user_seed_test001' but does not update password_hash on subsequent starts - fine for MVP, but flag if credentials rotate",
+    "CORS is fully open (default '*') AND allow_credentials=True - browsers reject '*' with credentials; production must set explicit origins",
+    "Emergent session cookie is set with SameSite=None, Secure - correct for cross-site, but ensure preview URL is served over HTTPS (it is)"
+  ],
+  "updated_files": ["/app/backend/tests/test_songright_api.py"],
+  "success_rate": {"backend": "100% (21/21)", "frontend": "100% of exercised flows"},
+  "test_credentials": "test@songright.com / Test1234! (seeded); collaborator users are dynamically registered per-run",
+  "seed_data_creation": "Tests create TEST_-prefixed collaborator accounts and sessions titled 'TEST_Skyline' / 'Skyline UI Test' for isolation",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend pytest at /app/backend/tests/test_songright_api.py — uses -n 2 --dist loadscope from /app/backend/pytest.ini. Session state shared via session-scoped 'session_state' fixture; keep tests in same module or same class so xdist loadscope pins them to one worker. Seeded account test@songright.com / Test1234! remains functional. AI splits returned source='ai' successfully via emergentintegrations + Claude Sonnet 4.5.",
+  "rca of the issue": "N/A - no blocking issues"
+}

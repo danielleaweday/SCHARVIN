@@ -1,0 +1,47 @@
+{
+  "summary": "RC1 sign-off retest — all 3 fixes from iteration_2 verified working. Frontend only, live preview URL. Login, session creation redirect, sidebar cleanup, share dialog clipboard degrade, invite Copy graceful fallback, and spot regression across all previously-passing screens all pass with 0 uncaught page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Studio workspace (mobile 375x812)", "issues": ["document.documentElement.scrollWidth reports 527px on /sessions/:id/studio (viewport 375). Visually the studio tabs bar is horizontally scrollable which is expected UX, but this reports as page-level horizontal overflow. Non-blocking — content is legible and no visible horizontal page scroll in the screenshot. Consider wrapping the tabs bar in overflow-x-auto with max-w-full on its parent to prevent bleed. Dashboard mobile scrollWidth=375 (clean)."]}
+    ]
+  },
+  "verified_fixes": [
+    "P1 SongIntelligence share dialog — Generate share link click produces no uncaught NotAllowedError; toast fires (text 'ready'/'copied' detected), share link is rendered in the emerald box below the button (verified link https://.../report/6bfb5c05e7af44bcb5640041a0edc797). Small Copy icon next to link also degrades gracefully (0 page errors, no overlay). Uses copyToClipboard() helper from /app/frontend/src/lib/clipboard.js which falls back to document.execCommand('copy') via hidden textarea.",
+    "P1 Studio sidebar (StudioSession.jsx L197-207) — dead labels (Collaborators, Rights Center, Publishing, Analytics, Templates) are REMOVED. Sidebar now shows exactly the 9 expected items: Dashboard, Songs, Studio, Song DNA, Release, Intelligence, Vaulta, Integrations, Settings. All 8 anchor hrefs are valid non-null routes ('/dashboard', '/sessions', '/sessions/{id}/dna', '/sessions/{id}/release', '/sessions/{id}/intelligence', '/vaulta', '/settings/integrations', '/profile'). Live-clicked 'Song DNA' and 'Vaulta' — both navigate to their real routes.",
+    "P2 NewSession redirect — submitting /sessions/new form now navigates to /sessions/{id}/studio (verified URL contains '/studio'). Confirmed on live preview: created sess_96285667fb26 lands on /sessions/sess_96285667fb26/studio."
+  ],
+  "regression_pass": [
+    "Login test@songright.com -> /dashboard",
+    "Studio 12 tabs all present: Overview, Lyrics, Melody, Chords, Arrangement, Voice Memos, Files, Collaborators, Chat, Rights, Publishing, Analytics",
+    "Song DNA page loads with 0 page errors",
+    "Release Dashboard page loads with 0 page errors",
+    "Song Intelligence page loads with 0 page errors",
+    "Public /report/e00f0a418cf64ebfbabcfab2f50acaab renders VIEW-ONLY report (no auth)",
+    "Creator Passport /creator/user_seed_test001 loads",
+    "Connected Services /settings/integrations loads",
+    "Vaulta and Profile pages load",
+    "Sessions list page loads",
+    "Studio Invite code Copy button — graceful clipboard fallback (0 errors, no overlay)",
+    "Mobile 375x812 dashboard — no horizontal scroll (scrollWidth=375)",
+    "Total uncaught page errors across full test flow: 0"
+  ],
+  "test_report_links": ["/app/test_reports/iteration_3.json", "/app/test_reports/iteration_2.json"],
+  "action_items": [
+    "OPTIONAL P3 (non-blocking cosmetic): Mobile studio workspace horizontal scrollWidth=527 vs viewport 375. Wrap tab strip in overflow-x-auto container with max-w-full on parent so it clips instead of bleeding at document level. Currently visually OK, but reports as horizontal overflow."
+  ],
+  "critical_code_review_comments": [
+    "clipboard helper at /app/frontend/src/lib/clipboard.js is clean, small, single-responsibility, and applied consistently across SongIntelligence, StudioSession, and SessionDetail. Good pattern.",
+    "StudioSession.jsx remains 1635 lines — still recommend splitting the 12 tab renderers, ownership dashboard, journey and rights sections into /components/studio/* modules (carried over from iteration_2)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (out of scope per review)", "frontend": "100% of RC1 retest checklist passed — all 3 P1/P2 fixes verified, all regression flows green, 0 uncaught page errors"},
+  "test_credentials": "test@songright.com / Test1234!",
+  "seed_data_creation": "Created new session sess_96285667fb26 (title RC1_Retest_1783380*) during retest. Prior share token e00f0a418cf64ebfbabcfab2f50acaab still resolves on /report/:token. New share token 6bfb5c05e7af44bcb5640041a0edc797 generated during share-dialog verification.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "RC1 is CLEAN. All three iteration_2 blockers resolved. Only optional cosmetic follow-up is mobile studio tab-strip overflow (P3). Ready for RC1 sign-off.",
+  "rca of the issue": "N/A — all three issues from iteration_2 are RESOLVED. Fix approach used: (1) centralized navigator.clipboard.writeText call inside copyToClipboard() with try/catch + textarea/execCommand fallback returning {ok:boolean} for UI to toast success/failure, (2) reduced sidebar items array in StudioSession.jsx to only real routes (removed 5 to:null entries), (3) updated nav() call in NewSession.jsx line 35 from `/sessions/${id}` to `/sessions/${id}/studio`."
+}

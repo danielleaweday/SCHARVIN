@@ -1,0 +1,107 @@
+{
+  "theme": {
+    "mode": "dark",
+    "backgrounds": {
+      "base": "#050505",
+      "charcoal": "#121212",
+      "surface": "rgba(255, 255, 255, 0.03)"
+    },
+    "brand_colors": {
+      "teal": "#0D9488",
+      "purple": "#9333EA",
+      "rose": "#E11D48",
+      "orange": "#EA580C",
+      "warm_gold": "#D97706"
+    },
+    "text": {
+      "primary": "#F9FAFB",
+      "secondary": "#9CA3AF",
+      "muted": "#6B7280"
+    }
+  },
+  "typography": {
+    "headings": {
+      "font_family": "Cormorant Garamond, serif",
+      "weights": [400, 500, 600, 700],
+      "usage": "Used for the welcome header, section titles, and large metric numbers to provide a refined, cinematic, artful feel.",
+      "letter_spacing": "tracking-tight"
+    },
+    "body": {
+      "font_family": "Outfit, sans-serif",
+      "weights": [300, 400, 500],
+      "usage": "Used for all UI elements, paragraphs, tags, and small labels to ensure high legibility and a contemporary tech feel.",
+      "letter_spacing": "tracking-normal"
+    }
+  },
+  "spacing_and_layout": {
+    "scale": "Generous spacing. Use p-6, p-8, and p-10 for inner padding of cards to avoid cramped generic dashboards.",
+    "border_radius": "rounded-2xl to rounded-3xl for major cards to soften the dark mode and feel welcoming.",
+    "grids": "Use bento-style asymmetrical grids for the dashboard. Avoid perfect 50/50 splits where possible. Let the main 'Check-in' card span wider."
+  },
+  "surfaces_and_visual_enhancers": {
+    "glassmorphism": "backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
+    "ambient_glows": "Create subtle, large, heavily blurred (blur-3xl) background div elements using the brand colors (teal, purple, rose) placed behind the glass cards to create an ambient, warm, cinematic environment. DO NOT use these as text gradients or harsh backgrounds.",
+    "borders": "1px solid rgba(255,255,255,0.05) to define structure without adding heaviness.",
+    "rules": "DO NOT use completely transparent backgrounds for headers or overlays if content scrolls behind them."
+  },
+  "component_patterns": {
+    "buttons": "Pill-shaped (rounded-full), subtle glow on hover. Avoid harsh solid neon colors. Use dark charcoal background with a delicate brand-colored border and text glow on hover.",
+    "tags_chips": "For the 'Creative Demand' selector, use rounded-full, border border-white/20, text-sm, Outfit font. On active/select: bg-white/10 border-white/50.",
+    "cards": "Glassmorphism panels. Never flat black. Always slightly translucent to pick up ambient glows.",
+    "charts": "For the 'Weekly Pattern' visualization, use Recharts (Shadcn Chart). Use a smooth, curved Area chart with a subtle gradient fill (using one of the brand colors like purple or warm-gold). Keep axes minimal and observational, without harsh grid lines.",
+    "header": "Persistent sticky header (z-50) using crystal glassmorphism (backdrop-blur-xl bg-[#050505]/80). Include the 'Return to ANCR' link and ANCRID profile."
+  },
+  "imagery": {
+    "direction": "Warm, human imagery of diverse creators in action. Cinematic lighting, studios, stages, practice rooms. NO generic leaves, fitness gear, or medical elements.",
+    "urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1615826622658-99ac210c7cca?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTV8MHwxfHNlYXJjaHw0fHxtdXNpY2lhbiUyMHBvcnRyYWl0JTIwY2luZW1hdGljJTIwbGlnaHRpbmd8ZW58MHx8fHwxNzg1NTI1NzE2fDA&ixlib=rb-4.1.0&q=85",
+        "category": "Musician / Artist Portrait",
+        "description": "Woman reading book/profile portrait in cinematic light. Use for demo user profile or learning section."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1769650795569-e51a6e9580c3?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwzfHxibGFjayUyMHdvbWFuJTIwZGFuY2VyJTIwY2luZW1hdGljfGVufDB8fHx8MTc4NTUyNTcxNnww&ixlib=rb-4.1.0&q=85",
+        "category": "Dancer / Performance",
+        "description": "Black woman striking a pose in the dark. Perfect for the Performance or Welcome card."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1724303722577-02d963c2ccab?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHw0fHxibGFjayUyMHdvbWFuJTIwZGFuY2VyJTIwY2luZW1hdGljfGVufDB8fHx8MTc4NTUyNTcxNnww&ixlib=rb-4.1.0&q=85",
+        "category": "Dancer / Performance",
+        "description": "Black woman with hands on hips in cinematic light. Great for Recovery or My Wellness cards."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1497015289639-54688650d173?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwzfHxmaWxtbWFrZXIlMjBjYW1lcmElMjBiZWhpbmQlMjBzY2VuZXN8ZW58MHx8fHwxNzg1NTI1NzEwfDA&ixlib=rb-4.1.0&q=85",
+        "category": "Filmmaker / Studio",
+        "description": "Person sitting in a studio/library context. Good for Continue Learning card."
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1559732277-7453b141e3a1?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODl8MHwxfHNlYXJjaHwzfHx2b2NhbGlzdCUyMHNpbmdlciUyMHJlY29yZGluZyUyMHN0dWRpb3xlbnwwfHx8fDE3ODU1MjU3MTB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "Producer / Studio",
+        "description": "Person sitting in front of monitor in recording studio. Excellent for the Jaylen Rivers demo persona."
+      }
+    ]
+  },
+  "layout_guidance": {
+    "login": "Minimalist and cinematic. Deep black background. Use a blurred glowing orb (purple/teal) behind a central glassmorphism login card. Include the ANCR SSO visual branding. Form elements should be highly refined, no standard white inputs—use transparent inputs with bottom borders or very subtle rounded boxes.",
+    "home_dashboard": {
+      "structure": "1. Welcome Header spanning top. 2. Bento grid below.",
+      "bento_grid": "Top left (col-span-8): 'How Are You Arriving Today?' check-in. Top right (col-span-4): 'Today's Wellness Snapshot'. Middle left (col-span-6): 'Today's Creative Demand'. Middle right (col-span-6): 'Recommended for Today' (3 cards). Bottom left (col-span-8): 'Weekly Pattern' chart. Bottom right (col-span-4): 'Continue Learning' and 'Upcoming Events'.",
+      "tone": "Observational, supportive, adult. Use phrases like 'Your current rhythm' instead of 'Your score'."
+    }
+  },
+  "motion": {
+    "interactions": "Hover states on cards should slightly lift (-translate-y-1) and increase border opacity (border-white/20).",
+    "entrances": "Staggered fade-up for bento grid cards on initial load to feel elegant and intentional.",
+    "accessibility": "Respect prefers-reduced-motion."
+  },
+  "instructions_to_main_agent": [
+    "You MUST install the fonts: Cormorant Garamond and Outfit. Do this via Google Fonts import in index.css.",
+    "Install lucide-react or phosphor-icons for elegant, thin-stroke icons.",
+    "DO NOT use Inter or Roboto anywhere.",
+    "Use standard HTML/Tailwind for the layout structure, but you may use Shadcn for complex interactives like the Recharts chart, Select, or Checkbox. However, heavily style them to match the dark glassmorphism aesthetic.",
+    "DO NOT use generic green 'health' colors. Rely strictly on the official VIEARTA gradients (teal, purple, rose, orange, warm-gold) as subtle glows.",
+    "Add 'data-testid' to all interactive elements for robust testing.",
+    "Do NOT center align the app container text.",
+    "Ensure the Recharts tooltips use the glassmorphism dark styling, not the default white background."
+  ]
+}

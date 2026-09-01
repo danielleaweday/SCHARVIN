@@ -1,0 +1,40 @@
+{
+  "summary": "Iteration 3 full-stack testing of VIEARTA Programs expansion (Learning, Performance, Recovery, Wellness Circle, Support, My Wellness, Consent, Admin, ANCR SSO stub). Backend: 88/88 pytest cases green — 12 iter1 regression (auth, checkins, recs, events, learning, rotating msg, 401) + 29 iter2 lifestyle regression + 47 new iter3 tests. New coverage validated: 4 learning pathways × 3 lessons, lesson read/launch/reflect state machine + credit_earned=true only when tool_launched_at AND reflection non-empty (verified with a fresh user reflecting-without-launch returning credit_earned=false), Jaylen's seeded ls_vocal_hydro credit, /learning/pathways/pw_vocal detail, lesson linked_tool={kind:nutrition,hint:log_water}, 4 ritual templates + complete, 5 recovery sessions + complete, 4 circle instances with rsvp_count/spots_left/by_discipline/attendees, Jaylen my_rsvp=true on first two, RSVP toggle + capacity 400 (filled wc_vocalists cap=12 to force full then over-cap RSVP returned HTTP 400), circles/mine, 8 support resources, support message CRUD, wellness habits w/ streak+last_14 (len=14)+completed_today+presets>=8, habit toggle create/log/unlog/delete, journal seed + add + delete, rhythms/30 series length=30 with all keys (kcal/protein/water_ml/energy/stress/sleep/mood) + observations, consent defaults false + PUT partial patch, admin 403 for student, admin/students 200 for admin, admin/aggregate anonymized 7-day + by_discipline, admin/consented-reflections excludes Jaylen (default consent false), /auth/ancr/status enabled:false with expected_payload_shape, JWT 401 on all 9 new endpoints, cross-user habit privacy. Frontend Playwright validated: login as jaylen, /learning renders 4 pathway cards (testids pw-pw_vocal etc.), clicking pw_vocal navigates to pathway detail with 3 lessons, /learning/pw_vocal/ls_vocal_hydro renders lesson-launch-tool + lesson-reflection, lesson-launch on a recovery lesson (ls_rec_sleep) routes to /lifestyle/mindfulness (correct kind), saving reflection persists 'Credit earned' badge in DOM, /performance renders 4 ritual cards, /recovery renders 5 recovery cards, /circle renders 4 circles with 4 RSVP buttons — toggling 'Cancel RSVP'→'RSVP' works and confirmation toast appears, /support renders 8 resources + subject/body/send form + submitted TEST_ui_msg appears in list, /wellness renders habit-input/journal-body/range-30/consent-share_wellness_with_mentor, student → /admin redirects to /, logged-out /learning redirects to /login, admin login → /admin renders admin-page + admin-students (34 enrolled) + aggregate averages (E 3.43, S 2.57, Sleep 6.71h) + consent-shared reflections section (empty as expected), mobile 390x844 wellness page: no horizontal overflow.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/learning/current", "issue": "Route registered twice — once in server.py's /api router (legacy stub reading db.learning) and again in programs.py's programs router. FastAPI dispatches to the first-registered handler, so the new implementation in programs.py (which returns {next_lesson_id, pathway_id, ...} from viearta_lesson_progress) is unreachable. Endpoint still returns 200 with the legacy shape ({id, pathway, title, progress, total_lessons, completed_lessons, is_current}). Recommend removing the legacy handler in server.py so the programs.py override actually runs."},
+      {"endpoint": "GET /api/consent", "issue": "When a consent doc exists with only a subset of the three share_* keys (result of a partial PUT), GET returns the doc as-is without merging default False values for the missing keys. Frontend should be tolerant, or the endpoint should always return all three fields."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_programs.py",
+    "/app/backend/tests/test_lifestyle.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/programs_results.xml"
+  ],
+  "action_items": [
+    "Remove the legacy /api/learning/current route in /app/backend/server.py (lines ~498-501) so the newer implementation in /app/backend/programs.py takes effect (currently unreachable due to duplicate registration order).",
+    "Optionally: have GET /api/consent merge default False values for any missing share_* fields to guarantee a stable response shape after partial PUTs."
+  ],
+  "critical_code_review_comments": [
+    "Duplicate route registration for /api/learning/current — first-registered wins and hides the programs.py implementation. This is the most important thing to fix.",
+    "programs.py is ~950 lines; consider splitting learning/performance/recovery/circles/support/wellness/consent/admin into separate modules — mirrors the lifestyle split you already did.",
+    "GET /consent falls back to defaults only when NO doc exists; after any PUT the stored doc replaces that fallback and may omit fields. Prefer always merging with defaults on read.",
+    "Circle capacity check reads count after find_one — small race window under concurrency (two RSVPs at capacity-1). Not a demo issue, but worth an atomic $inc + guarded update in the future.",
+    "seed_programs_demo wipes viearta_circle_instances + viearta_circle_rsvps for the demo user on every startup — fine for the demo, add a guard flag before production."
+  ],
+  "updated_files": ["/app/backend/tests/test_programs.py"],
+  "success_rate": {"backend": "100% (88/88 incl. 47 new + 41 regression)", "frontend": "100% (all 9 nav flows + admin + protected routes + mobile)"},
+  "test_credentials": "jaylen@viearta.demo / demo123 (demo student), admin@viearta.demo / admin123 — from /app/memory/test_credentials.md",
+  "seed_data_creation": "None manually. Backend idempotent seed sets Jaylen's habits (3), journal (1), lesson_progress (ls_vocal_hydro completed + ls_studio_pos tool_launched), consent (all false), circle instances (4) with Jaylen RSVP'd to first 2. Tests created transient TEST_-prefixed rows and cleaned up where owned. wc_vocalists (capacity 12) was intentionally filled to capacity to verify the 400-on-full path — 3 of those RSVPs were cancelled at teardown; 9 fill users remain RSVP'd. This shows up in the UI as '9/12 joined · 3 spots left' on the Vocal Circle, which is expected.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend: two routers on one path — /api/learning/current is a known duplicate; if main agent removes the legacy version, the new one returns {id,pathway,title,progress,total_lessons,completed_lessons,next_lesson_id,pathway_id}. Programs collections all prefixed viearta_. Circle capacity test in test_programs.py fills wc_vocalists — subsequent runs will see it stuck at capacity until those extra RSVPs are cleaned; test still passes because it retargets the smallest-remaining-capacity circle each run. Use @example.com for register in fixtures (EmailStr rejects .demo/.test). All 88 tests run in ~24s under pytest-xdist.",
+  "rca of the issue": "N/A — the two minor backend issues are documented above with straightforward one-line fixes (delete duplicate route; merge defaults on GET /consent)."
+}

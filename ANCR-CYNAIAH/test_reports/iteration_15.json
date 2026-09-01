@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 15 — Cyna in-app AI mentor. Added /app/backend/tests/test_cyna.py (17 tests: session CRUD, cross-owner isolation, chat with title/project inference, guardrails, action executor, delete cascade). All 17 pass against live Claude via Emergent LLM key. Full regression: 222/222 prior tests still green — total 239/239 backend. Frontend Playwright verified: floating gold bubble on non-/cyna pages, hidden on /cyna, sidebar nav-cyna, full CynaPage with sessions rail, project selector, new session, optimistic user message, live assistant reply. Warm mentor voice confirmed (assistant said 'Hey — welcome back to Neon Heart; let's make something beautiful today.').",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": { "ui_bugs": [], "integration_issues": [], "design_issues": [] },
+  "test_report_links": [
+    "/app/backend/tests/test_cyna.py",
+    "/app/test_reports/pytest/iteration_15_cyna.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "cyna_service.build_project_digest reads db.script_documents/characters/prod_scenes/prod_shots without checking owner_id on nested docs — safe today because entry-point already verifies project owner, but a defense-in-depth filter would be safer.",
+    "Every /cyna/sessions/{id}/chat call rebuilds the LlmChat with a fresh session_id (using datetime.now timestamp). Fine functionally but the LlmChat.session_id no longer maps to Cyna's persisted session, so any provider-side session memory is unused. Consider passing the persisted session id.",
+    "cyna_create_session accepts payload=None; the FastAPI signature `payload: dict = None` allows an empty POST body — works, but consider a Pydantic model for consistency with the rest of server.py.",
+    "server.py has grown to ~2450 lines. Iteration 15 adds 160 more. Recommend splitting Cyna routes into a router file (routes/cyna.py) per the >700-line guidance."
+  ],
+  "updated_files": ["/app/backend/tests/test_cyna.py"],
+  "success_rate": { "backend": "100% (17/17 new, 239/239 total)", "frontend": "100% (all Cyna UI checks passed)" },
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026! (existing). Second student registered dynamically with @example.com domain — the reserved-TLD email validator rejects .test/.demo/.invalid so tests use example.com.",
+  "seed_data_creation": "Ephemeral: one TEST_ prefixed finishing_note and one TEST_ prefixed script_document on proj-mv-neon-heart, plus several Cyna sessions/messages for demo-student-001. Not cleaned to preserve replayability.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Cyna endpoints are stable and Claude 4.5 responses are grounded (mentioned Neon Heart, Aria's project data). If future iterations touch Cyna, re-run pytest backend/tests/test_cyna.py — it's fully self-contained and takes ~30s. Note: the .test TLD is rejected by the email validator; use example.com for synthetic accounts."
+}

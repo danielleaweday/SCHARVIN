@@ -1,0 +1,45 @@
+{
+  "summary": "Iteration 13 — media endpoint auth hardening. Wrote /app/backend/tests/test_media_authz.py (28 tests, all green) covering: 401 without token, 401 for malformed bearer/query token, 404 for valid token + missing file, owner 200 via bearer AND ?token= query param, stranger student 404 (via both auth channels), assigned faculty 200, path-traversal guards, and Edit & Finish smoke (version create, faculty approve rough_cut, faculty final-approve blocked by rights/accessibility/delivery gate). Full backend regression: 220/220 passed. Found + fixed TWO one-line field-name typos in the ownership scoping logic that silently defeated the media authorization for /api/generated/ and /api/music-audio/ — details below.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/generated/{filename}",
+        "issue": "Ownership check was querying db.assets on field `file_path` but the Asset model stores the URL on field `url`. Result: `linked_project_id` was ALWAYS None for AI-saved assets, so _media_project_check never fired and any authenticated user could fetch any other user's saved AI images by filename. Fixed in place: server.py:1199 now queries {\"url\": {\"$regex\": filename}}. Verified by test_generated_stranger_404 (now green).",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "GET /api/music-audio/{filename}",
+        "issue": "Ownership check was querying db.music_tracks on field `audio_url` but the MusicTrack model stores the file URL on field `music_url`. Result: ownership check never fired for uploaded music files — any authenticated user could fetch any other user's uploaded music. Fixed in place: server.py:1316 now queries {\"music_url\": {\"$regex\": filename}}. Verified by test_music_audio_stranger_404 (now green).",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_media_authz.py",
+    "/app/test_reports/pytest/iteration_13.xml"
+  ],
+  "action_items": [
+    "Review the two field-name fixes applied to server.py (assets.url regex + music_tracks.music_url regex) — the security scoping now works, but the fact that these typos slipped through means there is NO integration test covering cross-user media reads in the existing suite until this iteration. Please keep test_media_authz.py in regression.",
+    "Filename policy on /api/generated/ and /api/music-audio/ uses `.replace('_','').replace('-','').replace('.','').isalnum()` which permits any UTF-8 alphanumeric (e.g. Cyrillic homoglyphs, RTL chars). Consider tightening to an explicit `re.fullmatch(r'[A-Za-z0-9._-]+', filename)` for defense in depth. Not exploited today.",
+    "The /api/generated/ endpoint intentionally serves orphan (no db row) files to any authenticated user — documented behaviour in the request. Consider tracking owner_id on the generated file itself (e.g. rename to <owner_id>_<uuid>.png at write-time) if you want to close this last gap."
+  ],
+  "critical_code_review_comments": [
+    "server.py has grown to 2284 lines — should be split (media endpoints, finish endpoints, ai endpoints each deserve their own module).",
+    "_authenticate_media uses ?token= query param for auth — necessary for <img>/<audio>/<video> tags but means tokens will show up in nginx access logs / referrer headers. Acceptable trade-off given tokens are short-lived, but worth documenting in the security README.",
+    "Ownership scoping is defense-in-depth on top of the 401 gate but relies on Mongo regex against a filename — regex-injection-safe here because the filename is validated `.isalnum()`-style first, but if that guard is ever relaxed the regex becomes an injection vector. Consider re.escape() at minimum."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (2 one-line field-name fixes on lines 1199 and 1316)",
+    "/app/backend/tests/test_media_authz.py (new file, 28 tests)",
+    "/app/backend/tests/test_cynaiah_backend.py (added Authorization header to the /generated fetch on line 367 — previously public, now requires auth)"
+  ],
+  "success_rate": {"backend": "100% (220/220)", "frontend": "not tested (per request)"},
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026! ; faculty@cynaiah.demo / Cynaiah2026! ; admin@cynaiah.demo / Cynaiah2026!",
+  "seed_data_creation": "Self-seeding fixtures create: (a) a fresh edit_version with a dummy 20-byte MP4 for the /finish/video ownership test, (b) an AI-generated image tied to proj-mv-neon-heart via /api/ai/image with save_as_asset=True, (c) a music track upload for proj-mv-neon-heart via /projects/proj-mv-neon-heart/music/upload. The stranger student is created ad-hoc with email stranger_<uuid8>@example.com and password SecTest2026!. Original 'Neon Heart' music title/artist are preserved (upload endpoint doesn't overwrite them when title/artist not sent).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "test_media_authz.py is now the single source of truth for media-endpoint security. It ALSO covers Edit & Finish smoke (POST /projects/{id}/finish/version, POST /finish/version/{id}/approve happy path + final-gate blocker). The /edit-finish frontend page is still ComingSoon per main-agent note — do NOT test frontend for Edit & Finish yet. Two field-name typos in server.py media ownership scoping (lines 1199, 1316) were fixed inline by the testing agent this iteration — main agent should code-review those fixes before iteration 14.",
+  "rca of the issue": "RCA: The main agent introduced _media_project_check() to enforce ownership on the three media endpoints, but the two OLDER endpoints (/generated and /music-audio) look up the linked project by grepping filename against a Mongo field — and those field names were WRONG for the actual schema. `db.assets` uses `url` (not `file_path`) and `db.music_tracks` uses `music_url` (not `audio_url`). Because Mongo returns None for a non-matching query, `linked_project_id` stayed None and the ownership check silently skipped. Reproduction: seed a /generated (via POST /api/ai/image with save_as_asset=True + project_id) or a /music-audio (via POST /projects/{id}/music/upload) as student A, then register student B and GET the file URL with B's bearer token — before the fix returned 200 with the file body; after returned 404. Mitigation applied: fixed both field names to match the actual schema (assets.url, music_tracks.music_url). Long-term mitigation: add cross-user negative tests (this iteration's test_media_authz.py) to regression."
+}

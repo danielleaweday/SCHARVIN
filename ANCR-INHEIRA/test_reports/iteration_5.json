@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend re-verification of iteration_4 blockers on INHEIRA. Palette freeze PASSED (zero violet-300/400/500/600 in code AND at runtime across all 11 spot-checked routes). Studio Write and Release chapter sub-tabs PASSED (4 + 3 tabs render under [role=tab] inside ChapterNav). All 11 routes load without ErrorBoundary. All spot-check testids resolve. Vaulta '~90 DAYS' payout hint now present. HOWEVER, the Dashboard mobile overflow BLOCKER IS STILL PRESENT: /dashboard at 375x812 reports document.scrollWidth=484 (target <=400, ~109px over). The Life-of-Song 10-stage strip fix (overflow-x-auto + minWidth:640 on Dashboard.jsx L255-256) was applied correctly and is NOT the culprit anymore — instead the residual overflow originates from the Chapter IV EvidenceFeed card and Chapter V PassportPreview outer `lg:col-span-2` wrappers, which measure 460px wide at 375px viewport. Mobile /studio and /release do NOT overflow.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Dashboard.jsx — Chapter IV EvidenceFeed + Chapter V PassportPreview", "issue": "Dashboard @ 375px still overflows: document.scrollWidth=484 (109px over). Investigation shows the LifeOfSong strip is correctly wrapped in overflow-x-auto (L255) and is NOT the source. Real offenders are the outer wrappers `<div className=\"lg:col-span-2\">` at Dashboard.jsx L177 (wrapping <EvidenceFeed/>) and L189 (wrapping <PassportPreview/>), which render at 460px wide because their child cards force intrinsic content width. The EvidenceFeed card header row at L449 (`px-6 py-4 ... flex items-center justify-between`) and the LI items at L461 (`px-6 py-4 flex items-start gap-4`) both measure 458px wide at 375px viewport, indicating the parent grid cell is being pushed by content. Likely fix: add `min-w-0` to the `<div className=\"lg:col-span-2\">` wrappers on L177 and L189 (grid children default to min-width: auto which prevents shrinking below content), and/or add `min-w-0` on the EvidenceFeed root `<div className=\"border border-zinc-900 bg-zinc-950/40\">` at L448. PassportPreview outer at L189 also warrants same treatment.", "selector": "[data-testid=dashboard-root] .lg\\:col-span-2", "priority": "HIGH"},
+      {"component": "Dashboard identity-color chips visibility (informational)", "issue": "Identity-color avatar chips render correctly inside EvidenceFeed rows (Dashboard.jsx L462 uses inline style={{ background: c.hex }} — verified in source). My initial selector-based DOM query missed them because they use inline style rather than a data-testid or identifying class. Not a regression — reporting so the next test agent knows to select by CSS `[style*=\"background\"]` inside `[data-testid=dashboard-active-sessions]` or add a `data-testid=identity-chip` for reliable QA.", "selector": ".identity-chip (does not exist yet)", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Add `min-w-0` to the grid children on Dashboard.jsx lines 177 and 189 (`<div className=\"lg:col-span-2\">`) — this is the standard CSS Grid/Flex fix for children pushing past their track. Without min-w-0, a grid item defaults to min-content and refuses to shrink, causing the ~109px document overflow at 375px. Consider also adding `min-w-0` on the plain `<div>` siblings at L180 and L192.",
+    "Optionally add `data-testid=\"identity-chip\"` to the EvidenceFeed avatar div (Dashboard.jsx L462) and any similar identity chips on /sessions and /vaulta to make future palette/identity regression tests robust."
+  ],
+  "critical_code_review_comments": [
+    "Palette lint is now green — a CI grep guard (`grep -rE 'violet-(300|400|500|600)' src/`) would keep it that way. Highly recommend adding as a pre-commit hook.",
+    "Grid/flex mobile overflow is a recurring pattern in this codebase. Consider a shared `<GridRow>` wrapper that always includes `min-w-0` on all children."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "92%"},
+  "seed_data_creation": "None. Used existing seed session sess_96285667fb26 and user_seed_test001.",
+  "should_call_test_agent_after_fix": true,
+  "should_main_agent_self_test": false,
+  "test_credentials": "test@songright.com / Test1234! (user_id: user_seed_test001). Auth submit selector MUST use [data-testid=auth-submit-login].",
+  "context_for_next_testing_agent": "Freeze status: 4 of 5 success criteria PASS (palette, Studio sub-tabs, route smoke, testids). The remaining criterion — /dashboard document.scrollWidth <= 400 at 375x812 — still FAILS at 484. The Life-of-Song strip fix from this iteration is CORRECT and applied; the residual overflow is from grid children lacking `min-w-0`. After the dev agent adds `min-w-0` to the L177 and L189 lg:col-span-2 wrappers in Dashboard.jsx, only a single re-check at mobile 375x812 on /dashboard is needed.",
+  "rca_of_the_issue": "Root cause of remaining /dashboard mobile overflow: CSS Grid children (Dashboard.jsx L177, L189) default to `min-width: auto` (aka min-content), which prevents the grid cell from shrinking below the intrinsic content width of nested EvidenceFeed / PassportPreview cards. Result: the grid cell forces 460px width at a 375px viewport, causing the document to scroll horizontally. Standard fix is `min-w-0` on the grid child so its min-width becomes 0 and it can shrink to the track size. The Life-of-Song strip fix (overflow-x-auto + minWidth: 640) is applied correctly and independently verified to not be the cause."
+}

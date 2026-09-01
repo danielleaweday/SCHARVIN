@@ -1,0 +1,21 @@
+{
+  "summary": "Frontend-only regression for iteration 28: Store lookbook + collection cards, ParallaxBand on Invest/Support, and new editorial bands on Framework/Ecosystem. Tested at 1440px and 390px viewports. All new testids visible; all images load (naturalWidth > 0 once in viewport - collection cards use loading='lazy'). No horizontal overflow on any tested page. No console errors. Waitlist form on /store still submits successfully to 'You're on the list.' state.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Collection card <img> uses loading='lazy'. Automated naturalWidth checks must scroll the element into view before asserting - this is expected behavior, not a defect."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "seed_data_creation": "Waitlist entry submitted for test_qa_2026@example.com (name: QA Tester) on /store during flow verification.",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "iteration_28 verified: (a) Store /store shows all 7 lookbook posters (viearta, inheira, ancrsync, cynaiah, ancrd, ancrmedianetwork, thehatcollection) with poster images loading; (b) Store Technology collections grid contains collection-ancrmedia, collection-ancrd, collection-cynaiah with logo <img> loading from /brand/modules/*.png (lazy - must scroll into view before checking naturalWidth); (c) invest-editorial-band, support-editorial-band, framework-editorial-band, ecosystem-editorial-band all render with Unsplash images (naturalWidth=2000) and no overflow at 1440px or 390px; (d) Waitlist form requires BOTH name and email inputs (both required=true) - filling only email triggers browser 'Please fill out this field' validation. Fill both to see the 'You're on the list.' success card. No console errors on any tested page.",
+  "rca_of_the_issue": "N/A - all acceptance criteria met."
+}

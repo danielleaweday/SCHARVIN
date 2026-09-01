@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 2 verified Production Studio wiring: Coverage Coach (advisory-only) + Call Sheet PDF download. Added 5 pytest cases in /app/backend/tests/test_production_studio.py — all PASS. Route shadowing bug is fixed: POST /api/projects/{pid}/production/coverage-coach returns 200 with real Claude JSON (provider, scenes[], note=advisory). Auth is enforced (no token → 401/403). Empty project (no scenes/shots) → 400 with helpful message. Call Sheet PDF endpoint returns application/pdf with %PDF- magic bytes and Content-Disposition attachment. Frontend Playwright run against production URL: logged in as student, opened /production-studio (auto-selects Neon Heart music-video project), Scenes & Shots tab shows coverage-coach-panel with the required advisory copy 'the director makes the final call'. Clicking coverage-coach-run-btn triggered a real Claude call (200 application/json) and rendered coverage-coach-results with 3 coverage-scene-<n> sections containing 'Possibly missing', 'Questions for you', and 'What already works'. Call Sheets tab shows 2 callsheet-download-pdf-<id> buttons; clicking one fired GET /api/production/callsheet/<id>/pdf → 200 application/pdf. No console errors.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": { "ui_bugs": [], "integration_issues": [], "design_issues": [] },
+  "test_report_links": [
+    "/app/backend/tests/test_production_studio.py",
+    "/app/test_reports/pytest/iteration_2.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ProductionStudio.jsx is ~666 lines — consider splitting each tab (Scenes/Shots/CallSheets/CoveragePanel) into its own file for maintainability.",
+    "server.py continues to grow (~1257 lines); moving production/coverage routes into a dedicated APIRouter module would reduce the risk of future route-shadowing regressions.",
+    "Coverage Coach route relies on ordering above the parameterized /{kind} route — add a comment marker or a lint/test guard so a future refactor doesn't reintroduce shadowing."
+  ],
+  "updated_files": ["/app/backend/tests/test_production_studio.py"],
+  "success_rate": { "backend": "100% (5/5)", "frontend": "100%" },
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026!",
+  "seed_data_creation": "None; used seeded project proj-mv-neon-heart. One transient TEST_ project created & deleted inside the empty-project 400 test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Login response uses key 'access_token' (not 'token') — see fixture in test_production_studio.py. Frontend production route is /production-studio (single-page project switcher via Neon Heart dropdown), NOT /projects/{id}/production. Coverage Coach first call may take ~15-25s (Claude Sonnet 4.5).",
+  "rca of the issue": "Previous 422 on POST /coverage-coach was caused by FastAPI route ordering: the generic POST /projects/{project_id}/production/{kind} (which requires a JSON body via `payload: dict`) matched first, so calling coverage-coach with no body returned 422. Main agent fixed by defining POST /projects/{project_id}/production/coverage-coach ABOVE the parameterized handler in server.py (line ~1009). Verified: pytest test_coverage_coach_returns_advisory now returns 200 with the expected schema."
+}

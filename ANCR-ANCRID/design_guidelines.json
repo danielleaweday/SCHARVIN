@@ -1,0 +1,152 @@
+{
+  "theme": "Dark",
+  "archetype": "5 (Luxury / High-Contrast Hybrid)",
+  "tagline": "Your Creative Identity. Everywhere.",
+  "core_philosophy": "Creator Identity Operating System — The Identity Layer of the ANCR Ecosystem. Minimal, elegant, Apple-quality UI. NOT a social profile.",
+  "colors": {
+    "backgrounds": {
+      "base": "#050505",
+      "surface": "rgba(255, 255, 255, 0.03)",
+      "surface_hover": "rgba(255, 255, 255, 0.06)",
+      "panel": "#0A0A0A",
+      "glass": "rgba(10, 10, 10, 0.65)"
+    },
+    "accents": {
+      "primary": "#00E5FF",
+      "secondary": "#8A2BE2",
+      "tertiary": "#FF6D00",
+      "gradient_flow": "linear-gradient(135deg, #00E5FF 0%, #8A2BE2 50%, #FF6D00 100%)",
+      "warning": "#FF3B30",
+      "success": "#32D74B"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "rgba(255, 255, 255, 0.6)",
+      "tertiary": "rgba(255, 255, 255, 0.4)",
+      "inverse": "#000000"
+    },
+    "borders": {
+      "subtle": "rgba(255, 255, 255, 0.08)",
+      "focus": "#00E5FF"
+    },
+    "forbidden": [
+      "No purple gradients on white",
+      "No pure black #000000 without texture/noise",
+      "No generic Vercel/Stripe defaults",
+      "No teal green"
+    ]
+  },
+  "typography": {
+    "font_families": {
+      "headings": "'Cabinet Grotesk', sans-serif",
+      "body": "'Satoshi', sans-serif",
+      "mono": "'JetBrains Mono', monospace"
+    },
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl tracking-tighter font-medium",
+      "h2": "text-3xl sm:text-4xl tracking-tight font-medium",
+      "h3": "text-xl sm:text-2xl tracking-tight",
+      "body": "text-base leading-relaxed text-white/70",
+      "mono_id": "text-sm tracking-[0.1em] uppercase text-white/50"
+    },
+    "rules": [
+      "Headings must use tight letter spacing.",
+      "IDs, numbers, data points, and status labels must use JetBrains Mono.",
+      "Left-align text globally unless specifically centering a hero statement."
+    ]
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous spacing, asymmetry, and optical alignment. The UI must feel like an OS, not a website.",
+    "container_padding": "p-8 md:p-12",
+    "grid_system": {
+      "dashboard": "grid-cols-1 md:grid-cols-12 gap-6",
+      "portfolio": "grid-cols-1 md:grid-cols-4 gap-8 (Bento Box style)"
+    },
+    "surfaces": {
+      "premium_glass": "backdrop-blur-xl bg-black/60 border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
+      "solid_card": "bg-[#0A0A0A] border border-white/5 rounded-2xl",
+      "border_radius": "rounded-2xl or rounded-3xl for premium feel"
+    }
+  },
+  "motion_and_interaction": {
+    "cinematic_motion": {
+      "page_transition": "opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s",
+      "hover_lift": "-translate-y-1 scale-[1.02] transition-all duration-300 ease-out",
+      "glass_shimmer": "mask-image dynamic gradients on hover for premium edge-lighting"
+    },
+    "micro_interactions": [
+      "Status dots must pulse softly (live connection feel).",
+      "Borders of glass cards slightly illuminate based on mouse proximity.",
+      "Ecosystem connections draw glowing lines between modules on hover."
+    ]
+  },
+  "components_and_patterns": {
+    "ecosystem_status_panel": {
+      "location": "Fixed at top of Dashboard",
+      "design": "Horizontal premium glass pill. Contains dots for ANCRA, ANCRLAB, ANCRSync, INHEIRA, Vaulta, Passport, ANCRLaunch.",
+      "active_state": "Glowing electric blue dot + JetBrains Mono label.",
+      "inactive_state": "Dimmed dot (white/20)."
+    },
+    "creator_passport": {
+      "layout": "Digital ID card format",
+      "elements": "JetBrains Mono for Passport ID, Gradient Flow for verified badge, high-res portrait, holographic overlay effect."
+    },
+    "aia_intelligence_panel": {
+      "layout": "Right-aligned vertical drawer or bottom bento grid item.",
+      "style": "Subtle Violet/Orange background glow behind the card to indicate AI presence.",
+      "data": "Mocked suggestions for collaborations, skill leveling, and ecosystem matching."
+    },
+    "data_visualization": {
+      "reputation_score": "Donut chart using Primary (Blue) to Secondary (Violet) gradient stroke.",
+      "timeline": "Vertical left-aligned timeline with JetBrains Mono timestamps."
+    }
+  },
+  "image_urls": {
+    "hero_backgrounds": [
+      {
+        "url": "https://images.unsplash.com/photo-1580529352977-df08012d92b0?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGVsZWN0cmljJTIwYmx1ZSUyMG9yYW5nZSUyMDNkfGVufDB8fHx8MTc4MzQ2MzI3MXww&ixlib=rb-4.1.0&q=85",
+        "category": "hero_bg",
+        "description": "Abstract electric blue and orange lighting for cinematic OS background"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1580529352988-5236c86b9439?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA3MDR8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGVsZWN0cmljJTIwYmx1ZSUyMG9yYW5nZSUyMDNkfGVufDB8fHx8MTc4MzQ2MzI3MXww&ixlib=rb-4.1.0&q=85",
+        "category": "auth_bg",
+        "description": "Deep dark abstract light rings for auth page"
+      }
+    ],
+    "creator_portraits": [
+      {
+        "url": "https://images.unsplash.com/photo-1610716632318-acfc6a85d1ed?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHwxfHxtdXNpYyUyMHByb2R1Y2VyJTIwc3R1ZGlvJTIwZGFya3xlbnwwfHx8fDE3ODM0NjMyNzB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "portfolio_cover",
+        "description": "Music producer in dark studio"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1759853900346-8d1ee0af7ca8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w7NTY2NzZ8MHwxfHNlYXJjaHwzfHxjaW5lbWF0aWMlMjBmaWxtJTIwc2V0JTIwZGFya3xlbnwwfHx8fDE3ODMzMzc4NDN8MA&ixlib=rb-4.1.0&q=85",
+        "category": "profile_avatar",
+        "description": "Cinematic portrait of creator looking off camera"
+      }
+    ],
+    "portfolio_work": [
+      {
+        "url": "https://images.unsplash.com/photo-1655931546417-18e16c015812?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODh8MHwxfHNlYXJjaHw0fHxtdXNpYyUyMHByb2R1Y2VyJTIwc3R1ZGlvJTIwZGFya3xlbnwwfHx8fDE3ODM0NjMyNzB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "project_thumbnail",
+        "description": "Close up of DJ mixer / studio gear"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1572283046480-e990be92d301?crop=entropy&cs=srgb&fm=jpg&ixid=M3w7NTY2NzZ8MHwxfHNlYXJjaHwxfHxjaW5lbWF0aWMlMjBmaWxtJTIwc2V0JTIwZGFya3xlbnwwfHx8fDE3ODMzMzc4NDN8MA&ixlib=rb-4.1.0&q=85",
+        "category": "project_thumbnail",
+        "description": "Cinematic urban photography"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Load Cabinet Grotesk, Satoshi, and JetBrains Mono fonts via CDN/Google Fonts immediately.",
+    "Implement JWT Auth (Login/Signup).",
+    "Build a fixed Dashboard header titled 'Ecosystem Status' showing live dots for: ANCRA, ANCRLAB, ANCRSync, INHEIRA, Vaulta, Passport, ANCRLaunch.",
+    "Ensure UI is strictly dark mode (Obsidian #050505) with glassmorphism overlays.",
+    "Use framer-motion for cinematic page transitions and micro-interactions.",
+    "Data points like ANCRID Number, Portfolio Score, and Passport ID must use JetBrains Mono.",
+    "Do NOT use emojis anywhere in the application.",
+    "Add 'data-testid' attributes to all interactive elements for robust testing."
+  ]
+}

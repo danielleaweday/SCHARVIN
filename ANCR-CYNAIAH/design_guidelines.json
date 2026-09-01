@@ -1,0 +1,143 @@
+{
+  "project_name": "CYNAIAH™",
+  "theme_mode": "dark-only",
+  "typography": {
+    "fonts": {
+      "heading": "'Outfit', sans-serif",
+      "body": "'Manrope', sans-serif",
+      "mono": "'JetBrains Mono', monospace"
+    },
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl font-heading font-light tracking-tighter text-white",
+      "h2": "text-3xl sm:text-4xl font-heading font-normal tracking-tight text-white",
+      "h3": "text-xl sm:text-2xl font-heading font-medium tracking-tight text-white/90",
+      "body": "text-base font-body text-white/70 leading-relaxed",
+      "small": "text-sm font-body text-white/50 uppercase tracking-[0.15em]"
+    },
+    "google_fonts_url": "https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+  },
+  "colors": {
+    "foundation": {
+      "black": "#030303",
+      "surface_base": "#0A0A0C",
+      "surface_elevated": "#121216",
+      "surface_glass": "rgba(18, 18, 22, 0.65)"
+    },
+    "brand": {
+      "violet": "#6D28D9",
+      "electric_blue": "#2563EB",
+      "cyan": "#06B6D4",
+      "magenta": "#DB2777",
+      "orange": "#F97316",
+      "gold": "#D4AF37"
+    },
+    "text": {
+      "primary": "#FFFFFF",
+      "secondary": "rgba(255, 255, 255, 0.7)",
+      "muted": "rgba(255, 255, 255, 0.4)"
+    }
+  },
+  "css_variables": {
+    "root": {
+      "--background": "240 10% 2%",
+      "--foreground": "0 0% 98%",
+      "--card": "240 10% 5%",
+      "--card-foreground": "0 0% 98%",
+      "--popover": "240 10% 5%",
+      "--popover-foreground": "0 0% 98%",
+      "--primary": "195 100% 40%",
+      "--primary-foreground": "0 0% 100%",
+      "--secondary": "240 5% 12%",
+      "--secondary-foreground": "0 0% 98%",
+      "--muted": "240 5% 12%",
+      "--muted-foreground": "240 5% 65%",
+      "--accent": "270 70% 55%",
+      "--accent-foreground": "0 0% 98%",
+      "--destructive": "0 84% 60%",
+      "--destructive-foreground": "0 0% 98%",
+      "--border": "240 5% 12%",
+      "--input": "240 5% 12%",
+      "--ring": "195 100% 50%",
+      "--radius": "0.5rem"
+    }
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-2xl bg-white/[0.02] border border-white/[0.05] shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
+    "cinematic_glow": "radial-gradient(circle at 50% 0%, rgba(109, 40, 217, 0.15) 0%, transparent 60%)",
+    "inner_light": "shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
+    "hover_glow": "hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:border-cynaiah-cyan/30 transition-all duration-300",
+    "beam_gradient": "linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.15) 50%, transparent 100%)"
+  },
+  "layouts": {
+    "app_shell": "flex h-screen bg-[#030303] overflow-hidden text-white font-body selection:bg-cynaiah-cyan/30",
+    "sidebar": "w-64 border-r border-white/5 bg-[#050505] flex flex-col h-full overflow-y-auto custom-scrollbar z-50",
+    "main_content": "flex-1 overflow-y-auto custom-scrollbar relative",
+    "hero_section": "relative min-h-[40vh] md:min-h-[50vh] flex items-end p-8 md:p-12 overflow-hidden border-b border-white/5",
+    "bento_grid": "grid grid-cols-1 md:grid-cols-12 gap-6 p-6",
+    "project_grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6"
+  },
+  "components": {
+    "sidebar_items": {
+      "categories": ["Studio Workspace", "Production", "Assets & Sync", "Network & Career", "Platform"],
+      "styling": "flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium transition-colors hover:bg-white/5 hover:text-white text-white/60",
+      "active_styling": "bg-gradient-to-r from-cynaiah-violet/20 to-transparent text-white border-l-2 border-cynaiah-violet"
+    },
+    "project_card": {
+      "container": "group relative overflow-hidden rounded-xl bg-surface_elevated border border-white/5 hover:border-white/10 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cynaiah-violet/10 cursor-pointer",
+      "thumbnail": "aspect-video w-full object-cover transition-transform duration-700 group-hover:scale-105 group-hover:opacity-80",
+      "overlay": "absolute inset-0 bg-gradient-to-t from-[#0A0A0C] via-[#0A0A0C]/50 to-transparent opacity-80 group-hover:opacity-90 transition-opacity",
+      "content": "absolute bottom-0 left-0 right-0 p-5 flex flex-col justify-end"
+    },
+    "cinematic_button": "relative overflow-hidden rounded-full bg-white/5 px-6 py-2.5 text-sm font-medium text-white border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]",
+    "primary_button": "rounded-full bg-gradient-to-r from-cynaiah-violet to-cynaiah-blue px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 transition-opacity shadow-[0_0_15px_rgba(109,40,217,0.4)]"
+  },
+  "image_urls": {
+    "hero_cinematic": {
+      "url": "https://images.pexels.com/photos/10395639/pexels-photo-10395639.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "description": "Professional filmmaking camera setup on an outdoor set, depth of field."
+    },
+    "music_video_sync": {
+      "url": "https://images.unsplash.com/photo-1506512420485-a28339abb3b9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjV8MHwxfHNlYXJjaHw0fHxtdXNpYyUyMHZpZGVvJTIwbmVvbiUyMGxpZ2h0aW5nfGVufDB8fHx8MTc4NTQ1NzY1NXww&ixlib=rb-4.1.0&q=85",
+      "description": "Camera operator filming in neon-lit environment, highly dynamic."
+    },
+    "ai_visual_lab": {
+      "url": "https://images.unsplash.com/photo-1614471131724-d57b15e45173?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzF8MHwxfHNlYXJjaHwzfHxhYnN0cmFjdCUyMGNpbmVtYXRpYyUyMGxpZ2h0aW5nJTIwdGV4dHVyZXxlbnwwfHx8fDE3ODU0NTc2NjB8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Abstract red and blue cinematic streak, representing AI generation and visuals."
+    },
+    "cgi_environment": {
+      "url": "https://images.unsplash.com/photo-1519608487953-e999c86e7455?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MDZ8MHwxfHNlYXJjaHwxfHxuZW9uJTIwY3liZXJwdW5rJTIwY2l0eSUyMGNnaXxlbnwwfHx8fDE3ODU0NTc2NTV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Cyberpunk city alleyway, CGI environment style."
+    },
+    "character_portrait": {
+      "url": "https://images.unsplash.com/photo-1568038479111-87bf80659645?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzR8MHwxfHNlYXJjaHw0fHxjaW5lbWF0aWMlMjBkYXJrJTIwcG9ydHJhaXQlMjBzdHVkaW98ZW58MHx8fHwxNzg1NDU3NjU1fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Cinematic portrait with blue lighting, perfect for character treatment."
+    },
+    "storyboard_mood": {
+      "url": "https://images.unsplash.com/photo-1607276159787-9ef4db5c0d0b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2ODh8MHwxfHNlYXJjaHwzfHxjaW5lbWF0aWMlMjBmaWxtJTIwcHJvZHVjdGlvbiUyMGNhbWVyYXxlbnwwfHx8fDE3ODU0NTc2NTV8MA&ixlib=rb-4.1.0&q=85",
+      "description": "DSLR camera on tripod, classic production vibe."
+    }
+  },
+  "instructions_to_main_agent": [
+    "IMPLEMENT DARK THEME ONLY. Do not use white backgrounds anywhere except for high-emphasis text. The base background must be a very deep #030303 or #050505.",
+    "Add 'Outfit' and 'Manrope' to the index.html via Google Fonts, and configure tailwind.config.js to use them as 'font-heading' and 'font-sans'.",
+    "Build the 20-item Sidebar navigation, grouped logically into sections (e.g. Workspace, Labs, Network) using Phosphor or Lucide icons. Ensure it uses custom-scrollbar to remain sleek.",
+    "For the 'Home Dashboard', design a Cinematic Hero section at the top featuring a background image with a dark gradient overlay and glowing effects. Do not use standard centered layout.",
+    "Ensure 'Project Cards' look like Netflix/Frame.io thumbnails: large 16:9 images, subtle gradients at the bottom, tight typography, hover scale effects.",
+    "Use standard Radix/Shadcn components for interactive logic (Tabs, Dialogs, Dropdowns) but style them with glassmorphism (bg-black/60, backdrop-blur-xl, border-white/10).",
+    "NEVER use generic icons or emojis. Use a consistent icon library (lucide-react).",
+    "Add 'data-testid' to all buttons and navigational links.",
+    "Avoid standard Vercel/Stripe SaaS look. The UI should feel like professional film production software: robust, dark, high contrast, visually driven.",
+    "Mock the 'Sync Studio' with a visual waveform (using a stylized UI or canvas placeholder) and timeline tracks.",
+    "Implement the 'Story Lab' script editor area resembling a professional screenplay tool with a minimalist, distraction-free glass panel."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "You tend to converge toward generic, 'on distribution' outputs. Avoid this: make creative, distinctive frontends that surprise and delight.",
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Create depth through layered design elements with z-index hierarchy and glass-morphism effects (12-24px blur).",
+    "You MUST NOT apply universal transition (e.g., transition: all). Add transitions for specific elements excluding transforms.",
+    "You MUST NOT center align the app container. This disrupts natural reading flow.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Use sonner for toasts notifications.",
+    "NEVER use placeholder text for images. Always rely on the provided image_urls."
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "summary": "Frontend-only verification of PREMIUM per-platform product renders in the ecosystem detail panel (iteration 17). Tested all 18 nodes on homepage ecosystem (data-testid=ecosystem-experience) and confirmed each ecosystem-detail preview img loads (naturalWidth=1264), all 18 image URLs are DISTINCT (no repeats), and each panel body matches the correct product's logo, name, tagline, description, and benefits. Coming Soon badges verified for cynaiah, viearta, sovreign. Branch filters (education/technology/careers), ecosystem-explore-btn -> /platform navigation, and /platform ecosystem preview all pass. No console errors, no horizontal overflow at 1440 or 390.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Note: two DOM elements share data-testid='node-ancr' (hub tile + grid chip). Approved per request, but consider distinct testids (e.g. node-ancr-hub) for future-proofing test selectors."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "seed_data_creation": "none",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "AnimatePresence mode='wait' introduces ~0.4s exit animation before the new key mounts. Use >=800ms wait after clicking a node before reading ecosystem-detail contents; otherwise you will read stale (previous) selection. PLATFORM_PREVIEWS map is in /app/frontend/src/lib/content.js:492. Node ids tested: ancr, ancra, ancrlab, ancrsync, ancrlaunch, ancrid, passport, coheir, vaulta, adca, ancrd, ancrwav, ancrview, inheira, ancrmedia, cynaiah, viearta, sovreign — all 18 unique image URLs on static.prod-images.emergentagent.com, all load with naturalWidth=1264. Coming Soon badge present on cynaiah/viearta/sovreign (case-sensitive check on 'Coming Soon' works; note innerText may be normalized).",
+  "rca_of_the_issue": "n/a — all functionality passes."
+}

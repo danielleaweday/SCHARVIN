@@ -1,0 +1,32 @@
+{
+  "summary": "Iteration 2 full-stack testing of VIEARTA Lifestyle expansion. Backend: 41/41 pytest cases passed — 12 prior iteration_1 tests (auth, checkins, recs, events, learning, rotating-message, 401) still green + 29 new lifestyle tests covering foods (library+custom+privacy), meals (totals math, filter-by-date, duplicate, copy-yesterday, delete), saved meals CRUD, hydration sum reflected in nutrition/today, targets defaults + PUT + unsafe rejection (422), estimator safety refusals (age<18, pregnancy, eating_disorder, chronic_condition) and valid estimate + disclaimer, nutrition/today shape, reflection upsert, 63 affirmations with 12 themes + theme/q filters, /affirmations/today rotation w/ favorited flag, favorite toggle + reflection, Jaylen seeded favorites (af_002, af_013 with reflections), 10 mindfulness activities with steps/purpose/duration + completion, 17 movement activities + rule-based pick /movement/today (personalized=true for Jaylen) + completion, routines CRUD, 7-day /summary series with all macro keys and mindfulness_sessions>=3 / movement_minutes>=20 / affirmations_saved>=2, cross-user privacy on meals + custom foods, JWT 401 on all endpoints. Frontend: Playwright validated login as Jaylen, Home Daily Affirmation card renders (data-testid=daily-affirmation) with 124-char text + fav & more buttons; sidebar Lifestyle nav navigates to /lifestyle with 3 gateway cards; /lifestyle/nutrition renders 6 progress bars (kcal/water/protein/carbs/fat/fiber) and water quick-log +250 ml increments visible total (800→1050 ml); meal logger opens, food search 'oat' filters, adding oats yields Total: 152 kcal, save + copy-yesterday buttons work; /lifestyle/mindfulness renders both tab-affirmations & tab-activities + aff-search; /lifestyle/movement shows mv-start-today + quick-log buttons; /progress renders progress-page with mindfulness/movement content; /lifestyle/nutrition/targets renders t-save + estimator (age=16 returns 'For students under 18, we recommend meeting with a qualified nutrition professional' block message); logged-out /lifestyle/nutrition redirects to /login.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_lifestyle.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/lifestyle_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "lifestyle.py is ~910 lines — starting to get large; splitting nutrition/mindfulness/movement into three routers would help long-term maintainability.",
+    "Estimator endpoint accepts a raw dict (no Pydantic model) — safe here due to explicit int()/bool coercion, but a NutritionEstimateIn model would give validation + docs.",
+    "Saved meals POST accepts a raw dict payload too — consider a Pydantic model with items schema for parity with MealIn.",
+    "Seed clears then reinserts lifestyle collections for the demo user on every startup — fine for demo, would want a guard flag before prod.",
+    "MealIn.date is a plain string with no format validation; a stricter YYYY-MM-DD validator would prevent silent drift.",
+    "No pagination on /affirmations (returns all 63) — OK at this size, but should be paginated when catalog grows.",
+    "CORS allow_credentials=False with allow_origins='*' — fine for token-in-header auth, tighten origins before production."
+  ],
+  "updated_files": ["/app/backend/tests/test_lifestyle.py"],
+  "success_rate": {"backend": "100% (41/41 incl. 29 new + 12 regression)", "frontend": "100% (all critical lifestyle flows)"},
+  "test_credentials": "jaylen@viearta.demo / demo123 (demo student), admin@viearta.demo / admin123 — from /app/memory/test_credentials.md",
+  "seed_data_creation": "None manually created — backend seed idempotently sets Jaylen's targets, 3 days of meals, hydration, 2 saved meals, 2 favorite affirmations w/ reflections, 3 mindfulness completions, 4 movement completions, 1 routine, today's nutrition reflection. Confirmed via /summary (mind>=3, move_min>=20, favs>=2) and /affirmations/favorites (af_002 & af_013 present with reflection text).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All lifestyle collections use prefix 'viearta_'. JWT in localStorage under 'viearta_token'. Second-user register in tests must use a valid email domain (pydantic EmailStr rejects .test/.demo/.example). Backend /api/lifestyle/* is wired via app.include_router(build_lifestyle_router(db, get_current_user)). Estimator has no Pydantic model — accepts arbitrary dict.",
+  "rca of the issue": "N/A — no failures. Initial test suite hit 8 setup errors because pydantic EmailStr rejects '@viearta.test' as a reserved TLD; fixed by switching to '@example.com' in the fixture, after which all 41 tests passed."
+}

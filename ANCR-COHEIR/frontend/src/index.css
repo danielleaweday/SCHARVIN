@@ -1,0 +1,195 @@
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@900,800,700,500,400&f[]=satoshi@900,700,500,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --coheir-bg: #000000;
+  --coheir-surface: #0A0A0A;
+  --coheir-elevated: #111111;
+  --coheir-blue: #00F0FF;
+  --coheir-violet: #8B5CF6;
+  --coheir-orange: #F97316;
+  --coheir-text: #FFFFFF;
+  --coheir-text-2: #A1A1AA;
+  --coheir-text-3: #71717A;
+  --coheir-border: rgba(255,255,255,0.08);
+}
+
+html, body, #root {
+  background: var(--coheir-bg);
+  color: var(--coheir-text);
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  font-family: 'Satoshi', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection { background: rgba(0, 240, 255, 0.35); color: #fff; }
+
+/* Shadcn CSS variables — force dark obsidian everywhere */
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 189 100% 50%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 10%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 0 0% 10%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
+    --ring: 189 100% 50%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* Font utilities */
+.font-heading { font-family: 'Cabinet Grotesk', 'Satoshi', sans-serif; }
+.font-body    { font-family: 'Satoshi', system-ui, sans-serif; }
+.font-mono    { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+/* Premium glass surfaces */
+.glass-panel {
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  border-radius: 20px;
+}
+
+.glass-interactive {
+  background: rgba(255,255,255,0.03);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 16px;
+  transition: background-color 300ms ease-out, border-color 300ms ease-out, transform 300ms ease-out;
+}
+.glass-interactive:hover {
+  background: rgba(255,255,255,0.055);
+  border-color: rgba(255,255,255,0.14);
+}
+
+.header-glass {
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Gradient utilities */
+.text-gradient-cohesion {
+  background: linear-gradient(90deg, #00F0FF 0%, #8B5CF6 55%, #F97316 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.bg-gradient-cohesion {
+  background: linear-gradient(90deg, #00F0FF 0%, #8B5CF6 55%, #F97316 100%);
+}
+.ring-cohesion { box-shadow: 0 0 0 2px rgba(0,240,255,0.35), 0 0 24px rgba(139,92,246,0.35); }
+.glow-blue { box-shadow: 0 0 30px rgba(0,240,255,0.25); }
+
+/* Gradient buttons */
+.btn-primary {
+  background: linear-gradient(90deg, #00F0FF 0%, #8B5CF6 55%, #F97316 100%);
+  color: #000;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0.75rem 1.75rem;
+  transition: filter 300ms ease-out, transform 200ms ease-out, box-shadow 300ms ease-out;
+}
+.btn-primary:hover { filter: brightness(1.08); box-shadow: 0 0 32px rgba(139,92,246,0.45); }
+.btn-primary:active { transform: translateY(1px); }
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 300ms ease-out, border-color 300ms ease-out;
+}
+.btn-outline:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.3); color: #fff; }
+
+/* Verified badge */
+.verified-dot {
+  filter: drop-shadow(0 0 8px rgba(0,240,255,0.65));
+}
+
+/* Grid noise texture */
+.grain::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  opacity: 0.35;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #000; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* Cabinet wordmark */
+.wordmark {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+/* Aurora hero background */
+.aurora {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.aurora::before, .aurora::after {
+  content: ""; position: absolute; border-radius: 9999px; filter: blur(80px);
+}
+.aurora::before {
+  width: 480px; height: 480px; left: -80px; top: -140px;
+  background: radial-gradient(closest-side, rgba(0,240,255,0.45), transparent);
+}
+.aurora::after {
+  width: 560px; height: 560px; right: -140px; top: -80px;
+  background: radial-gradient(closest-side, rgba(249,115,22,0.35), transparent);
+}
+
+/* No focus outline on interactive shell, use ring instead */
+button:focus-visible, a:focus-visible {
+  outline: 2px solid rgba(0,240,255,0.6);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+@layer base {
+  [data-debug-wrapper="true"] { display: contents !important; }
+}

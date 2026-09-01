@@ -1,0 +1,33 @@
+{
+  "summary": "Iteration 8 post-fix verification: URL scheme validation on PUT /api/circles/{id}/join-url. Created /app/backend/tests/test_join_url_scheme.py with 10 focused tests covering all 5 FIX cases + regression. Full backend suite 135/135 passed (125 previous + 10 new).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_join_url_scheme.py",
+    "/app/test_reports/pytest/iteration_8.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "programs.py still >1200 lines — recommend splitting playlists/media/circles into submodules (carry-over from iteration 7).",
+    "CircleJoinUrlIn uses model_post_init raising ValueError which FastAPI converts to 422 — works, but a Pydantic v2 @field_validator would be more idiomatic and produce cleaner error messages."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_join_url_scheme.py (new)"
+  ],
+  "success_rate": {"backend": "100% (135/135, includes 10 new scheme-validation tests)", "frontend": "not tested (backend-only per request)"},
+  "test_credentials": "admin@viearta.demo/admin123, jaylen@viearta.demo/demo123",
+  "seed_data_creation": "None (test module autouse fixture clears join_url on the seeded circle after tests).",
+  "verification_of_fixes": {
+    "FIX_1_javascript_scheme": "PASS — returns 422; circle join_url unchanged (verified via GET).",
+    "FIX_2_data_scheme": "PASS — returns 422.",
+    "FIX_3_vbscript_scheme": "PASS — returns 422.",
+    "FIX_4_https_accepted": "PASS — returns 200, value persisted (verified via GET /api/circles/{id}).",
+    "FIX_5_null_clears": "PASS — returns 200 with join_url=null; GET returns null. Empty string also clears.",
+    "REGRESSION": "PASS — 135/135 tests pass; existing test_iteration7.py already used https:// URLs so no test-data edit needed.",
+    "BONUS": "file:// scheme also rejected (422); case-insensitive check (JavaScript:) rejected; bare hostname without scheme rejected (422)."
+  },
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All iteration 8 security hardening verified. Safe to ship. Full backend regression suite is at 135/135.",
+  "rca of the issue": "N/A — hardening fix verified working as designed."
+}

@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 18 (frontend-only) — verified the two targeted fixes in EcosystemExperience & Platform. (1) Selector-to-panel match: clicked each of the 18 product nodes (node-ancr, node-ancra, node-ancrlab, node-ancrsync, node-ancrlaunch, node-ancrid, node-passport, node-coheir, node-vaulta, node-adca, node-ancrd, node-ancrwav, node-ancrview, node-inheira, node-ancrmedia, node-cynaiah, node-viearta, node-sovreign) — for every one the ecosystem-detail panel's preview <img> alt, logo alt, tagline, description and PLATFORM_PREVIEWS src matched the clicked product with mouse moved to a neutral area between clicks. (2) Bug reproduction: click CYNAIAH then immediately VAULTA → panel shows VAULTA (alt='VAULTA product preview'). Rapid consecutive clicks on 6 different products end on the last-clicked (ANCRA). (3) Platform counts: 'Unifies 17 platforms' present in the ecosystem hub divider; /platform stat card shows '17 INTEGRATED PLATFORMS' (not 16); branch tile counts Education 3 + Technology 5 + Creative Economy 9 = 17 (OS excluded). (4) Coming Soon badges render for cynaiah/viearta/sovreign and are absent for released products (verified via text_content). (5) No console/page errors. No horizontal overflow at 1440 or 390 (scrollWidth == clientWidth). All regressions pass.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "EcosystemExperience", "issue": "Duplicate data-testid=\"node-ancr\" on the page — the top ANCR OS hub button (line 57) and the modules grid re-appends ANCR at the end (`modules = [...coreModules, ancr]`) both use the same testid. Two DOM nodes share it. Tests work around this with .first, but this is a testability defect and also renders the ANCR OS card twice (once as hub, once as grid tile). Consider either removing ANCR from the grid `modules` array or giving the grid instance a distinct testid (e.g. node-ancr-tile).", "selector": "[data-testid=\"node-ancr\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: resolve duplicate node-ancr testid / duplicated ANCR rendering (hub + grid) as noted above. Non-blocking."
+  ],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "100%"},
+  "seed_data_creation": "None",
+  "should_call_test_agent_after_fix": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Both targeted fixes are working correctly on https://studio-ancr.preview.emergentagent.com. Selector→panel match is instantaneous (no AnimatePresence exit-wait), verified across all 18 nodes and via the exact CYNAIAH→VAULTA repro. Canonical platform count is 17 everywhere (hub divider text, /platform stat card, sum of branch tile counts 3+5+9). Nodes are also hover-driven (onMouseEnter), so tests must move the mouse to a neutral coord (e.g. page.mouse.move(5,5)) after clicking before reading the panel. Two elements share data-testid=\"node-ancr\" (hub button + grid tile since modules = [...coreModules, ancr]); use .first when locating. Coming Soon badge is position:absolute and may not show up in Playwright inner_text — use text_content or inner_html for that assertion.",
+  "rca_of_the_issue": "Fix 1 (mismatch): AnimatePresence mode='wait' held the previous panel during its 0.4s exit before mounting the new keyed panel, so a rapid selection change appeared to leave the panel on the previously highlighted card. Removing AnimatePresence and using a keyed motion.div with entrance-only animation causes React to unmount and remount the panel synchronously when `selected.id` changes → panel content always matches the currently selected card. Fix 2 (count): Platform.jsx now derives platformCount = PLATFORMS.filter(p=>!p.os).length instead of the hardcoded 16, and EcosystemExperience branch tile counts use coreModules (OS excluded); the divider label uses coreModules.length → single source of truth = 17."
+}

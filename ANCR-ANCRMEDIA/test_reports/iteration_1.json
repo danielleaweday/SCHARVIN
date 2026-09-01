@@ -1,0 +1,37 @@
+{
+  "summary": "Executed 37 backend tests against public URL. 36 passed (97.3%). Only failure: zara@ancrmedia.com login returns 401 due to seed data bug — Zara is not guaranteed to be picked as a creator (random.sample from UK pool), so demo user seeding for zara is skipped. All other endpoints (auth, home, discover, institutions, creators, albums, tracks, videos, livestreams, playlists, challenges, events, charts, world, genres, search, library toggle+list, analytics) work correctly.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "POST /api/auth/login (zara@ancrmedia.com / Creator2026!)",
+        "issue": "Returns 401. Root cause: /app/backend/seed_data.py line 268 uses random.sample(pool, n) for each institution's creator pool. Trinity Laban (UK) pool has 8 members and picks only 4 randomly, so Zara Adebayo (index 0) is not always included. When Zara isn't in creators collection, server.py line 164 (`await db.creators.find_one({\"email\": email})`) returns None and demo user for zara is never created. Fix: force-include demo creators (Maya, Kenji, Zara, Luca, Noah) first, then random-sample the remainder from each institution's pool.",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_ancrmedia_backend.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Fix seed_data.py to guarantee inclusion of demo student creators (Maya, Kenji, Zara, Luca, Noah) in their institution's creator pool before random sampling. This ensures zara@ancrmedia.com login works deterministically across DB re-seeds."
+  ],
+  "critical_code_review_comments": [
+    "server.py is 736 lines — consider splitting into routers (auth, catalog, charts, library, analytics) for maintainability.",
+    "seed_data.py uses random.sample without a fixed seed for creator selection, causing non-deterministic seed state — demo users tied to specific creators may vanish. Either use random.seed(N) at start of seeding, or force-include demo creators.",
+    "Registration endpoint accepts field 'name' (not 'display_name'); response uses lowercase email — behavior is correct but should be documented."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_ancrmedia_backend.py",
+    "/app/backend/tests/__init__.py"
+  ],
+  "success_rate": {"backend": "97.3%", "frontend": "not tested"},
+  "test_credentials": "Verified working: admin@ancrmedia.com/AdminPass2026!, maya/kenji/luca/noah@ancrmedia.com/Creator2026!, prof.hayes@ancrmedia.com/Faculty2026!. FAILING: zara@ancrmedia.com/Creator2026! (seed bug).",
+  "seed_data_creation": "Created test user TEST_user_<uuid>@ancrmedia.com via /api/auth/register (not cleaned up — low volume).",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Full pytest suite at /app/backend/tests/test_ancrmedia_backend.py — 37 tests covering all listed endpoints. Only zara login test fails. After main agent fixes seed_data.py (force-include demo creators + reset DB or add migration), rerun test_credentials_all_valid to confirm.",
+  "rca of the issue": "zara login 401: /app/backend/seed_data.py:268 uses `chosen = random.sample(pool, n)` with n=4 out of 8 UK pool members. Zara Adebayo is at index 0 of UK pool (line 64) but only picked probabilistically. When not picked, no creator row is created for her, and server.py:164 startup demo-user loop skips inserting her user record because `db.creators.find_one({'email': 'zara@ancrmedia.com'})` returns None. Reproduction: drop DB, restart backend, attempt login with zara. Mitigation: in seed_data.py ensure demo creators are always included — e.g., move the fixed-name demo creators to the front and only random-sample remaining slots, or set random.seed()."
+}

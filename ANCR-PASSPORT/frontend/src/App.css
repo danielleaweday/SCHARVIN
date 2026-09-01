@@ -1,0 +1,2 @@
+/* App-level layout styles intentionally minimal; theme lives in index.css */
+.App { min-height: 100vh; }

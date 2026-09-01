@@ -1,0 +1,33 @@
+{
+  "summary": "Iteration 5 — review notifications side-effect + deep-link + immutable-history — verified end-to-end. Added /app/backend/tests/test_review_notifications.py (22 tests, 100% pass) covering: (a) each of the 5 review kinds (written, time_coded, coverage_response, rubric, status) spawns exactly one bell notification for the project owner with correct type/read/project_id/project_title/review_id/review_kind/author_name/deep_link fields, (b) per-kind copy matches spec ('left you a written note', '0:33', 'Scene 2', 'rubric evaluation', 'set Neon Heart\\'s status to “approved”'), (c) GET /api/notifications is sorted desc by created_at and populates every extra field, (d) POST /notifications/{id}/read + cross-owner no-op, (e) POST /notifications/read-all bulk flips only the caller's rows (attacker's read-all leaves student notes unread), (f) cross-owner GET /notifications does not leak Aria's rows to a fresh registered student, (g) IMMUTABLE HISTORY: after posting 5 notifications the seeded rev-nh-1..5 rows remain intact, superseding a rubric preserves the old row with superseded_by set, and no field (kind/message/created_at) of a freshly created review is mutated by the notification side-effect, (h) iteration-3 regression: /api/projects/{pid}/reviews still returns seeded+new events with joined author names. Full iteration-4 security_authz suite re-run — 40/40 pass. Frontend UI verified with Playwright: bell badge shows correct unread count (5), popover opens with per-item review_kind · project_title · Open → footer and cyan pulse dot when unread, clicking an item marks read (badge 5 → 4), navigates to /reviews?project=<pid>&review=<rid>, the student-review-<rid> row is present with cyan highlight and scrolled into view, Mark-all-read clears every unread and the badge disappears.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Studio dashboard", "issues": ["'UNREAD NOTIFICATIONS' stat card (from GET /user/dashboard) stayed at 5 after mark-all-read while the bell badge correctly cleared to 0. The bell is source of truth so this is cosmetic only — either invalidate/refetch the dashboard summary when notifications change, or drive the card from the same polled state as the bell."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_review_notifications.py",
+    "/app/test_reports/pytest/review_notifications.xml"
+  ],
+  "action_items": [
+    "Optional cosmetic: refresh (or share state with) the dashboard 'Unread notifications' KPI card when the bell mark-all-read/mark-read fires — currently it lags until next dashboard refetch."
+  ],
+  "critical_code_review_comments": [
+    "server.py now ~1594 lines — please consider splitting into routers (auth, projects, sync_studio, rights, ai, faculty, notifications). Not blocking.",
+    "_spawn_review_notification is correctly wrapped in try/except at the call site so a broken notifications collection never blocks review persistence. Copy branching (status / time_coded / coverage_response) is clean and matches spec.",
+    "Notification model correctly uses Optional[...] for all new review fields — backward compatible with pre-iteration-5 rows.",
+    "POST /notifications/{id}/read is scoped by user_id in the update filter so cross-owner calls are silent no-ops (verified). Consider returning 404 instead of {ok:true} when no doc matched, so clients can distinguish 'marked' vs 'not yours' — minor DX nit, not a security issue.",
+    "Append-only invariant holds: only /faculty/projects/{pid}/reviews inserts new rows; supersede only sets superseded_by on the OLD row, never modifies message/kind/created_at. No delete_ calls on faculty_reviews anywhere in the codebase (grepped).",
+    "TID.topbarNotifications resolves to 'topbar-notifications-btn' — the review request said data-testid `topbar-notifications` for the bell. Not a real problem (the popover/badge/item testids match spec exactly), but worth aligning naming."
+  ],
+  "updated_files": ["/app/backend/tests/test_review_notifications.py"],
+  "success_rate": {"backend": "100% (22/22 new + 40/40 regression)", "frontend": "100% of critical flows (badge, popover, per-item deep-link, highlight, mark-all-read, live focus refresh)"},
+  "test_credentials": "student@cynaiah.demo / Cynaiah2026!; faculty@cynaiah.demo / Cynaiah2026!; attacker registered dynamically per-run",
+  "seed_data_creation": "The test module posts ~7 new faculty_reviews and their notifications during the run. These are append-only, expected to persist across runs (rev-nh-1..5 seeded reviews remain untouched). If test data accumulates, next agent can nuke db.notifications and db.faculty_reviews for project_id=proj-mv-neon-heart WHERE id NOT IN seeded set.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 5 shipped review notifications + deep-links + immutable-history guarantee — all validated. Test file /app/backend/tests/test_review_notifications.py is reusable regression. Cosmetic-only follow-up: the dashboard 'Unread notifications' KPI card is stale until next full dashboard refetch (bell badge is fine). If a future iteration adds notification categories (assignments, submissions, comments) the type field is already string so no schema change needed — just extend REVIEW_KIND_HEADLINE-style dispatch. Frontend testid naming: bell uses 'topbar-notifications-btn' (from TID.topbarNotifications), popover/items/badge/mark-all use the spec names."
+}
