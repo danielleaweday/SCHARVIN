@@ -1,0 +1,13 @@
+{
+  "name": "ancr-functional-requirements-docgen",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generate editable, branded Word functional-requirements specifications from the reviewed Markdown sources.",
+  "scripts": {
+    "generate": "node generate-documents.js",
+    "validate": "node validate-documents.js"
+  },
+  "dependencies": {
+    "docx": "9.7.1"
+  }
+}

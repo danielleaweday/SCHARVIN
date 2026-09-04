@@ -1,6 +1,5 @@
 #Requires -Version 5.1
-# SCHARVIN Project Sync - GitHub push/pull, machine handoff, file copy
-# (network/share/USB)
+# Project Sync - GitHub push/pull, machine handoff, file copy (network/share/USB)
 #
 # Modes:
 #   [G] GitHub  - branch switch, push, pull
@@ -10,25 +9,25 @@
 #                 a cloud session (branch + full conversation) onto this machine
 #   [F] File    - robocopy to a network drive, machine share, or USB
 #
-# Tuned for this repo: one Git repository containing multiple ANCR applications.
-#   - Every app remains in its own top-level folder under SCHARVIN.
-#   - Dependency/build folders are never file-synced.
-#   - .env files are EXCLUDED by default because they may contain API keys.
-#     Pass -IncludeEnv to carry them to a trusted machine.
+# Every menu has a [X] Back option that returns one page up; [Q] Quit exits.
+# Only genuinely fatal conditions (missing tools, robocopy/claude hard failures)
+# terminate the script - everything else loops back to the main menu.
+#
+# Tuned for this repo: a pnpm + turbo workspace (packages/api, packages/web).
+#   - node_modules is never synced; use the pnpm install prompt after a pull.
+#   - .env is EXCLUDED by default (it is gitignored, and holds JWT_SECRET and
+#     local DB credentials). Pass -IncludeEnv to carry it to a trusted machine.
 [CmdletBinding()]
 param(
 	[string]$ProjectRoot,
 	# Directory names skipped anywhere in the tree (build output + machine-local state).
 	[string[]]$ExcludeDirs = @(
-		'.git', '.git.nested-backup', '.next', 'node_modules', 'dist', 'build', 'out',
-		'coverage', '.cache', '.pytest_cache', '__pycache__', '.venv', 'venv', '.vscode', '.idea'
+		'.git', '.turbo', 'node_modules', 'dist', 'build', 'coverage', '.vscode', '.idea'
 	),
 	# File name patterns skipped anywhere in the tree.
 	[string[]]$ExcludeFiles = @('*.log', '.DS_Store', '*.suo'),
 	# Opt in to copying .env files (secrets) to the destination.
-	[switch]$IncludeEnv,
-	# Run read-only local validation and exit without opening the menu.
-	[switch]$Check
+	[switch]$IncludeEnv
 )
 
 # ============================================================================
@@ -44,7 +43,7 @@ $ProjectName = Split-Path $ProjectRoot -Leaf
 
 # Secrets stay out of removable media / shares unless explicitly opted in.
 if (-not $IncludeEnv) {
-	$ExcludeFiles = @($ExcludeFiles) + '.env*'
+	$ExcludeFiles = @($ExcludeFiles) + '.env'
 }
 
 # ============================================================================
@@ -60,10 +59,6 @@ function Invoke-Git {
 
 function Get-GitBranch {
 	$b = Invoke-Git @('rev-parse', '--abbrev-ref', 'HEAD')
-	if ($LASTEXITCODE -ne 0) {
-		$b = Invoke-Git @('symbolic-ref', '--short', 'HEAD')
-	}
-	if ($LASTEXITCODE -ne 0) { return '(no commits)' }
 	return ($b | Out-String).Trim()
 }
 
@@ -75,7 +70,7 @@ function Get-GitRemoteUrl {
 
 function Get-GitStatus {
 	# Returns array of status lines, empty if clean
-	$lines = Invoke-Git @('status', '--short', '--untracked-files=all')
+	$lines = Invoke-Git @('status', '--short')
 	return @($lines | Where-Object { $_ -match '\S' })
 }
 
@@ -171,17 +166,64 @@ function Invoke-CommitAll {
 }
 
 function Invoke-PushBranch {
-	# Pushes the named branch to origin. Returns $true on success.
+	# Pushes the named branch to origin, establishes upstream tracking, and
+	# verifies that GitHub received the exact local commit. Returns $true on
+	# success. A successful local commit is not enough: the remote verification
+	# is what makes this flow safe for handoff/cloud work.
 	param([string]$Branch)
 	Write-Host ''
-	Write-Host "  Pushing to origin/$Branch ..."
-	$pushOut = Invoke-Git @('push', 'origin', $Branch)
+	$remoteUrl = Get-GitRemoteUrl
+	if ([string]::IsNullOrWhiteSpace($remoteUrl)) {
+		Write-Host 'ERROR: No origin remote is configured. Use GitHub mode to add one first.'
+		return $false
+	}
+
+	Write-Host "  Checking GitHub connectivity ($remoteUrl)..."
+	$probeOut = Invoke-Git @('ls-remote', 'origin')
+	if ($LASTEXITCODE -ne 0) {
+		Write-Host ''
+		Write-Host 'ERROR: GitHub could not be reached or authentication failed.'
+		$probeOut | Out-Host
+		Write-Host '  Check your network connection, GitHub login/token, and repository permission.'
+		Write-Host "  Remote: $remoteUrl"
+		return $false
+	}
+
+	$localCommit = ((Invoke-Git @('rev-parse', 'HEAD')) | Out-String).Trim()
+	if ([string]::IsNullOrWhiteSpace($localCommit) -or $LASTEXITCODE -ne 0) {
+		Write-Host 'ERROR: Could not determine the local commit to push.'
+		return $false
+	}
+
+	Write-Host "  Pushing origin/$Branch and setting upstream tracking ..."
+	$pushOut = Invoke-Git @('push', '--set-upstream', 'origin', $Branch)
 	$pushOut | Out-Host
 	if ($LASTEXITCODE -ne 0) {
 		Write-Host ''
 		Write-Host 'ERROR: Push failed. If the remote has newer commits, pull first then retry.'
+		Write-Host "  Remote: $remoteUrl"
 		return $false
 	}
+
+	Write-Host "  Verifying origin/$Branch contains $($localCommit.Substring(0, 12)) ..."
+	$remoteRef = Invoke-Git @('ls-remote', '--heads', 'origin', $Branch)
+	if ($LASTEXITCODE -ne 0 -or $remoteRef.Count -eq 0) {
+		Write-Host ''
+		Write-Host 'ERROR: git push reported success, but the branch was not found on origin.'
+		Write-Host '  Refresh GitHub and check that you are viewing the correct repository.'
+		return $false
+	}
+
+	$remoteCommit = (($remoteRef | Select-Object -First 1) -split '\s+')[0].Trim()
+	if ($remoteCommit -ne $localCommit) {
+		Write-Host ''
+		Write-Host 'ERROR: origin has the branch, but it points to a different commit.'
+		Write-Host "  Local : $localCommit"
+		Write-Host "  Remote: $remoteCommit"
+		return $false
+	}
+
+	Write-Host "  Verified: origin/$Branch -> $($remoteCommit.Substring(0, 12))"
 	return $true
 }
 
@@ -216,109 +258,34 @@ function ConvertTo-GitHubRemoteUrl {
 # ============================================================================
 
 function Invoke-WorkspaceInstall {
-	# node_modules is never synced, so freshly pulled applications may need their
-	# frontend dependencies restored. Each SCHARVIN app declares its own package
-	# manager and lockfile.
+	# node_modules is never synced, so a freshly pulled/received tree has no
+	# dependencies. This repo pins pnpm via the root "only-allow pnpm" preinstall.
 	param([string]$Root)
 
-	$manifests = @()
-	$rootManifest = Join-Path $Root 'package.json'
-	if (Test-Path -LiteralPath $rootManifest -PathType Leaf) {
-		$manifests += Get-Item -LiteralPath $rootManifest
-	}
-	Get-ChildItem -LiteralPath $Root -Directory -Force | ForEach-Object {
-		$manifest = Join-Path $_.FullName 'frontend\package.json'
-		if (Test-Path -LiteralPath $manifest -PathType Leaf) {
-			$manifests += Get-Item -LiteralPath $manifest
-		}
-	}
-
-	if ($manifests.Count -eq 0) {
-		Write-Host ''
-		Write-Host '  No JavaScript frontend manifests were found; dependency restore skipped.'
-		return
-	}
-
 	Write-Host ''
-	Write-Host "  Found $($manifests.Count) frontend project(s); node_modules is not synced."
-	$withoutLock = @($manifests | Where-Object {
-		$dir = $_.DirectoryName
-		-not (Test-Path -LiteralPath (Join-Path $dir 'package-lock.json')) -and
-		-not (Test-Path -LiteralPath (Join-Path $dir 'yarn.lock')) -and
-		-not (Test-Path -LiteralPath (Join-Path $dir 'pnpm-lock.yaml'))
-	})
-	if ($withoutLock.Count -gt 0) {
-		Write-Host "  NOTE: $($withoutLock.Count) frontend(s) have no lockfile; install may create one."
-	}
-	$doInstall = Read-Host '  Restore frontend dependencies now? [Y/N]'
+	Write-Host '  This is a pnpm workspace and node_modules is not synced.'
+	$doInstall = Read-Host '  Run "pnpm install" now to restore dependencies? [Y/N]'
 	if ($doInstall -notmatch '^[Yy]') {
-		Write-Host '  Skipped. Restore dependencies in the frontend(s) you plan to run.'
+		Write-Host '  Skipped. Run "pnpm install" manually before starting the app.'
 		return
 	}
 
-	foreach ($manifest in $manifests) {
-		$directory = $manifest.DirectoryName
-		$relative = $directory.Substring($Root.Length).TrimStart('\')
-		$packageJson = $null
-		try {
-			$packageJson = Get-Content -LiteralPath $manifest.FullName -Raw | ConvertFrom-Json
-		} catch {
-			Write-Host "  Skipping $relative - package.json is not valid JSON."
-			continue
-		}
-
-		$manager = 'npm'
-		$installArgs = @('install')
-		if (Test-Path -LiteralPath (Join-Path $directory 'package-lock.json')) {
-			$installArgs = @('ci')
-		} elseif (Test-Path -LiteralPath (Join-Path $directory 'pnpm-lock.yaml')) {
-			$manager = 'pnpm'
-			$installArgs = @('install', '--frozen-lockfile')
-		} elseif (Test-Path -LiteralPath (Join-Path $directory 'yarn.lock')) {
-			$manager = 'yarn'
-			$installArgs = @('install', '--frozen-lockfile')
-		} elseif ($packageJson.packageManager -match '^(npm|pnpm|yarn)@') {
-			$manager = $Matches[1]
-		}
-
-		$executable = $manager
-		$commandArgs = @($installArgs)
-		if ($null -eq (Get-Command $manager -ErrorAction SilentlyContinue)) {
-			if ($manager -in @('yarn', 'pnpm') -and $null -ne (Get-Command corepack -ErrorAction SilentlyContinue)) {
-				$executable = 'corepack'
-				$commandArgs = @($manager) + $installArgs
-			} else {
-				Write-Host "  Skipping $relative - $manager was not found in PATH."
-				continue
-			}
-		}
-
-		Write-Host ''
-		Write-Host "  [$relative] $executable $($commandArgs -join ' ')"
-		Push-Location $directory
-		try {
-			& $executable @commandArgs
-			if ($LASTEXITCODE -ne 0) {
-				Write-Host "  Dependency restore failed for $relative - review the output above."
-			} else {
-				Write-Host "  Dependencies installed for $relative."
-			}
-		} finally {
-			Pop-Location
-		}
+	$pnpmCmd = Get-Command pnpm -ErrorAction SilentlyContinue
+	if ($null -eq $pnpmCmd) {
+		Write-Host '  pnpm was not found in PATH. Install it with:  npm install -g pnpm'
+		return
 	}
 
-	$requirements = @()
-	Get-ChildItem -LiteralPath $Root -Directory -Force | ForEach-Object {
-		$backend = Join-Path $_.FullName 'backend'
-		if (Test-Path -LiteralPath $backend -PathType Container) {
-			$requirements += Get-ChildItem -LiteralPath $backend -Filter 'requirements*.txt' -File -ErrorAction SilentlyContinue
+	Push-Location $Root
+	try {
+		& pnpm install
+		if ($LASTEXITCODE -ne 0) {
+			Write-Host '  pnpm install reported errors - review the output above.'
+		} else {
+			Write-Host '  Dependencies installed.'
 		}
-	}
-	if ($requirements.Count -gt 0) {
-		Write-Host ''
-		Write-Host "  Found $($requirements.Count) Python requirements file(s)."
-		Write-Host '  Python packages were not changed; install them into the intended virtual environment.'
+	} finally {
+		Pop-Location
 	}
 }
 
@@ -338,8 +305,6 @@ function Test-ExcludedPath {
 		if ($DirList -contains $segments[$i]) { return $true }
 	}
 	$leaf = $segments[$segments.Count - 1]
-	# Keep the committed environment template even though .env* is excluded.
-	if ($leaf -eq '.env.example') { return $false }
 	foreach ($pattern in $FileList) {
 		if ($leaf -like $pattern) { return $true }
 	}
@@ -350,50 +315,15 @@ function Get-FileIndex {
 	param([string]$Root, [string[]]$DirList, [string[]]$FileList)
 	$index = @{}
 	if (!(Test-Path $Root)) { return $index }
-
-	# Prune excluded directories before walking them. The workspace contains many
-	# applications, so enumerating node_modules or nested Git object databases just
-	# to discard their files is both slow and memory intensive.
-	$pending = New-Object 'System.Collections.Generic.Stack[string]'
-	$pending.Push((Resolve-Path $Root).Path)
-	while ($pending.Count -gt 0) {
-		$current = $pending.Pop()
-		Get-ChildItem -LiteralPath $current -File -Force -ErrorAction Stop | ForEach-Object {
-			$rel = $_.FullName.Substring($Root.Length).TrimStart('\')
-			if (-not (Test-ExcludedPath -RelativePath $rel -DirList $DirList -FileList $FileList)) {
-				$index[$rel] = [pscustomobject]@{
-					Length           = $_.Length
-					LastWriteTimeUtc = $_.LastWriteTimeUtc
-				}
-			}
-		}
-		Get-ChildItem -LiteralPath $current -Directory -Force -ErrorAction Stop | ForEach-Object {
-			if (($DirList -notcontains $_.Name) -and -not ($_.Attributes -band [IO.FileAttributes]::ReparsePoint)) {
-				$pending.Push($_.FullName)
-			}
+	Get-ChildItem -LiteralPath $Root -File -Recurse -Force | ForEach-Object {
+		$rel = $_.FullName.Substring($Root.Length).TrimStart('\')
+		if (Test-ExcludedPath -RelativePath $rel -DirList $DirList -FileList $FileList) { return }
+		$index[$rel] = [pscustomobject]@{
+			Length           = $_.Length
+			LastWriteTimeUtc = $_.LastWriteTimeUtc
 		}
 	}
 	return $index
-}
-
-function Show-EnvironmentReminder {
-	param([string]$Root)
-
-	$index = Get-FileIndex -Root $Root -DirList $ExcludeDirs -FileList @()
-	$examples = @($index.Keys | Where-Object { (Split-Path $_ -Leaf) -eq '.env.example' } | Sort-Object)
-	$missing = @()
-	foreach ($relativeExample in $examples) {
-		$relativeEnvironment = $relativeExample -replace '\.example$', ''
-		if (-not (Test-Path -LiteralPath (Join-Path $Root $relativeEnvironment) -PathType Leaf)) {
-			$missing += $relativeEnvironment
-		}
-	}
-
-	if ($missing.Count -eq 0) { return }
-	Write-Host ''
-	Write-Host "  NOTE: $($missing.Count) local environment file(s) are missing (secrets do not travel)."
-	$missing | Select-Object -First 5 | ForEach-Object { Write-Host "        Create $_ from $_.example" }
-	if ($missing.Count -gt 5) { Write-Host "        ... and $($missing.Count - 5) more" }
 }
 
 function Show-DiffSummary {
@@ -427,23 +357,7 @@ function Invoke-RoboSync {
 	foreach ($item in $DirList)  { $roboArgs += '/XD'; $roboArgs += $item }
 	foreach ($item in $FileList) { $roboArgs += '/XF'; $roboArgs += $item }
 	& robocopy @roboArgs | Out-Host
-	$robocopyExit = $LASTEXITCODE
-	if ($robocopyExit -ge 8) { throw "Robocopy failed with exit code $robocopyExit." }
-
-	# Robocopy cannot express "exclude .env* except .env.example". Copy the
-	# committed templates explicitly after the secret-file exclusion is applied.
-	if ($FileList -contains '.env*') {
-		$sourceIndex = Get-FileIndex -Root $Source -DirList $DirList -FileList @()
-		$examples = @($sourceIndex.Keys | Where-Object { (Split-Path $_ -Leaf) -eq '.env.example' })
-		foreach ($relativePath in $examples) {
-			$targetPath = Join-Path $Destination $relativePath
-			$targetDirectory = Split-Path $targetPath -Parent
-			if (-not (Test-Path -LiteralPath $targetDirectory -PathType Container)) {
-				New-Item -ItemType Directory -Path $targetDirectory -Force | Out-Null
-			}
-			Copy-Item -LiteralPath (Join-Path $Source $relativePath) -Destination $targetPath -Force
-		}
-	}
+	if ($LASTEXITCODE -ge 8) { throw "Robocopy failed with exit code $LASTEXITCODE." }
 	$global:LASTEXITCODE = 0
 }
 
@@ -535,103 +449,6 @@ function Invoke-Menu {
 	}
 }
 
-function Invoke-ProjectCheck {
-	param([string]$Root)
-
-	$problems = @()
-	$warnings = @()
-	Write-Host ''
-	Write-Host '--- SCHARVIN validation ---'
-
-	if (-not (Test-GitAvailable)) {
-		$problems += 'Git is not available in PATH.'
-	} elseif (-not (Test-GitRepo)) {
-		$problems += 'The SCHARVIN root is not a Git repository.'
-	} elseif (-not (Get-GitRemoteUrl)) {
-		$problems += 'The root repository has no origin remote.'
-	}
-
-	$nestedRepos = @(Get-ChildItem -LiteralPath $Root -Directory -Force | Where-Object {
-		Test-Path -LiteralPath (Join-Path $_.FullName '.git')
-	})
-	if ($nestedRepos.Count -gt 0) {
-		$problems += "$($nestedRepos.Count) top-level folder(s) still contain active .git metadata and would be committed as gitlinks."
-	}
-
-	$backups = @(Get-ChildItem -LiteralPath $Root -Directory -Force | Where-Object {
-		Test-Path -LiteralPath (Join-Path $_.FullName '.git.nested-backup') -PathType Container
-	})
-	Write-Host "  Nested Git backups : $($backups.Count)"
-
-	$applications = @()
-	Get-ChildItem -LiteralPath $Root -Directory -Force | ForEach-Object {
-		$manifest = Join-Path $_.FullName 'frontend\package.json'
-		if (Test-Path -LiteralPath $manifest -PathType Leaf) {
-			try {
-				$packageJson = Get-Content -LiteralPath $manifest -Raw | ConvertFrom-Json
-				$manager = if ($packageJson.packageManager -match '^(npm|pnpm|yarn)@') { $Matches[1] } else { 'npm' }
-				$applications += [pscustomobject]@{
-					Application = $_.Name
-					Manager     = $manager
-					Manifest    = 'OK'
-				}
-			} catch {
-				$problems += "$($_.Name) has an invalid frontend/package.json."
-			}
-		}
-	}
-	if ($applications.Count -eq 0) {
-		$warnings += 'No frontend/package.json files were found.'
-	} else {
-		$applications | Format-Table -AutoSize | Out-Host
-	}
-
-	foreach ($manager in @($applications.Manager | Sort-Object -Unique)) {
-		$available = $null -ne (Get-Command $manager -ErrorAction SilentlyContinue)
-		$corepackFallback = $manager -in @('yarn', 'pnpm') -and $null -ne (Get-Command corepack -ErrorAction SilentlyContinue)
-		if (-not $available -and -not $corepackFallback) {
-			$warnings += "$manager is required by at least one frontend but is not available in PATH."
-		}
-	}
-
-	if ($null -eq (Get-Command robocopy -ErrorAction SilentlyContinue)) {
-		$problems += 'Robocopy is not available; File sync mode cannot run.'
-	}
-
-	try {
-		$fileIndex = Get-FileIndex -Root $Root -DirList $ExcludeDirs -FileList $ExcludeFiles
-		$indexedBytes = ($fileIndex.Values | Measure-Object Length -Sum).Sum
-		$oversized = @($fileIndex.GetEnumerator() | Where-Object { $_.Value.Length -ge 100MB })
-		$leakedMetadata = @($fileIndex.Keys | Where-Object { $_ -match '(^|\\)\.git(?:\.nested-backup)?(\\|$)' })
-		Write-Host "  File-sync payload : $($fileIndex.Count) files / $([math]::Round($indexedBytes / 1MB, 1)) MB"
-		if ($oversized.Count -gt 0) {
-			$problems += "$($oversized.Count) file(s) meet or exceed GitHub's 100 MB per-file limit."
-		}
-		if ($leakedMetadata.Count -gt 0) {
-			$problems += 'File-sync indexing included Git metadata that should have been excluded.'
-		}
-	} catch {
-		$problems += "File-sync indexing failed: $($_.Exception.Message)"
-	}
-
-	Write-Host "  Applications       : $($applications.Count)"
-	Write-Host "  Root branch        : $(Get-GitBranch)"
-	if (Get-GitRemoteUrl) { Write-Host "  Root origin        : $(Get-GitRemoteUrl)" }
-
-	foreach ($warning in $warnings) { Write-Host "  WARNING: $warning" }
-	foreach ($problem in $problems) { Write-Host "  ERROR: $problem" }
-
-	if ($problems.Count -gt 0) {
-		Write-Host ''
-		Write-Host 'Validation failed.'
-		return $false
-	}
-
-	Write-Host ''
-	Write-Host 'Validation passed. No files, commits, remotes, or dependencies were changed.'
-	return $true
-}
-
 # ============================================================================
 # VALIDATE
 # ============================================================================
@@ -648,7 +465,7 @@ $remoteUrl = if ($gitReady) { Get-GitRemoteUrl } else { $null }
 
 Write-Host ''
 Write-Host '============================================'
-Write-Host "    SCHARVIN Project Sync - $ProjectName"
+Write-Host "         Project Sync - $ProjectName"
 Write-Host '============================================'
 Write-Host "  Project : $ProjectRoot"
 Write-Host "  Branch  : $branch"
@@ -660,658 +477,679 @@ if ($IncludeEnv) {
 }
 Write-Host ''
 
-if ($Check) {
-	if (Invoke-ProjectCheck -Root $ProjectRoot) { exit 0 }
-	exit 1
-}
-
 # ============================================================================
-# TOP-LEVEL MENU
+# TOP-LEVEL MENU - loop until [Q] Quit. Every flow can [X] Back to here.
 # ============================================================================
 
-Write-Host '[G] GitHub  - push / pull with remote repo'
-Write-Host '[H] Handoff - commit + push, then hand the task to a Claude cloud session'
-Write-Host '[T] Pull-In - pull a cloud session into this machine (claude --teleport)'
-Write-Host '[F] File    - copy to network drive, machine share, or USB'
-Write-Host '[Q] Quit'
-Write-Host ''
-$mode = Read-Host 'Choose mode [G/H/T/F/Q]'
+:top while ($true) {
 
-switch -Regex ($mode) {
+	Write-Host '[G] GitHub  - push / pull with remote repo'
+	Write-Host '[H] Handoff - commit + push, then hand the task to a Claude cloud session'
+	Write-Host '[T] Pull-In - pull a cloud session into this machine (claude --teleport)'
+	Write-Host '[F] File    - copy to network drive, machine share, or USB'
+	Write-Host '[Q] Quit'
+	Write-Host ''
+	$mode = Read-Host 'Choose mode [G/H/T/F/Q]'
 
-# ============================================================================
-# G - GITHUB FLOW
-# ============================================================================
-'^[Gg]' {
+	switch -Regex ($mode) {
 
-	if (!(Test-GitAvailable)) {
-		Write-Host 'ERROR: git is not available in PATH. Install Git for Windows and retry.'
-		exit 1
-	}
-	$isNewSetup = $false
-	if (!(Test-GitRepo)) {
-		Write-Host ''
-		Write-Host "  $ProjectRoot is not a git repository."
-		$setup = Read-Host '  Would you like to initialize it and download a branch? [Y/N]'
-		if ($setup -notmatch '^[Yy]') { exit 1 }
-		Invoke-Git @('init') | Out-Host
-		$isNewSetup = $true
-	}
+	# ============================================================================
+	# G - GITHUB FLOW
+	# ============================================================================
+	'^[Gg]' {
 
-	$remoteUrl = Get-GitRemoteUrl
-	if (-not $remoteUrl) {
-		Write-Host ''
-		$setupRemote = Read-Host '  No "origin" remote found. Enter GitHub URL to add (or press Enter to abort)'
-		if ([string]::IsNullOrWhiteSpace($setupRemote)) { exit 1 }
-		Invoke-Git @('remote', 'add', 'origin', $setupRemote.Trim()) | Out-Host
+		if (!(Test-GitAvailable)) {
+			Write-Host 'ERROR: git is not available in PATH. Install Git for Windows and retry.'
+			exit 1
+		}
+		$isNewSetup = $false
+		if (!(Test-GitRepo)) {
+			Write-Host ''
+			Write-Host "  $ProjectRoot is not a git repository."
+			$setup = Read-Host '  Would you like to initialize it and download a branch? [Y/N]'
+			if ($setup -notmatch '^[Yy]') { continue top }
+			Invoke-Git @('init') | Out-Host
+			$isNewSetup = $true
+		}
+
 		$remoteUrl = Get-GitRemoteUrl
-		$isNewSetup = $true
-	}
-
-	if ($remoteUrl) {
-		$normalUrl = ConvertTo-GitHubRemoteUrl -RemoteUrl $remoteUrl
-		if ($normalUrl -ne $remoteUrl) {
-			Write-Host "  Using URL: $normalUrl"
-			Invoke-Git @('remote', 'set-url', 'origin', $normalUrl) | Out-Null
-		}
-		$remoteUrl = $normalUrl
-	}
-
-	if ($isNewSetup) {
-
-		# ---- Fetch all remote branches ----
-		Write-Host ''
-		Write-Host '  Connecting to GitHub and fetching branch list...'
-		Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
-		$fetchOut = Invoke-Git @('fetch', 'origin', '--prune')
-		if ($LASTEXITCODE -ne 0) {
+		if (-not $remoteUrl) {
 			Write-Host ''
-			Write-Host '  ERROR: Could not connect to the remote repository.'
-			Write-Host "  $fetchOut"
-			Write-Host '  Please check the URL and your network/credentials, then run the script again.'
-			exit 1
+			$setupRemote = Read-Host '  No "origin" remote found. Enter GitHub URL to add (or press Enter to go back)'
+			if ([string]::IsNullOrWhiteSpace($setupRemote)) { continue top }
+			Invoke-Git @('remote', 'add', 'origin', $setupRemote.Trim()) | Out-Host
+			$remoteUrl = Get-GitRemoteUrl
+			$isNewSetup = $true
 		}
 
-		# ---- Build branch list and show picker ----
-		$remoteBranches = Invoke-Git @('branch', '-r')
-		$cleanBranches = @()
-		foreach ($b in $remoteBranches) {
-			if ([string]::IsNullOrWhiteSpace($b) -or $b -match 'HEAD ->') { continue }
-			$b = $b.Trim() -replace '^remotes/origin/', '' -replace '^origin/', ''
-			if ($cleanBranches -notcontains $b) { $cleanBranches += $b }
-		}
-		$cleanBranches = $cleanBranches | Sort-Object
-
-		if ($cleanBranches.Count -eq 0) {
-			Write-Host '  No remote branches found. The repository may be empty.'
-			exit 1
-		}
-
-		Write-Host ''
-		$branchToPull = Invoke-Menu -Prompt '  Select a branch to download (Up/Down arrows, Enter to confirm):' -Options @($cleanBranches)
-
-		# ---- Checkout selected branch ----
-		Write-Host ''
-		Write-Host "  Downloading branch '$branchToPull' into current folder..."
-		$coOut = Invoke-Git @('checkout', '-B', $branchToPull, "origin/$branchToPull")
-		if ($LASTEXITCODE -ne 0) {
-			Write-Host "  Checkout failed - forcing overwrite of local files..."
-			Invoke-Git @('checkout', '-f', '-B', $branchToPull, "origin/$branchToPull") | Out-Host
-			if ($LASTEXITCODE -ne 0) {
-				Write-Host "  ERROR: Could not download branch. Check permissions and try again."
-				exit 1
+		if ($remoteUrl) {
+			$normalUrl = ConvertTo-GitHubRemoteUrl -RemoteUrl $remoteUrl
+			if ($normalUrl -ne $remoteUrl) {
+				Write-Host "  Using URL: $normalUrl"
+				Invoke-Git @('remote', 'set-url', 'origin', $normalUrl) | Out-Null
 			}
-		} else {
-			$coOut | Out-Host
-		}
-		Write-Host ''
-		Write-Host "  Done! Branch '$branchToPull' is now checked out in $ProjectRoot"
-		Show-EnvironmentReminder -Root $ProjectRoot
-		Invoke-WorkspaceInstall -Root $ProjectRoot
-		exit 0
-	}
-
-	while ($true) {
-		$branch = Get-GitBranch
-		Write-Host ''
-		Write-Host "  Current Branch: $branch"
-		Write-Host ''
-		Write-Host '  [B] Branch - switch or create a branch'
-		Write-Host '  [P] Push   - send local commits to GitHub'
-		Write-Host '  [L] Pull   - fetch commits from GitHub'
-		Write-Host ''
-		$githubDir = Read-Host '  Choose [B/P/L]'
-
-		if ($githubDir -notmatch '^[BbPpLl]') {
-			Write-Host 'Aborted.'
-			exit 0
+			$remoteUrl = $normalUrl
 		}
 
-		if ($githubDir -match '^[Bb]') {
+		if ($isNewSetup) {
+
+			# ---- Fetch all remote branches ----
 			Write-Host ''
-			Write-Host '  Fetching remote branches from GitHub...'
-			# Fix single-branch clone refspec so all remote branches are fetched
-			$currentRefspec = Invoke-Git @('config', '--get', 'remote.origin.fetch')
-			$currentRefspec = ($currentRefspec | Out-String).Trim()
-			if ($currentRefspec -and $currentRefspec -ne '+refs/heads/*:refs/remotes/origin/*') {
-				Write-Host '  (Widening fetch refspec to include all branches...)'
-				Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
-			}
+			Write-Host '  Connecting to GitHub and fetching branch list...'
+			Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
 			$fetchOut = Invoke-Git @('fetch', 'origin', '--prune')
 			if ($LASTEXITCODE -ne 0) {
-				Write-Host "  WARNING: Fetch failed, listing cached branches only.`n$fetchOut"
+				Write-Host ''
+				Write-Host '  ERROR: Could not connect to the remote repository.'
+				Write-Host "  $fetchOut"
+				Write-Host '  Please check the URL and your network/credentials, then run the script again.'
+				exit 1
 			}
-			Write-Host ''
-			$branches = Invoke-Git @('branch', '-a')
+
+			# ---- Build branch list and show picker ----
+			$remoteBranches = Invoke-Git @('branch', '-r')
 			$cleanBranches = @()
-			foreach ($b in $branches) {
+			foreach ($b in $remoteBranches) {
 				if ([string]::IsNullOrWhiteSpace($b) -or $b -match 'HEAD ->') { continue }
-				$b = $b.Trim()
-				$b = $b -replace '^\*\s+', ''
-				$b = $b -replace '^remotes/origin/', ''
-				$b = $b -replace '^origin/', ''
+				$b = $b.Trim() -replace '^remotes/origin/', '' -replace '^origin/', ''
 				if ($cleanBranches -notcontains $b) { $cleanBranches += $b }
 			}
 			$cleanBranches = $cleanBranches | Sort-Object
 
-			$opts = @($cleanBranches) + "[Create NEW branch...]"
+			if ($cleanBranches.Count -eq 0) {
+				Write-Host '  No remote branches found. The repository may be empty.'
+				exit 1
+			}
+
 			Write-Host ''
-			$newBranch = Invoke-Menu -Prompt '  Available branches (Use Up/Down arrows, then Enter):' -Options $opts
+			$branchToPull = Invoke-Menu -Prompt '  Select a branch to download (Up/Down arrows, Enter to confirm):' -Options @($cleanBranches + '[Back]')
+			if ($branchToPull -eq '[Back]') { continue top }
 
-			if ($newBranch -eq '[Create NEW branch...]') {
-				Write-Host ''
-				$newBranch = Read-Host '  Enter NEW branch name'
-				if ([string]::IsNullOrWhiteSpace($newBranch)) { continue }
-				$newBranch = $newBranch.Trim()
-			}
-
-			$coOut = Invoke-Git @('checkout', $newBranch)
-			if ($LASTEXITCODE -eq 0) {
-				$coOut | Out-Host
-			} else {
-				Write-Host ''
-				Write-Host "  Branch '$newBranch' not found locally or remotely."
-				$create = Read-Host "  Create it as a NEW branch from your current state? [Y/N]"
-				if ($create -match '^[Yy]') {
-					Invoke-Git @('checkout', '-b', $newBranch) | Out-Host
+			# ---- Checkout selected branch ----
+			Write-Host ''
+			Write-Host "  Downloading branch '$branchToPull' into current folder..."
+			$coOut = Invoke-Git @('checkout', '-B', $branchToPull, "origin/$branchToPull")
+			if ($LASTEXITCODE -ne 0) {
+				Write-Host "  Checkout failed - forcing overwrite of local files..."
+				Invoke-Git @('checkout', '-f', '-B', $branchToPull, "origin/$branchToPull") | Out-Host
+				if ($LASTEXITCODE -ne 0) {
+					Write-Host "  ERROR: Could not download branch. Check permissions and try again."
+					exit 1
 				}
+			} else {
+				$coOut | Out-Host
 			}
-			continue
+			Write-Host ''
+			Write-Host "  Done! Branch '$branchToPull' is now checked out in $ProjectRoot"
+			Write-Host ''
+			Write-Host '  NOTE: .env is not tracked by git. Copy packages/api/.env.example'
+			Write-Host '        to packages/api/.env and fill in your local values.'
+			Invoke-WorkspaceInstall -Root $ProjectRoot
+			continue top
 		}
 
-		# If they chose Push or Pull, exit the branch-selection loop
-		if ($githubDir -match '^[PpLl]') {
-			break
+		# ---- GitHub submenu: Branch / Push / Pull / Back ----
+		:github while ($true) {
+			$branch = Get-GitBranch
+			Write-Host ''
+			Write-Host "  Current Branch: $branch"
+			Write-Host ''
+			Write-Host '  [B] Branch - switch or create a branch'
+			Write-Host '  [P] Push   - send local commits to GitHub'
+			Write-Host '  [L] Pull   - fetch commits from GitHub'
+			Write-Host '  [X] Back   - return to the main menu'
+			Write-Host ''
+			$githubDir = Read-Host '  Choose [B/P/L/X]'
+
+			if ($githubDir -match '^[Xx]') { continue top }
+
+			if ($githubDir -match '^[Bb]') {
+				Write-Host ''
+				Write-Host '  Fetching remote branches from GitHub...'
+				# Fix single-branch clone refspec so all remote branches are fetched
+				$currentRefspec = Invoke-Git @('config', '--get', 'remote.origin.fetch')
+				$currentRefspec = ($currentRefspec | Out-String).Trim()
+				if ($currentRefspec -and $currentRefspec -ne '+refs/heads/*:refs/remotes/origin/*') {
+					Write-Host '  (Widening fetch refspec to include all branches...)'
+					Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
+				}
+				$fetchOut = Invoke-Git @('fetch', 'origin', '--prune')
+				if ($LASTEXITCODE -ne 0) {
+					Write-Host "  WARNING: Fetch failed, listing cached branches only.`n$fetchOut"
+				}
+				Write-Host ''
+				$branches = Invoke-Git @('branch', '-a')
+				$cleanBranches = @()
+				foreach ($b in $branches) {
+					if ([string]::IsNullOrWhiteSpace($b) -or $b -match 'HEAD ->') { continue }
+					$b = $b.Trim()
+					$b = $b -replace '^\*\s+', ''
+					$b = $b -replace '^remotes/origin/', ''
+					$b = $b -replace '^origin/', ''
+					if ($cleanBranches -notcontains $b) { $cleanBranches += $b }
+				}
+				$cleanBranches = $cleanBranches | Sort-Object
+
+				$opts = @($cleanBranches) + "[Create NEW branch...]" + "[Back]"
+				Write-Host ''
+				$newBranch = Invoke-Menu -Prompt '  Available branches (Use Up/Down arrows, then Enter):' -Options $opts
+
+				if ($newBranch -eq '[Back]') { continue github }
+				if ($newBranch -eq '[Create NEW branch...]') {
+					Write-Host ''
+					$newBranch = Read-Host '  Enter NEW branch name'
+					if ([string]::IsNullOrWhiteSpace($newBranch)) { continue github }
+					$newBranch = $newBranch.Trim()
+				}
+
+				$coOut = Invoke-Git @('checkout', $newBranch)
+				if ($LASTEXITCODE -eq 0) {
+					$coOut | Out-Host
+				} else {
+					Write-Host ''
+					Write-Host "  Branch '$newBranch' not found locally or remotely."
+					$create = Read-Host "  Create it as a NEW branch from your current state? [Y/N]"
+					if ($create -match '^[Yy]') {
+						Invoke-Git @('checkout', '-b', $newBranch) | Out-Host
+					}
+				}
+				continue github
+			}
+
+			# -------------------------------------------------------------------
+			# GITHUB PUSH
+			# -------------------------------------------------------------------
+			if ($githubDir -match '^[Pp]') {
+
+				$statusLines = Get-GitStatus
+				$isDirty     = $statusLines.Count -gt 0
+
+				if ($isDirty) {
+					:pushMenu while ($true) {
+						Write-Host ''
+						Write-Host "  You have $($statusLines.Count) uncommitted file(s):"
+						$statusLines | Select-Object -First 10 | ForEach-Object { Write-Host "    $_" }
+						if ($statusLines.Count -gt 10) { Write-Host "    ... and $($statusLines.Count - 10) more" }
+						Write-Host ''
+						Write-Host '  [C] Commit current state, then push'
+						Write-Host '  [S] Skip commit - push existing HEAD as-is'
+						Write-Host '  [X] Back   - return to the GitHub menu'
+						Write-Host ''
+						$commitChoice = Read-Host '  Choose [C/S/X]'
+
+						if ($commitChoice -match '^[Xx]') { continue github }
+
+						if ($commitChoice -match '^[Cc]') {
+							$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
+							if ($null -eq $commitMessage) {
+								Write-Host '  Commit message cannot be empty. Choose again or pick [X] Back.'
+								continue pushMenu
+							}
+							if (-not (Invoke-CommitAll -Message $commitMessage)) { continue pushMenu }
+							break
+						}
+
+						if ($commitChoice -match '^[Ss]') { break }
+
+						Write-Host '  Invalid selection. Please choose again.'
+					}
+				} else {
+					Write-Host ''
+					Write-Host '  Working tree is clean - nothing to commit.'
+				}
+
+				# Push
+				if (-not (Invoke-PushBranch -Branch $branch)) { continue github }
+				Write-Host ''
+				Write-Host "Done. HEAD pushed to origin/$branch."
+				continue top
+			}
+
+			# -------------------------------------------------------------------
+			# GITHUB PULL
+			# -------------------------------------------------------------------
+			if ($githubDir -match '^[Ll]') {
+
+				Write-Host ''
+				Write-Host '  Fetching from origin...'
+				$fetchOut = Invoke-Git @('fetch', 'origin', '--prune')
+				if ($LASTEXITCODE -ne 0) {
+					Write-Host "ERROR: git fetch failed:`n$fetchOut"
+					continue github
+				}
+				Write-Host '  Fetch complete.'
+				Write-Host ''
+
+				$commits = Get-RemoteCommits -Count 5
+
+				if ($commits.Count -eq 0) {
+					Write-Host 'No commits found on origin. Is the remote repo empty?'
+					continue github
+				}
+
+				Write-Host '  Last 5 commits on origin:'
+				Write-Host ''
+				for ($i = 0; $i -lt $commits.Count; $i++) {
+					$c       = $commits[$i]
+					$num     = $i + 1
+					$brLabel = if ($c.Branch) { $c.Branch } else { '(detached)' }
+					# Truncate subject to keep display tidy
+					$subj = if ($c.Subject.Length -gt 55) { $c.Subject.Substring(0, 52) + '...' } else { $c.Subject }
+					Write-Host ("  [{0}] {1}  {2}  {3,-35}  {4}" -f $num, $c.Hash, $c.Date, $brLabel, $subj)
+				}
+
+				Write-Host ''
+				$pick = Read-Host '  Enter number to pull [1-5], or [X] to go back'
+
+				if ($pick -match '^[Xx]') { continue github }
+
+				$pickNum = 0
+				if (-not [int]::TryParse($pick, [ref]$pickNum) -or $pickNum -lt 1 -or $pickNum -gt $commits.Count) {
+					Write-Host "Invalid selection. Going back to the GitHub menu."
+					continue github
+				}
+
+				$chosen = $commits[$pickNum - 1]
+				Write-Host ''
+
+				# Determine if chosen is the tip of a remote branch we can pull normally
+				$isCurrentBranch = ($chosen.Branch -eq $branch)
+
+				if ($isCurrentBranch) {
+					# Standard pull
+					Write-Host "  Pulling origin/$branch into local $branch ..."
+					$pullOut = Invoke-Git @('pull', 'origin', $branch)
+					$pullOut | Out-Host
+					if ($LASTEXITCODE -ne 0) {
+						Write-Host ''
+						Write-Host 'ERROR: Pull failed. Resolve any merge conflicts manually.'
+						continue github
+					}
+					Write-Host ''
+					Write-Host "Done. Local $branch is now up to date with origin."
+
+				} elseif ($chosen.Branch -and $chosen.Branch -ne '') {
+					# Different branch - pull that branch
+					Write-Host "  Pulling origin/$($chosen.Branch) ..."
+					$pullOut = Invoke-Git @('fetch', 'origin', $chosen.Branch)
+					$pullOut | Out-Host
+					$checkOut = Invoke-Git @('checkout', '-B', $chosen.Branch, "origin/$($chosen.Branch)")
+					$checkOut | Out-Host
+					if ($LASTEXITCODE -ne 0) {
+						Write-Host "ERROR: Could not switch to branch $($chosen.Branch)."
+						continue github
+					}
+					Write-Host ''
+					Write-Host "Done. Switched to and updated branch $($chosen.Branch)."
+
+				} else {
+					# Older commit with no branch label - create recovery branch
+					$recoverBranch = "recover/$($chosen.Hash)"
+					Write-Host "  Commit $($chosen.Hash) is not a current branch tip."
+					Write-Host "  Creating local branch '$recoverBranch' from this commit..."
+					$coOut = Invoke-Git @('checkout', '-b', $recoverBranch, $chosen.Hash)
+					$coOut | Out-Host
+					if ($LASTEXITCODE -ne 0) {
+						Write-Host "ERROR: Could not create recovery branch."
+						continue github
+					}
+					Write-Host ''
+					Write-Host "Done. You are now on branch '$recoverBranch' at commit $($chosen.Hash)."
+				}
+
+				# Lockfile/manifest may have moved with the pull.
+				Invoke-WorkspaceInstall -Root $ProjectRoot
+				continue top
+			}
+
+			Write-Host '  Invalid selection. Please choose again.'
 		}
 	}
 
-	# -----------------------------------------------------------------------
-	# GITHUB PUSH
-	# -----------------------------------------------------------------------
-	if ($githubDir -match '^[Pp]') {
+	# ============================================================================
+	# H - HANDOFF FLOW
+	#
+	# One keypress for "I'm leaving this machine": commit, push, then start a
+	# Claude cloud session so the work continues without this computer.
+	#
+	# The push is not optional politeness - a cloud session clones origin from
+	# GitHub, never from this disk, so anything uncommitted is invisible to it.
+	# ============================================================================
+	'^[Hh]' {
 
+		if (!(Test-GitAvailable) -or !(Test-GitRepo)) {
+			Write-Host 'ERROR: Handoff needs a git repository with git available in PATH.'
+			exit 1
+		}
+		if (-not (Get-GitRemoteUrl)) {
+			Write-Host 'ERROR: No "origin" remote found. A cloud session clones from GitHub,'
+			Write-Host '       so origin is required. Use [G] GitHub mode to add one first.'
+			continue top
+		}
+
+		$branch = Get-GitBranch
+
+		Write-Host ''
+		Write-Host '--- Handoff ---'
+		Write-Host "  Branch : $branch"
+		Write-Host ''
+		Write-Host '  A cloud session clones origin from GitHub, not from this disk, so'
+		Write-Host '  everything you want it to see has to be committed and pushed first.'
+
+		# ---- 1. Commit whatever is outstanding ----
 		$statusLines = Get-GitStatus
-		$isDirty     = $statusLines.Count -gt 0
-
-		if ($isDirty) {
+		if ($statusLines.Count -gt 0) {
 			Write-Host ''
-			Write-Host "  You have $($statusLines.Count) uncommitted file(s):"
+			Write-Host "  $($statusLines.Count) uncommitted file(s):"
 			$statusLines | Select-Object -First 10 | ForEach-Object { Write-Host "    $_" }
 			if ($statusLines.Count -gt 10) { Write-Host "    ... and $($statusLines.Count - 10) more" }
-			Write-Host ''
-			Write-Host '  [C] Commit current state, then push'
-			Write-Host '  [S] Skip commit - push existing HEAD as-is'
-			Write-Host '  [A] Abort'
-			Write-Host ''
-			$commitChoice = Read-Host '  Choose [C/S/A]'
+
+			$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
+			if ($null -eq $commitMessage) {
+				Write-Host 'Commit message cannot be empty. Aborted.'
+				continue top
+			}
+			if (-not (Invoke-CommitAll -Message $commitMessage)) { continue top }
 		} else {
 			Write-Host ''
 			Write-Host '  Working tree is clean - nothing to commit.'
-			$commitChoice = 'S'
 		}
 
-		if ($commitChoice -match '^[Aa]') {
-			Write-Host 'Aborted.'
-			exit 0
+		# ---- 2. Push so the cloud VM has a branch to clone ----
+		if (-not (Invoke-PushBranch -Branch $branch)) { continue top }
+		Write-Host "  origin/$branch is up to date."
+
+		# ---- 3. Hand the task off ----
+		# Everything above is worth doing on its own, so a missing CLI is not fatal:
+		# the code is safely on GitHub either way.
+		if (-not (Test-ClaudeAvailable)) {
+			Write-Host ''
+			Write-Host '  Code is pushed, but the "claude" CLI was not found in PATH, so no'
+			Write-Host '  cloud session was started. From either machine, run:'
+			Write-Host '    claude --cloud "<task>"'
+			continue top
 		}
-
-		if ($commitChoice -match '^[Cc]') {
-			$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
-			if ($null -eq $commitMessage) {
-				Write-Host 'Commit message cannot be empty. Aborted.'
-				exit 0
-			}
-			if (-not (Invoke-CommitAll -Message $commitMessage)) { exit 1 }
-		}
-
-		# Push
-		if (-not (Invoke-PushBranch -Branch $branch)) { exit 1 }
-		Write-Host ''
-		Write-Host "Done. HEAD pushed to origin/$branch."
-
-	# -----------------------------------------------------------------------
-	# GITHUB PULL
-	# -----------------------------------------------------------------------
-	} elseif ($githubDir -match '^[Ll]') {
 
 		Write-Host ''
-		Write-Host '  Fetching from origin...'
-		$fetchOut = Invoke-Git @('fetch', 'origin', '--prune')
+		Write-Host '  What should Claude work on while you are away?'
+		Write-Host '  (Press Enter alone to push only, with no cloud session.)'
+		$task = Read-Host '  Task'
+
+		if ([string]::IsNullOrWhiteSpace($task)) {
+			Write-Host ''
+			Write-Host "Done. origin/$branch is current - no cloud session started."
+			Write-Host '  On the other machine:  git pull'
+			continue top
+		}
+
+		Write-Host ''
+		Write-Host '  Starting cloud session...'
+		Write-Host '    Monitor  : https://claude.ai/code, the Claude mobile app, or /tasks'
+		Write-Host '    Pull back: claude --teleport   (needs a clean working tree)'
+		Write-Host ''
+		& claude --cloud $task
 		if ($LASTEXITCODE -ne 0) {
-			Write-Host "ERROR: git fetch failed:`n$fetchOut"
+			Write-Host ''
+			Write-Host '  claude --cloud exited with an error. Your code is still pushed safely.'
+			Write-Host '  Cloud sessions need a claude.ai login rather than an API key:'
+			Write-Host '  run "claude" then /login, and retry.'
 			exit 1
 		}
-		Write-Host '  Fetch complete.'
-		Write-Host ''
+		continue top
+	}
 
-		$commits = Get-RemoteCommits -Count 5
+	# ============================================================================
+	# T - PULL-IN FLOW
+	#
+	# The sit-down-at-the-laptop counterpart to [H]. "claude --teleport" fetches
+	# the session and its branch on its own, but it refuses to run against a dirty
+	# tree, and it does NOT restore dependencies after switching branches. So this
+	# mode does the pre-flight, hands over to teleport, then offers pnpm install.
+	# ============================================================================
+	'^[Tt]' {
 
-		if ($commits.Count -eq 0) {
-			Write-Host 'No commits found on origin. Is the remote repo empty?'
-			exit 0
+		if (!(Test-GitAvailable)) {
+			Write-Host 'ERROR: git is not available in PATH. Install Git for Windows and retry.'
+			exit 1
+		}
+		if (!(Test-GitRepo)) {
+			Write-Host ''
+			Write-Host "  $ProjectRoot is not a git repository yet."
+			Write-Host '  Teleport must run from a checkout of the same repo, so clone it first:'
+			Write-Host '  re-run this script and choose [G] GitHub. That flow inits the repo, adds'
+			Write-Host '  origin, lets you pick a branch, and installs dependencies.'
+			continue top
+		}
+		if (-not (Test-ClaudeAvailable)) {
+			Write-Host 'ERROR: the "claude" CLI was not found in PATH. Install it, then retry.'
+			exit 1
 		}
 
-		Write-Host '  Last 5 commits on origin:'
 		Write-Host ''
-		for ($i = 0; $i -lt $commits.Count; $i++) {
-			$c       = $commits[$i]
-			$num     = $i + 1
-			$brLabel = if ($c.Branch) { $c.Branch } else { '(detached)' }
-			# Truncate subject to keep display tidy
-			$subj = if ($c.Subject.Length -gt 55) { $c.Subject.Substring(0, 52) + '...' } else { $c.Subject }
-			Write-Host ("  [{0}] {1}  {2}  {3,-35}  {4}" -f $num, $c.Hash, $c.Date, $brLabel, $subj)
-		}
+		Write-Host '--- Pull-In ---'
+		Write-Host "  Repo   : $(Get-GitRemoteUrl)"
+		Write-Host "  Branch : $(Get-GitBranch)"
 
-		Write-Host ''
-		$pick = Read-Host '  Enter number to pull [1-5], or [A] to abort'
-
-		if ($pick -match '^[Aa]') {
-			Write-Host 'Aborted.'
-			exit 0
-		}
-
-		$pickNum = 0
-		if (-not [int]::TryParse($pick, [ref]$pickNum) -or $pickNum -lt 1 -or $pickNum -gt $commits.Count) {
-			Write-Host "Invalid selection. Aborted."
-			exit 0
-		}
-
-		$chosen = $commits[$pickNum - 1]
-		Write-Host ''
-
-		# Determine if chosen is the tip of a remote branch we can pull normally
-		$isCurrentBranch = ($chosen.Branch -eq $branch)
-
-		if ($isCurrentBranch) {
-			# Standard pull
-			Write-Host "  Pulling origin/$branch into local $branch ..."
-			$pullOut = Invoke-Git @('pull', 'origin', $branch)
-			$pullOut | Out-Host
-			if ($LASTEXITCODE -ne 0) {
+		# ---- 1. Teleport requires a clean working tree ----
+		# It will offer to stash, but a commit is far easier to find again later.
+		$statusLines = Get-GitStatus
+		if ($statusLines.Count -gt 0) {
+			:tdirty while ($true) {
 				Write-Host ''
-				Write-Host 'ERROR: Pull failed. Resolve any merge conflicts manually.'
-				exit 1
-			}
-			Write-Host ''
-			Write-Host "Done. Local $branch is now up to date with origin."
+				Write-Host "  $($statusLines.Count) uncommitted file(s) on this machine:"
+				$statusLines | Select-Object -First 10 | ForEach-Object { Write-Host "    $_" }
+				if ($statusLines.Count -gt 10) { Write-Host "    ... and $($statusLines.Count - 10) more" }
+				Write-Host ''
+				Write-Host '  [C] Commit them now (and push)'
+				Write-Host '  [S] Leave them - let teleport offer to stash'
+				Write-Host '  [X] Back   - return to the main menu'
+				Write-Host ''
+				$dirtyChoice = Read-Host '  Choose [C/S/X]'
 
-		} elseif ($chosen.Branch -and $chosen.Branch -ne '') {
-			# Different branch - pull that branch
-			Write-Host "  Pulling origin/$($chosen.Branch) ..."
-			$pullOut = Invoke-Git @('fetch', 'origin', $chosen.Branch)
-			$pullOut | Out-Host
-			$checkOut = Invoke-Git @('checkout', '-B', $chosen.Branch, "origin/$($chosen.Branch)")
-			$checkOut | Out-Host
-			if ($LASTEXITCODE -ne 0) {
-				Write-Host "ERROR: Could not switch to branch $($chosen.Branch)."
-				exit 1
-			}
-			Write-Host ''
-			Write-Host "Done. Switched to and updated branch $($chosen.Branch)."
+				if ($dirtyChoice -match '^[Xx]') { continue top }
 
+				if ($dirtyChoice -match '^[Cc]') {
+					$branch        = Get-GitBranch
+					$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
+					if ($null -eq $commitMessage) {
+						Write-Host '  Commit message cannot be empty. Choose again or pick [X] Back.'
+						continue tdirty
+					}
+					if (-not (Invoke-CommitAll -Message $commitMessage)) { continue tdirty }
+					# A failed push is not fatal here - the commit is what unblocks teleport.
+					if (-not (Invoke-PushBranch -Branch $branch)) {
+						Write-Host '  Commit succeeded, push did not. Continuing to teleport anyway.'
+					}
+					break
+				}
+
+				if ($dirtyChoice -match '^[Ss]') { break }
+
+				Write-Host '  Invalid selection. Please choose again.'
+			}
 		} else {
-			# Older commit with no branch label - create recovery branch
-			$recoverBranch = "recover/$($chosen.Hash)"
-			Write-Host "  Commit $($chosen.Hash) is not a current branch tip."
-			Write-Host "  Creating local branch '$recoverBranch' from this commit..."
-			$coOut = Invoke-Git @('checkout', '-b', $recoverBranch, $chosen.Hash)
-			$coOut | Out-Host
-			if ($LASTEXITCODE -ne 0) {
-				Write-Host "ERROR: Could not create recovery branch."
-				exit 1
-			}
 			Write-Host ''
-			Write-Host "Done. You are now on branch '$recoverBranch' at commit $($chosen.Hash)."
+			Write-Host '  Working tree is clean.'
 		}
 
-		# Lockfile/manifest may have moved with the pull.
+		# ---- 2. Refresh remote refs ----
+		# A narrow refspec left over from a single-branch clone can hide the
+		# session's branch, so widen it the same way the [G] flow does.
+		$currentRefspec = ((Invoke-Git @('config', '--get', 'remote.origin.fetch')) | Out-String).Trim()
+		if ($currentRefspec -and $currentRefspec -ne '+refs/heads/*:refs/remotes/origin/*') {
+			Write-Host '  (Widening fetch refspec to include all branches...)'
+			Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
+		}
+		Write-Host '  Fetching from origin...'
+		Invoke-Git @('fetch', 'origin', '--prune') | Out-Null
+
+		# ---- 3. Flag machine-local prerequisites teleport cannot supply ----
+		if (!(Test-Path (Join-Path $ProjectRoot 'packages\api\.env'))) {
+			Write-Host ''
+			Write-Host '  NOTE: packages/api/.env is missing here (it is gitignored, so it never'
+			Write-Host '        travels). Copy packages/api/.env.example and fill it in before'
+			Write-Host '        starting the API.'
+		}
+
+		# ---- 4. Hand over to teleport ----
+		Write-Host ''
+		Write-Host '  Opening the cloud session picker...'
+		Write-Host '    Teleport checks out the session branch and loads its full history.'
+		Write-Host '    If that branch moved the lockfile, ask Claude to run "pnpm install".'
+		Write-Host '    Local work after this does NOT flow back to claude.ai or the mobile'
+		Write-Host '    app - start /remote-control if you still want to steer from your phone.'
+		Write-Host ''
+		& claude --teleport
+		$teleportExit = $LASTEXITCODE
+
+		if ($teleportExit -ne 0) {
+			Write-Host ''
+			Write-Host '  claude --teleport exited with an error. Usual causes:'
+			Write-Host '    - signed in with an API key: run "claude", then /login'
+			Write-Host '    - this checkout is a fork rather than the session repo'
+			Write-Host '    - the session branch was never pushed to origin'
+			exit 1
+		}
+
+		# The session may have landed on a branch with a different lockfile.
+		Write-Host ''
+		Write-Host "  Session closed. Now on branch: $(Get-GitBranch)"
 		Invoke-WorkspaceInstall -Root $ProjectRoot
-
-	} else {
-		Write-Host 'Aborted.'
-		exit 0
-	}
-}
-
-# ============================================================================
-# H - HANDOFF FLOW
-#
-# One keypress for "I'm leaving this machine": commit, push, then start a
-# Claude cloud session so the work continues without this computer.
-#
-# The push is not optional politeness - a cloud session clones origin from
-# GitHub, never from this disk, so anything uncommitted is invisible to it.
-# ============================================================================
-'^[Hh]' {
-
-	if (!(Test-GitAvailable) -or !(Test-GitRepo)) {
-		Write-Host 'ERROR: Handoff needs a git repository with git available in PATH.'
-		exit 1
-	}
-	if (-not (Get-GitRemoteUrl)) {
-		Write-Host 'ERROR: No "origin" remote found. A cloud session clones from GitHub,'
-		Write-Host '       so origin is required. Use [G] GitHub mode to add one first.'
-		exit 1
+		continue top
 	}
 
-	$branch = Get-GitBranch
+	# ============================================================================
+	# F - FILE COPY FLOW
+	# ============================================================================
+	'^[Ff]' {
 
-	Write-Host ''
-	Write-Host '--- Handoff ---'
-	Write-Host "  Branch : $branch"
-	Write-Host ''
-	Write-Host '  A cloud session clones origin from GitHub, not from this disk, so'
-	Write-Host '  everything you want it to see has to be committed and pushed first.'
+		# ---- Direction: Send / Receive / Back ----
+		:fdirection while ($true) {
+			Write-Host ''
+			Write-Host '[S] Send    - push this machine to a remote destination'
+			Write-Host '[R] Receive - pull from a remote source to this machine'
+			Write-Host '[X] Back   - return to the main menu'
+			Write-Host ''
+			$direction = Read-Host 'Direction [S/R/X]'
 
-	# ---- 1. Commit whatever is outstanding ----
-	$statusLines = Get-GitStatus
-	if ($statusLines.Count -gt 0) {
-		Write-Host ''
-		Write-Host "  $($statusLines.Count) uncommitted file(s):"
-		$statusLines | Select-Object -First 10 | ForEach-Object { Write-Host "    $_" }
-		if ($statusLines.Count -gt 10) { Write-Host "    ... and $($statusLines.Count - 10) more" }
-
-		$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
-		if ($null -eq $commitMessage) {
-			Write-Host 'Commit message cannot be empty. Aborted.'
-			exit 0
+			if ($direction -match '^[Xx]') { continue top }
+			if ($direction -match '^[SsRr]') { break }
+			Write-Host '  Invalid selection. Please choose again.'
 		}
-		if (-not (Invoke-CommitAll -Message $commitMessage)) { exit 1 }
-	} else {
-		Write-Host ''
-		Write-Host '  Working tree is clean - nothing to commit.'
-	}
+		$isSending = $direction -match '^[Ss]'
 
-	# ---- 2. Push so the cloud VM has a branch to clone ----
-	if (-not (Invoke-PushBranch -Branch $branch)) { exit 1 }
-	Write-Host "  origin/$branch is up to date."
+		# ---- Target type: Network / Machine / USB / Back ----
+		:ftarget while ($true) {
+			Write-Host ''
+			Write-Host '[N] Network drive    (mapped letter, e.g. M:\Dev-Sync)'
+			Write-Host '[M] Machine share    (UNC path,      e.g. \\DESKTOP-ABC\Dev-Sync)'
+			Write-Host '[U] USB / external   (drive letter,  e.g. E:\Dev-Sync)'
+			Write-Host '[X] Back   - choose Send/Receive again'
+			Write-Host ''
+			$targetType = Read-Host 'Target type [N/M/U/X]'
 
-	# ---- 3. Hand the task off ----
-	# Everything above is worth doing on its own, so a missing CLI is not fatal:
-	# the code is safely on GitHub either way.
-	if (-not (Test-ClaudeAvailable)) {
-		Write-Host ''
-		Write-Host '  Code is pushed, but the "claude" CLI was not found in PATH, so no'
-		Write-Host '  cloud session was started. From either machine, run:'
-		Write-Host '    claude --cloud "<task>"'
-		exit 0
-	}
+			if ($targetType -match '^[Xx]') { continue fdirection }
 
-	Write-Host ''
-	Write-Host '  What should Claude work on while you are away?'
-	Write-Host '  (Press Enter alone to push only, with no cloud session.)'
-	$task = Read-Host '  Task'
-
-	if ([string]::IsNullOrWhiteSpace($task)) {
-		Write-Host ''
-		Write-Host "Done. origin/$branch is current - no cloud session started."
-		Write-Host '  On the other machine:  git pull'
-		exit 0
-	}
-
-	Write-Host ''
-	Write-Host '  Starting cloud session...'
-	Write-Host '    Monitor  : https://claude.ai/code, the Claude mobile app, or /tasks'
-	Write-Host '    Pull back: claude --teleport   (needs a clean working tree)'
-	Write-Host ''
-	& claude --cloud $task
-	if ($LASTEXITCODE -ne 0) {
-		Write-Host ''
-		Write-Host '  claude --cloud exited with an error. Your code is still pushed safely.'
-		Write-Host '  Cloud sessions need a claude.ai login rather than an API key:'
-		Write-Host '  run "claude" then /login, and retry.'
-		exit 1
-	}
-}
-
-# ============================================================================
-# T - PULL-IN FLOW
-#
-# The sit-down-at-the-laptop counterpart to [H]. "claude --teleport" fetches
-# the session and its branch on its own, but it refuses to run against a dirty
-# tree, and it does NOT restore dependencies after switching branches. So this
-# mode does the pre-flight, hands over to teleport, then offers dependency restore.
-# ============================================================================
-'^[Tt]' {
-
-	if (!(Test-GitAvailable)) {
-		Write-Host 'ERROR: git is not available in PATH. Install Git for Windows and retry.'
-		exit 1
-	}
-	if (!(Test-GitRepo)) {
-		Write-Host ''
-		Write-Host "  $ProjectRoot is not a git repository yet."
-		Write-Host '  Teleport must run from a checkout of the same repo, so clone it first:'
-		Write-Host '  re-run this script and choose [G] GitHub. That flow inits the repo, adds'
-		Write-Host '  origin, lets you pick a branch, and installs dependencies.'
-		exit 1
-	}
-	if (-not (Test-ClaudeAvailable)) {
-		Write-Host 'ERROR: the "claude" CLI was not found in PATH. Install it, then retry.'
-		exit 1
-	}
-
-	Write-Host ''
-	Write-Host '--- Pull-In ---'
-	Write-Host "  Repo   : $(Get-GitRemoteUrl)"
-	Write-Host "  Branch : $(Get-GitBranch)"
-
-	# ---- 1. Teleport requires a clean working tree ----
-	# It will offer to stash, but a commit is far easier to find again later.
-	$statusLines = Get-GitStatus
-	if ($statusLines.Count -gt 0) {
-		Write-Host ''
-		Write-Host "  $($statusLines.Count) uncommitted file(s) on this machine:"
-		$statusLines | Select-Object -First 10 | ForEach-Object { Write-Host "    $_" }
-		if ($statusLines.Count -gt 10) { Write-Host "    ... and $($statusLines.Count - 10) more" }
-		Write-Host ''
-		Write-Host '  [C] Commit them now (and push)'
-		Write-Host '  [S] Leave them - let teleport offer to stash'
-		Write-Host '  [A] Abort'
-		Write-Host ''
-		$dirtyChoice = Read-Host '  Choose [C/S/A]'
-
-		if ($dirtyChoice -match '^[Aa]') {
-			Write-Host 'Aborted.'
-			exit 0
-		}
-		if ($dirtyChoice -match '^[Cc]') {
-			$branch        = Get-GitBranch
-			$commitMessage = Read-CommitMessage -AutoMessage (New-AutoCommitMessage -Branch $branch)
-			if ($null -eq $commitMessage) {
-				Write-Host 'Commit message cannot be empty. Aborted.'
-				exit 0
+			if ($targetType -match '^[Nn]') {
+				$defaultPath = 'M:\Dev-Sync'
+				$userInput   = Read-Host "Network drive path (Enter for $defaultPath)"
+				$remotePath  = if ([string]::IsNullOrWhiteSpace($userInput)) { $defaultPath } else { $userInput }
+				break
 			}
-			if (-not (Invoke-CommitAll -Message $commitMessage)) { exit 1 }
-			# A failed push is not fatal here - the commit is what unblocks teleport.
-			if (-not (Invoke-PushBranch -Branch $branch)) {
-				Write-Host '  Commit succeeded, push did not. Continuing to teleport anyway.'
+			if ($targetType -match '^[Mm]') {
+				$machineName = Read-Host 'Machine name or IP (e.g. DESKTOP-ABC or 192.168.1.50)'
+				if ([string]::IsNullOrWhiteSpace($machineName)) {
+					Write-Host '  Machine name is required. Choose again or pick [X] Back.'
+					continue
+				}
+				$defaultShare = 'Dev-Sync'
+				$userInput    = Read-Host "Share name (Enter for $defaultShare)"
+				$shareName    = if ([string]::IsNullOrWhiteSpace($userInput)) { $defaultShare } else { $userInput }
+				$remotePath   = "\\$machineName\$shareName"
+				break
 			}
+			if ($targetType -match '^[Uu]') {
+				$userInput = Read-Host 'USB / external drive path (e.g. E:\Dev-Sync)'
+				if ([string]::IsNullOrWhiteSpace($userInput)) {
+					Write-Host '  Path is required. Choose again or pick [X] Back.'
+					continue
+				}
+				$remotePath = $userInput
+				break
+			}
+
+			Write-Host '  Invalid selection. Please choose again.'
 		}
-	} else {
+
+		$remoteProjectRoot = Join-Path $remotePath $ProjectName
+
+		if (!$isSending -and !(Test-Path $remoteProjectRoot)) {
+			Write-Host ''
+			Write-Host "  Remote project not found: $remoteProjectRoot"
+			Write-Host '  Check the path, or pick [X] Back to choose again.'
+			continue ftarget
+		}
+
 		Write-Host ''
-		Write-Host '  Working tree is clean.'
-	}
+		Write-Host '--- File comparison ---'
+		Write-Host "  Local  : $ProjectRoot"
+		Write-Host "  Remote : $remoteProjectRoot"
 
-	# ---- 2. Refresh remote refs ----
-	# A narrow refspec left over from a single-branch clone can hide the
-	# session's branch, so widen it the same way the [G] flow does.
-	$currentRefspec = ((Invoke-Git @('config', '--get', 'remote.origin.fetch')) | Out-String).Trim()
-	if ($currentRefspec -and $currentRefspec -ne '+refs/heads/*:refs/remotes/origin/*') {
-		Write-Host '  (Widening fetch refspec to include all branches...)'
-		Invoke-Git @('config', 'remote.origin.fetch', '+refs/heads/*:refs/remotes/origin/*') | Out-Null
-	}
-	Write-Host '  Fetching from origin...'
-	Invoke-Git @('fetch', 'origin', '--prune') | Out-Null
+		$localIndex  = Get-FileIndex -Root $ProjectRoot       -DirList $ExcludeDirs -FileList $ExcludeFiles
+		$remoteIndex = Get-FileIndex -Root $remoteProjectRoot -DirList $ExcludeDirs -FileList $ExcludeFiles
+		Show-DiffSummary -LocalIndex $localIndex -RemoteIndex $remoteIndex
 
-	# ---- 3. Flag machine-local prerequisites teleport cannot supply ----
-	Show-EnvironmentReminder -Root $ProjectRoot
+		if ($isSending) {
+			$source      = $ProjectRoot
+			$destination = $remoteProjectRoot
+			$label       = "SEND:  $ProjectRoot  -->  $remoteProjectRoot"
+		} else {
+			$source      = $remoteProjectRoot
+			$destination = $ProjectRoot
+			$label       = "RECEIVE:  $remoteProjectRoot  -->  $ProjectRoot"
+		}
 
-	# ---- 4. Hand over to teleport ----
-	Write-Host ''
-	Write-Host '  Opening the cloud session picker...'
-	Write-Host '    Teleport checks out the session branch and loads its full history.'
-	Write-Host '    If that branch moved a lockfile, restore the affected frontend dependencies.'
-	Write-Host '    Local work after this does NOT flow back to claude.ai or the mobile'
-	Write-Host '    app - start /remote-control if you still want to steer from your phone.'
-	Write-Host ''
-	& claude --teleport
-	$teleportExit = $LASTEXITCODE
-
-	if ($teleportExit -ne 0) {
 		Write-Host ''
-		Write-Host '  claude --teleport exited with an error. Usual causes:'
-		Write-Host '    - signed in with an API key: run "claude", then /login'
-		Write-Host '    - this checkout is a fork rather than the session repo'
-		Write-Host '    - the session branch was never pushed to origin'
-		exit 1
-	}
+		Write-Host $label
+		Write-Host ''
+		Write-Host "  Skipping dirs : $($ExcludeDirs -join ', ')"
+		Write-Host "  Skipping files: $($ExcludeFiles -join ', ')"
+		Write-Host ''
+		Write-Host 'WARNING: /MIR will DELETE files at the destination that do not exist at the source.'
+		Write-Host '         Excluded items (node_modules, dist, .git) are left untouched.'
+		$confirm = Read-Host 'Continue? [Y/N] (anything else goes back)'
+		if ($confirm -notmatch '^[Yy]') { continue ftarget }
 
-	# The session may have landed on a branch with a different lockfile.
-	Write-Host ''
-	Write-Host "  Session closed. Now on branch: $(Get-GitBranch)"
-	Invoke-WorkspaceInstall -Root $ProjectRoot
-}
+		Write-Host ''
+		Write-Host 'Syncing...'
+		Invoke-RoboSync -Source $source -Destination $destination -DirList $ExcludeDirs -FileList $ExcludeFiles
+		Write-Host ''
+		Write-Host 'Done.'
 
-# ============================================================================
-# F - FILE COPY FLOW
-# ============================================================================
-'^[Ff]' {
-
-	Write-Host ''
-	Write-Host '[S] Send    - push this machine to a remote destination'
-	Write-Host '[R] Receive - pull from a remote source to this machine'
-	Write-Host ''
-	$direction = Read-Host 'Direction [S/R]'
-	if ($direction -notmatch '^[SsRr]') {
-		Write-Host 'Aborted.'
-		exit 0
-	}
-	$isSending = $direction -match '^[Ss]'
-
-	Write-Host ''
-	Write-Host '[N] Network drive    (mapped letter, e.g. M:\SCHARVIN-Sync)'
-	Write-Host '[M] Machine share    (UNC path,      e.g. \\DESKTOP-ABC\SCHARVIN-Sync)'
-	Write-Host '[U] USB / external   (drive letter,  e.g. E:\SCHARVIN-Sync)'
-	Write-Host ''
-	$targetType = Read-Host 'Target type [N/M/U]'
-
-	switch -Regex ($targetType) {
-		'^[Nn]' {
-			$defaultPath = 'M:\SCHARVIN-Sync'
-			$userInput   = Read-Host "Network drive path (Enter for $defaultPath)"
-			$remotePath  = if ([string]::IsNullOrWhiteSpace($userInput)) { $defaultPath } else { $userInput }
-		}
-		'^[Mm]' {
-			$machineName = Read-Host 'Machine name or IP (e.g. DESKTOP-ABC or 192.168.1.50)'
-			if ([string]::IsNullOrWhiteSpace($machineName)) {
-				Write-Host 'Aborted - machine name is required.'
-				exit 0
+		# A received tree has no node_modules and (unless -IncludeEnv) no .env.
+		if (!$isSending) {
+			if (-not $IncludeEnv) {
+				Write-Host ''
+				Write-Host '  NOTE: .env was not copied. Create packages/api/.env from'
+				Write-Host '        packages/api/.env.example before starting the API.'
 			}
-			$defaultShare = 'SCHARVIN-Sync'
-			$userInput    = Read-Host "Share name (Enter for $defaultShare)"
-			$shareName    = if ([string]::IsNullOrWhiteSpace($userInput)) { $defaultShare } else { $userInput }
-			$remotePath   = "\\$machineName\$shareName"
+			Invoke-WorkspaceInstall -Root $ProjectRoot
 		}
-		'^[Uu]' {
-			$userInput = Read-Host 'USB / external drive path (e.g. E:\SCHARVIN-Sync)'
-			if ([string]::IsNullOrWhiteSpace($userInput)) {
-				Write-Host 'Aborted - path is required.'
-				exit 0
-			}
-			$remotePath = $userInput
-		}
-		default {
-			Write-Host 'Aborted.'
-			exit 0
-		}
+		continue top
 	}
 
-	$remoteProjectRoot = Join-Path $remotePath $ProjectName
-
-	if (!$isSending -and !(Test-Path $remoteProjectRoot)) {
-		throw "Remote project not found: $remoteProjectRoot"
-	}
-
-	Write-Host ''
-	Write-Host '--- File comparison ---'
-	Write-Host "  Local  : $ProjectRoot"
-	Write-Host "  Remote : $remoteProjectRoot"
-
-	$localIndex  = Get-FileIndex -Root $ProjectRoot       -DirList $ExcludeDirs -FileList $ExcludeFiles
-	$remoteIndex = Get-FileIndex -Root $remoteProjectRoot -DirList $ExcludeDirs -FileList $ExcludeFiles
-	Show-DiffSummary -LocalIndex $localIndex -RemoteIndex $remoteIndex
-
-	if ($isSending) {
-		$source      = $ProjectRoot
-		$destination = $remoteProjectRoot
-		$label       = "SEND:  $ProjectRoot  -->  $remoteProjectRoot"
-	} else {
-		$source      = $remoteProjectRoot
-		$destination = $ProjectRoot
-		$label       = "RECEIVE:  $remoteProjectRoot  -->  $ProjectRoot"
-	}
-
-	Write-Host ''
-	Write-Host $label
-	Write-Host ''
-	Write-Host "  Skipping dirs : $($ExcludeDirs -join ', ')"
-	Write-Host "  Skipping files: $($ExcludeFiles -join ', ')"
-	Write-Host ''
-	Write-Host 'WARNING: /MIR will DELETE files at the destination that do not exist at the source.'
-	Write-Host '         Excluded items (node_modules, dist, .git) are left untouched.'
-	$confirm = Read-Host 'Continue? [Y/N]'
-	if ($confirm -notmatch '^[Yy]') {
-		Write-Host 'Aborted.'
+	# ============================================================================
+	# Q - QUIT
+	# ============================================================================
+	'^[Qq]' {
+		Write-Host 'Bye.'
 		exit 0
 	}
 
-	Write-Host ''
-	Write-Host 'Syncing...'
-	Invoke-RoboSync -Source $source -Destination $destination -DirList $ExcludeDirs -FileList $ExcludeFiles
-	Write-Host ''
-	Write-Host 'Done.'
-
-	# A received tree has no node_modules and (unless -IncludeEnv) no .env files.
-	if (!$isSending) {
-		if (-not $IncludeEnv) {
-			Show-EnvironmentReminder -Root $ProjectRoot
-		}
-		Invoke-WorkspaceInstall -Root $ProjectRoot
+	default {
+		Write-Host 'Invalid selection. Please choose again.'
 	}
-}
 
-# ============================================================================
-# Q - QUIT
-# ============================================================================
-'^[Qq]' {
-	Write-Host 'Bye.'
-	exit 0
-}
+	} # end switch
 
-default {
-	Write-Host 'Invalid selection. Aborted.'
-	exit 0
-}
-
-} # end switch
+} # end :top while

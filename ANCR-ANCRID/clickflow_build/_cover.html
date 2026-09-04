@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: 297mm 420mm; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:297mm; height:420mm; background:#0a0d14; }
+  body { font-family: Arial, Helvetica, sans-serif; color:#e8edf2; position:relative; overflow:hidden; }
+
+  .signal { position:absolute; top:0; left:0; right:0; height:6mm; display:flex; }
+  .signal i { flex:1; display:block; }
+  .s1 { background:#8a4fff; } .s2 { background:#2e6bff; }
+  .s3 { background:#ff6b00; } .s4 { background:#22c55e; }
+
+  .frame { position:absolute; top:6mm; left:0; right:0; bottom:0; padding:26mm 24mm 20mm 24mm;
+           display:flex; flex-direction:column; }
+
+  .eyebrow { font-size:8.5pt; letter-spacing:.28em; color:#7d8899; text-transform:uppercase; font-weight:bold; }
+
+  .title { margin-top:34mm; font-size:38pt; font-weight:bold; letter-spacing:-.01em; line-height:1.04; }
+  .title span { color:#8a4fff; }
+  .rule { margin-top:9mm; width:52mm; height:2.5pt; background:#2e6bff; }
+  .tagline { margin-top:9mm; font-size:13.5pt; color:#aab4c4; letter-spacing:.02em; }
+  .sub { margin-top:3mm; font-size:10.5pt; color:#7d8899; }
+
+  .spacer { flex:1; }
+
+  .meta { border-top:1px solid #1f2433; padding-top:7mm; display:grid;
+          grid-template-columns:repeat(3,1fr); gap:6mm 8mm; }
+  .meta .k { font-size:7pt; letter-spacing:.2em; color:#5f6b7d; text-transform:uppercase; font-weight:bold; }
+  .meta .v { font-size:9.5pt; color:#d4dbe5; margin-top:1.6mm; line-height:1.35; }
+
+  .note { margin-top:8mm; background:#12171f; border:1px solid #1f2433;
+          border-left:3pt solid #8a4fff; padding:6mm 7mm; }
+  .note h4 { font-size:7.5pt; letter-spacing:.2em; color:#8a4fff; text-transform:uppercase; }
+  .note p { font-size:9.5pt; color:#aab4c4; line-height:1.6; margin-top:2.5mm; }
+
+  .foot { margin-top:8mm; font-size:8pt; color:#5f6b7d; letter-spacing:.16em;
+          text-transform:uppercase; text-align:center; }
+</style>
+</head>
+<body>
+  <div class="signal"><i class="s1"></i><i class="s2"></i><i class="s3"></i><i class="s4"></i></div>
+  <div class="frame">
+    <div class="eyebrow">Technical Reference &nbsp;·&nbsp; ANCR Ecosystem &nbsp;·&nbsp; Companion to ANCRID Master Workflow</div>
+
+    <div class="title">ANCRID&trade;<br><span>Click-Flow Specification</span></div>
+    <div class="rule"></div>
+    <div class="tagline">Interactive Navigation &amp; Control Behaviour</div>
+    <div class="sub">Every button, link, tab, field, upload and modal &mdash; and what happens after each click.</div>
+
+    <div class="spacer"></div>
+
+    <div class="note">
+      <h4>Purpose</h4>
+      <p>This document specifies <b>intended product behaviour for the self-hosted build</b>. It is written for
+      the developer implementing each page. Where the current application diverges from the intended flow, that
+      divergence is marked rather than silently adopted as a requirement. Vendor-specific implementation details
+      from the prototype platform are translated to neutral target-state language throughout.</p>
+    </div>
+
+    <div class="meta">
+      <div><div class="k">Document</div><div class="v">ANCRID Click-Flow Specification</div></div>
+      <div><div class="k">System</div><div class="v">ANCRID&trade; &mdash; Identity Layer</div></div>
+      <div><div class="k">Doc Type</div><div class="v">Interaction &amp; Navigation Spec</div></div>
+      <div><div class="k">Prepared For</div><div class="v">Engineering / Build Team</div></div>
+      <div><div class="k">Surfaces Covered</div><div class="v">21 pages &middot; 20 routes &middot; 16 nav destinations</div></div>
+      <div><div class="k">Companion Document</div><div class="v">ANCRID Master Workflow<br>ANCRID Functional Requirements</div></div>
+    </div>
+
+    <div class="foot">One Identity &nbsp;·&nbsp; Every Opportunity</div>
+  </div>
+</body>
+</html>

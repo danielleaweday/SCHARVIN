@@ -113,7 +113,7 @@ Reusable primitives (`/app/frontend/src/index.css`):
 MONGO_URL="mongodb://localhost:27017"
 DB_NAME="test_database"
 CORS_ORIGINS="*"
-EMERGENT_LLM_KEY=your-api-key-here
+EMERGENT_LLM_KEY=sk-emergent-9E56bEc3c17852e14A
 JWT_SECRET=cynaiah_ancr_ecosystem_jwt_secret_dev_only
 JWT_ALG=HS256
 ```

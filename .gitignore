@@ -1,30 +1,32 @@
-# Original repository metadata retained while consolidating into SCHARVIN.
-**/.git.nested-backup/
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
 
-# Machine-local dependencies and build output.
-**/node_modules/
-**/.next/
-**/dist/
-**/build/
-**/out/
-**/coverage/
-**/.cache/
-**/.pytest_cache/
-**/__pycache__/
-**/.venv/
-**/venv/
+# Env / secrets — defensive, keep real credentials out even if added later
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 
-# Editors, logs, and operating-system files.
-**/.vscode/
-**/.idea/
-*.log
+# Build output
+build/
+dist/
+.next/
+*.egg-info/
+
+# Editor / OS
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
-# Local secrets. Committed examples remain allowed.
-**/.env
-**/.env.*
-!**/.env.example
-**/*token.json*
-**/*credentials.json*
-**/*.pem
-**/*.key
+# Logs
+*.log
+npm-debug.log*
+
+# Disabled nested repo metadata (kept locally, never committed)
+.git-disabled/

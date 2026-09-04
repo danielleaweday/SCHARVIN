@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: 297mm 420mm; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background:#0a0d14; color:#e8edf2;
+         font-size:9.5pt; line-height:1.5; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .page { page-break-after:always; width:297mm; height:420mm; padding:16mm 18mm 12mm 18mm;
+          background:#0a0d14; display:flex; flex-direction:column; overflow:hidden; }
+  .page:last-child { page-break-after:auto; }
+  .pfoot { margin-top:auto; padding-top:6mm; border-top:1px solid #171c26;
+           display:flex; align-items:baseline; gap:4mm; }
+  .pfoot .fl { font-size:7pt; letter-spacing:.18em; text-transform:uppercase; color:#454f5e; font-weight:bold; }
+  .pfoot .fr { margin-left:auto; font-size:7pt; letter-spacing:.18em; color:#454f5e; font-weight:bold; }
+
+  .ph { display:flex; align-items:baseline; gap:5mm; border-bottom:1px solid #1f2433;
+        padding-bottom:3mm; margin-bottom:6mm; }
+  .ph .pn { font-size:8pt; color:#2e6bff; font-weight:bold; letter-spacing:.18em; }
+  .ph h2 { font-size:16.5pt; font-weight:bold; letter-spacing:-.01em; }
+  .ph .tag { margin-left:auto; font-size:7pt; letter-spacing:.2em; color:#5f6b7d;
+             text-transform:uppercase; font-weight:bold; }
+
+  h3 { font-size:11pt; font-weight:bold; margin:6mm 0 2.5mm 0; color:#e8edf2; }
+  h3:first-of-type { margin-top:0; }
+  .lead { font-size:9.5pt; color:#aab4c4; line-height:1.6; margin-bottom:4mm; }
+
+  svg { display:block; margin:0 auto 3mm auto; }
+  .nt { font:bold 9px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .nt-s { font:bold 8px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .ns { font:7.5px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .nm { font:7px "Courier New", monospace; fill:#7d8899; }
+  .nm-b { font:bold 7px "Courier New", monospace; fill:#aab4c4; }
+  .cl { font:bold 7px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .cap { font:bold 7.5px Arial, Helvetica, sans-serif; letter-spacing:.12em; }
+
+  .box { fill:#12171f; stroke:#1f2433; stroke-width:1; }
+  .box-auth { fill:#151329; stroke:#8a4fff; stroke-width:1.2; }
+  .box-nav  { fill:#101a2e; stroke:#2e6bff; stroke-width:1.2; }
+  .box-dec  { fill:#1e1509; stroke:#ff6b00; stroke-width:1.2; }
+  .box-ok   { fill:#0d1f16; stroke:#22c55e; stroke-width:1.2; }
+  .box-bad  { fill:#210f11; stroke:#ef4444; stroke-width:1.2; }
+  .box-gh   { fill:#0e1219; stroke:#2b3242; stroke-width:1; stroke-dasharray:3 2.5; }
+
+  .l  { stroke:#39414f; stroke-width:1.1; fill:none; }
+  .l-v{ stroke:#8a4fff; stroke-width:1.2; fill:none; }
+  .l-b{ stroke:#2e6bff; stroke-width:1.2; fill:none; }
+  .l-o{ stroke:#ff6b00; stroke-width:1.2; fill:none; }
+  .l-g{ stroke:#22c55e; stroke-width:1.2; fill:none; }
+  .l-r{ stroke:#ef4444; stroke-width:1.2; fill:none; }
+
+  table { width:100%; border-collapse:collapse; margin:2.5mm 0 4mm 0; font-size:8.5pt; }
+  th { text-align:left; font-size:6.8pt; letter-spacing:.16em; text-transform:uppercase;
+       color:#5f6b7d; border-bottom:1px solid #2b3242; padding:2mm 2.5mm 1.6mm 0; font-weight:bold; }
+  td { padding:2mm 2.5mm 2mm 0; border-bottom:1px solid #171c26; color:#c3ccd8;
+       vertical-align:top; line-height:1.45; }
+  td.mono, .mono { font-family:"Courier New", monospace; font-size:8pt; color:#9fb0c9; }
+  td b { color:#e8edf2; }
+
+  .pill { display:inline-block; font-size:6.5pt; font-weight:bold; letter-spacing:.1em;
+          padding:.9mm 2mm; border-radius:2mm; text-transform:uppercase; white-space:nowrap; }
+  .p-int { background:rgba(46,107,255,.15); color:#7aa5ff; border:1px solid rgba(46,107,255,.45); }
+  .p-obs { background:rgba(139,149,166,.13); color:#9aa5b5; border:1px solid rgba(139,149,166,.4); }
+  .p-dec { background:rgba(255,107,0,.14); color:#ff9c4d; border:1px solid rgba(255,107,0,.5); }
+  .p-pro { background:rgba(138,79,255,.14); color:#b98cff; border:1px solid rgba(138,79,255,.5); border-style:dashed; }
+  .p-dead{ background:rgba(239,68,68,.13); color:#f08d8d; border:1px solid rgba(239,68,68,.45); }
+
+  .panel { border:1px solid #1f2433; background:#12171f; padding:4.5mm 5mm; margin:4mm 0; }
+  .panel h4 { font-size:7.5pt; letter-spacing:.2em; text-transform:uppercase; margin-bottom:2.5mm; font-weight:bold; }
+  .panel p { font-size:9pt; color:#aab4c4; line-height:1.6; }
+  .panel p + p { margin-top:2.5mm; }
+  .pn-v { border-left:3pt solid #8a4fff; } .pn-v h4 { color:#8a4fff; }
+  .pn-o { border-left:3pt solid #ff6b00; } .pn-o h4 { color:#ff6b00; }
+  .pn-b { border-left:3pt solid #2e6bff; } .pn-b h4 { color:#2e6bff; }
+  .pn-r { border-left:3pt solid #ef4444; } .pn-r h4 { color:#ef4444; }
+  .pn-g { border-left:3pt solid #22c55e; } .pn-g h4 { color:#22c55e; }
+
+  ul { margin:2mm 0 3mm 5mm; } li { font-size:9pt; color:#aab4c4; line-height:1.55; margin-bottom:1.4mm; }
+  li b { color:#e8edf2; }
+  code { font-family:"Courier New", monospace; font-size:8.2pt; color:#9fb0c9; }
+  .fig { font-size:7pt; color:#5f6b7d; letter-spacing:.14em; text-transform:uppercase;
+         text-align:center; margin-bottom:4mm; font-weight:bold; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:6mm; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="ag" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#39414f"/></marker>
+    <marker id="av" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#8a4fff"/></marker>
+    <marker id="ab" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#2e6bff"/></marker>
+    <marker id="ao" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ff6b00"/></marker>
+    <marker id="agn" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#22c55e"/></marker>
+    <marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ef4444"/></marker>
+  </defs>
+</svg>
+
+
+<!-- ============================= 01 READING KEY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">01</span><h2>How to Read This Document</h2><span class="tag">Key</span></div>
+
+  <p class="lead">Every interactive control in ANCRID is documented as a small connected flow: what the user clicks,
+  what the system does, and where each outcome leads. Shapes and colours carry fixed meaning &mdash; they are not decorative.</p>
+
+  <h3>Shape &amp; colour vocabulary</h3>
+  <svg width="740" height="150" viewBox="0 0 740 150">
+    <rect x="0" y="0" width="140" height="40" rx="5" class="box-auth"/>
+    <text x="70" y="18" text-anchor="middle" class="nt">Identity / Auth</text>
+    <text x="70" y="30" text-anchor="middle" class="ns">violet outline</text>
+
+    <rect x="150" y="0" width="140" height="40" rx="5" class="box-nav"/>
+    <text x="220" y="18" text-anchor="middle" class="nt">Navigation / Screen</text>
+    <text x="220" y="30" text-anchor="middle" class="ns">blue outline</text>
+
+    <rect x="300" y="0" width="140" height="40" rx="5" class="box-dec"/>
+    <text x="370" y="18" text-anchor="middle" class="nt">Decision / Warning</text>
+    <text x="370" y="30" text-anchor="middle" class="ns">orange outline</text>
+
+    <rect x="450" y="0" width="140" height="40" rx="5" class="box-ok"/>
+    <text x="520" y="18" text-anchor="middle" class="nt">Success outcome</text>
+    <text x="520" y="30" text-anchor="middle" class="ns">green outline</text>
+
+    <rect x="600" y="0" width="140" height="40" rx="5" class="box-bad"/>
+    <text x="670" y="18" text-anchor="middle" class="nt">Failure outcome</text>
+    <text x="670" y="30" text-anchor="middle" class="ns">red outline</text>
+
+    <rect x="0" y="60" width="140" height="40" rx="5" class="box"/>
+    <text x="70" y="78" text-anchor="middle" class="nt">System / API step</text>
+    <text x="70" y="90" text-anchor="middle" class="ns">neutral</text>
+
+    <rect x="150" y="60" width="140" height="40" rx="5" class="box-gh"/>
+    <text x="220" y="78" text-anchor="middle" class="nt">Proposed / not built</text>
+    <text x="220" y="90" text-anchor="middle" class="ns">dashed outline</text>
+
+    <line x1="310" y1="80" x2="425" y2="80" class="l" marker-end="url(#ag)"/>
+    <text x="367" y="74" text-anchor="middle" class="cl">sequence</text>
+
+    <line x1="450" y1="80" x2="565" y2="80" class="l-o" marker-end="url(#ao)"/>
+    <text x="507" y="74" text-anchor="middle" class="cl">branch</text>
+
+    <text x="600" y="76" class="cl">Label on a connector states the</text>
+    <text x="600" y="88" class="cl">condition that selects that path.</text>
+  </svg>
+
+  <h3>Behaviour classification</h3>
+  <p class="lead">Every flow carries one of four labels. This prevents prototype behaviour from silently
+  becoming a production requirement.</p>
+
+  <table>
+    <tr><th style="width:26mm">Label</th><th style="width:52mm">Meaning</th><th>How the developer should treat it</th></tr>
+    <tr><td><span class="pill p-int">Intended</span></td>
+        <td>Supported by the ANCRID product specification and Master Workflow.</td>
+        <td><b>Build this.</b> The current application may or may not already do it correctly.</td></tr>
+    <tr><td><span class="pill p-obs">Observed</span></td>
+        <td>What the current application actually does today.</td>
+        <td>Recorded for reference only. Shown where it <b>differs</b> from Intended. Do not treat as a target.</td></tr>
+    <tr><td><span class="pill p-dec">Decision</span></td>
+        <td>The application and the specification disagree, or the behaviour is undefined.</td>
+        <td><b>Do not guess.</b> Requires a product decision before this control is built.</td></tr>
+    <tr><td><span class="pill p-pro">Proposed</span></td>
+        <td>Needed to complete the experience, but not yet approved.</td>
+        <td>Awaiting sign-off. Drawn dashed in diagrams.</td></tr>
+    <tr><td><span class="pill p-dead">Dead</span></td>
+        <td>A control is rendered in the UI but has no handler attached.</td>
+        <td>Either wire it to the flow specified here, or remove it from the page.</td></tr>
+  </table>
+
+  <div class="panel pn-v">
+    <h4>Target-State Language</h4>
+    <p>This document describes the <b>self-hosted</b> product. Prototype-platform specifics are translated:
+    a vendor session token becomes an <b>authenticated ANCRID session</b>; vendor object storage becomes the
+    <b>approved media storage service</b>; a vendor AI key becomes the <b>configured AI service</b>. Where the
+    replacement service does not yet exist, that is called out explicitly rather than assumed. A full
+    translation table appears on the final page.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Scope Note &mdash; Authentication</h4>
+    <p>The ANCRID Master Workflow states that no module implements its own login and that every application
+    consumes ANCRID. ANCRID itself is the identity provider, so it necessarily owns the sign-in surfaces
+    documented on pages 03&ndash;04. The <b>consumption</b> side &mdash; other modules accepting an ANCRID
+    session instead of presenting their own login &mdash; is specified on page 10 (SSO Handshake) and is
+    currently the largest gap between specification and build.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">How to Read This Document &nbsp;&middot;&nbsp; 01 / 16</span></div>
+</section>
+
+
+<!-- ============================= 02 MASTER NAV MAP ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">02</span><h2>Master Navigation Map</h2><span class="tag">All Routes</span></div>
+
+  <p class="lead">Every route in ANCRID and how a user reaches it. Public surfaces require no session;
+  the application shell requires an authenticated ANCRID session.</p>
+
+  <svg width="740" height="470" viewBox="0 0 740 470">
+
+    <text x="0" y="10" class="cap" fill="#5f6b7d">PUBLIC &mdash; NO SESSION REQUIRED</text>
+    <line x1="0" y1="16" x2="740" y2="16" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="290" y="28" width="160" height="40" rx="5" class="box-nav"/>
+    <text x="370" y="46" text-anchor="middle" class="nt">Landing</text>
+    <text x="370" y="58" text-anchor="middle" class="nm">/</text>
+
+    <path d="M330,68 L330,88 L215,88 L215,104" class="l-b" marker-end="url(#ab)"/>
+    <path d="M410,68 L410,88 L525,88 L525,104" class="l-b" marker-end="url(#ab)"/>
+    <text x="250" y="84" text-anchor="middle" class="cl">"Claim your ANCRID"</text>
+    <text x="492" y="84" text-anchor="middle" class="cl">"Sign in"</text>
+
+    <rect x="135" y="104" width="160" height="40" rx="5" class="box-auth"/>
+    <text x="215" y="122" text-anchor="middle" class="nt">Signup</text>
+    <text x="215" y="134" text-anchor="middle" class="nm">/signup</text>
+
+    <rect x="445" y="104" width="160" height="40" rx="5" class="box-auth"/>
+    <text x="525" y="122" text-anchor="middle" class="nt">Login</text>
+    <text x="525" y="134" text-anchor="middle" class="nm">/login</text>
+
+    <path d="M215,144 L215,166 L355,166 L355,182" class="l-v" marker-end="url(#av)"/>
+    <path d="M525,144 L525,166 L385,166 L385,182" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="280" y="182" width="180" height="40" rx="5" class="box-auth"/>
+    <text x="370" y="200" text-anchor="middle" class="nt">Session established</text>
+    <text x="370" y="212" text-anchor="middle" class="ns">ANCRID session cookie set</text>
+
+    <path d="M370,222 L370,244" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="280" y="244" width="180" height="40" rx="5" class="box-nav"/>
+    <text x="370" y="262" text-anchor="middle" class="nt">Overview</text>
+    <text x="370" y="274" text-anchor="middle" class="nm">/app/overview</text>
+
+    <path d="M370,284 L370,306" class="l-b" marker-end="url(#ab)"/>
+    <text x="378" y="299" class="cl">default destination after auth</text>
+
+    <rect x="0" y="306" width="740" height="30" rx="4" class="box"/>
+    <text x="370" y="325" text-anchor="middle" class="nt">Application shell &mdash; Sidebar (16 destinations) + routed content area</text>
+
+    <rect x="22"  y="348" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="30" y="365" class="nt-s">Overview</text>
+    <text x="180" y="365" text-anchor="end" class="nm">/overview</text>
+
+    <rect x="199" y="348" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="207" y="365" class="nt-s">Identity</text>
+    <text x="357" y="365" text-anchor="end" class="nm">/identity</text>
+
+    <rect x="376" y="348" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="384" y="365" class="nt-s">Portfolio</text>
+    <text x="534" y="365" text-anchor="end" class="nm">/portfolio</text>
+
+    <rect x="553" y="348" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="561" y="365" class="nt-s">Creator Journey</text>
+    <text x="711" y="365" text-anchor="end" class="nm">/timeline</text>
+
+    <rect x="22"  y="380" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="30" y="397" class="nt-s">Passport</text>
+    <text x="180" y="397" text-anchor="end" class="nm">/passport</text>
+
+    <rect x="199" y="380" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="207" y="397" class="nt-s">Creator Mobility</text>
+    <text x="357" y="397" text-anchor="end" class="nm">/mobility</text>
+
+    <rect x="376" y="380" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="384" y="397" class="nt-s">Collaborations</text>
+    <text x="534" y="397" text-anchor="end" class="nm">/collaborations</text>
+
+    <rect x="553" y="380" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="561" y="397" class="nt-s">Education</text>
+    <text x="711" y="397" text-anchor="end" class="nm">/education</text>
+
+    <rect x="22"  y="412" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="30" y="429" class="nt-s">Professional</text>
+    <text x="180" y="429" text-anchor="end" class="nm">/history</text>
+
+    <rect x="199" y="412" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="207" y="429" class="nt-s">Skills</text>
+    <text x="357" y="429" text-anchor="end" class="nm">/skills</text>
+
+    <rect x="376" y="412" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="384" y="429" class="nt-s">Achievements</text>
+    <text x="534" y="429" text-anchor="end" class="nm">/achievements</text>
+
+    <rect x="553" y="412" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="561" y="429" class="nt-s">Credentials</text>
+    <text x="711" y="429" text-anchor="end" class="nm">/credentials</text>
+
+    <rect x="22"  y="444" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="30" y="461" class="nt-s">Connected Ecosystem</text>
+    <text x="180" y="461" text-anchor="end" class="nm">/connected</text>
+
+    <rect x="199" y="444" width="165" height="26" rx="4" class="box-auth"/>
+    <text x="207" y="461" class="nt-s">SSO Handshake</text>
+    <text x="357" y="461" text-anchor="end" class="nm">/sso</text>
+
+    <rect x="376" y="444" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="384" y="461" class="nt-s">Network</text>
+    <text x="534" y="461" text-anchor="end" class="nm">/network</text>
+
+    <rect x="553" y="444" width="165" height="26" rx="4" class="box-nav"/>
+    <text x="561" y="461" class="nt-s">Settings</text>
+    <text x="711" y="461" text-anchor="end" class="nm">/settings</text>
+  </svg>
+  <div class="fig">Figure 1 &mdash; Authenticated route map. All 16 sidebar destinations sit under <span class="mono">/app/</span>.</div>
+
+  <h3>Public surfaces reachable without a session</h3>
+  <svg width="740" height="86" viewBox="0 0 740 86">
+    <rect x="60" y="8" width="270" height="44" rx="5" class="box-nav"/>
+    <text x="195" y="26" text-anchor="middle" class="nt">Public Creator Identity</text>
+    <text x="195" y="38" text-anchor="middle" class="nm">/@{handle}</text>
+    <text x="195" y="48" text-anchor="middle" class="ns">Shared from Settings or Overview</text>
+
+    <rect x="410" y="8" width="270" height="44" rx="5" class="box-nav"/>
+    <text x="545" y="26" text-anchor="middle" class="nt">Booking Packet</text>
+    <text x="545" y="38" text-anchor="middle" class="nm">/packet/{token}</text>
+    <text x="545" y="48" text-anchor="middle" class="ns">Generated in Creator Mobility</text>
+
+    <path d="M195,52 L195,70 L545,70 L545,52" class="l" marker-end="url(#ag)"/>
+    <text x="370" y="82" text-anchor="middle" class="cl">Both are unauthenticated, link-addressable, and indexable unless access rules are applied &mdash; see page 13</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Unmatched Routes</h4>
+    <p>Any path that matches no route currently redirects to the public Landing page. For an authenticated user
+    who mistypes an in-app URL this silently drops them out of the application shell rather than showing a
+    not-found state inside it. <b>Decide:</b> in-app 404 for authenticated users, versus the present redirect.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Master Navigation Map &nbsp;&middot;&nbsp; 02 / 16</span></div>
+</section>
+
+
+<!-- ============================= 03 ENTRY & AUTH ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">03</span><h2>Entry &amp; Authentication</h2><span class="tag">Signup &middot; Login</span></div>
+
+  <h3>Create an ANCRID <span class="pill p-int">Intended</span></h3>
+  <svg width="740" height="196" viewBox="0 0 740 196">
+    <rect x="0" y="8" width="150" height="46" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Signup form</text>
+    <text x="75" y="40" text-anchor="middle" class="nm">/signup</text>
+
+    <line x1="150" y1="31" x2="196" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="8" width="160" height="46" rx="5" class="box"/>
+    <text x="276" y="24" text-anchor="middle" class="nt">Click</text>
+    <text x="276" y="38" text-anchor="middle" class="nt">"Issue my ANCRID"</text>
+
+    <line x1="356" y1="31" x2="402" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="402" y="8" width="160" height="46" rx="5" class="box-dec"/>
+    <text x="482" y="24" text-anchor="middle" class="nt">Validate</text>
+    <text x="482" y="38" text-anchor="middle" class="ns">required &middot; email &middot; min 6 chars</text>
+
+    <path d="M482,54 L482,74 L200,74 L200,92" class="l-r" marker-end="url(#ar)"/>
+    <text x="330" y="70" text-anchor="middle" class="cl">invalid</text>
+    <path d="M562,31 L610,31" class="l-g" marker-end="url(#agn)"/>
+    <text x="586" y="25" text-anchor="middle" class="cl">valid</text>
+
+    <rect x="120" y="92" width="160" height="40" rx="5" class="box-bad"/>
+    <text x="200" y="108" text-anchor="middle" class="nt">Inline error shown</text>
+    <text x="200" y="121" text-anchor="middle" class="ns">field-level, form stays open</text>
+
+    <rect x="610" y="8" width="130" height="46" rx="5" class="box"/>
+    <text x="675" y="26" text-anchor="middle" class="nm-b">POST</text>
+    <text x="675" y="40" text-anchor="middle" class="nm">/auth/register</text>
+
+    <path d="M675,54 L675,74 L560,74 L560,92" class="l-r" marker-end="url(#ar)"/>
+    <text x="640" y="70" text-anchor="middle" class="cl">duplicate email</text>
+    <path d="M675,54 L675,146 L470,146" class="l-g" marker-end="url(#agn)"/>
+    <text x="600" y="142" text-anchor="middle" class="cl">created</text>
+
+    <rect x="480" y="92" width="160" height="40" rx="5" class="box-bad"/>
+    <text x="560" y="108" text-anchor="middle" class="nt">Error banner</text>
+    <text x="560" y="121" text-anchor="middle" class="ns">"already registered"</text>
+
+    <rect x="310" y="126" width="160" height="40" rx="5" class="box-ok"/>
+    <text x="390" y="142" text-anchor="middle" class="nt">Session established</text>
+    <text x="390" y="155" text-anchor="middle" class="ns">confirmation toast</text>
+
+    <path d="M310,146 L250,146 L250,166" class="l-g" marker-end="url(#agn)"/>
+
+    <rect x="120" y="166" width="260" height="26" rx="4" class="box-nav"/>
+    <text x="250" y="183" text-anchor="middle" class="nt">Redirect &rarr; /app/overview</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:40mm">Field</th><th style="width:34mm">Control</th><th>Validation &amp; behaviour</th></tr>
+    <tr><td><b>Professional Name</b></td><td>Text, required</td><td>Becomes the display name and seeds the public handle.</td></tr>
+    <tr><td><b>Email</b></td><td>Email, required</td><td>Unique. Duplicate returns a form-level error, not a field error.</td></tr>
+    <tr><td><b>Password</b></td><td>Password, required</td><td>Minimum 6 characters enforced client-side. <span class="pill p-dec">Decision</span> Server-side strength policy is not defined &mdash; see page 15.</td></tr>
+    <tr><td><b>Discipline</b></td><td>Select, default Music</td><td>Music / Film / Photography / Writing / Design / Animation / Multi-Disciplinary.</td></tr>
+    <tr><td><b>Role</b></td><td>Select, default Creator</td><td>Creator / Student / Faculty / Mentor / Alumnus / Employer. <span class="pill p-dec">Decision</span> Self-selected at signup with no approval step.</td></tr>
+    <tr><td><b>Institution</b></td><td>Text, prefilled</td><td>Free text. Not validated against an institution registry.</td></tr>
+  </table>
+
+  <h3>Sign in to an existing ANCRID <span class="pill p-int">Intended</span></h3>
+  <svg width="740" height="150" viewBox="0 0 740 150">
+    <rect x="0" y="8" width="150" height="46" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Login form</text>
+    <text x="75" y="40" text-anchor="middle" class="nm">/login</text>
+
+    <line x1="150" y1="31" x2="196" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="8" width="150" height="46" rx="5" class="box"/>
+    <text x="271" y="24" text-anchor="middle" class="nt">Click</text>
+    <text x="271" y="38" text-anchor="middle" class="nt">"Enter ANCRID"</text>
+
+    <line x1="346" y1="31" x2="392" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="392" y="8" width="150" height="46" rx="5" class="box"/>
+    <text x="467" y="26" text-anchor="middle" class="nm-b">POST</text>
+    <text x="467" y="40" text-anchor="middle" class="nm">/auth/login</text>
+
+    <path d="M542,31 L600,31" class="l-g" marker-end="url(#agn)"/>
+    <text x="571" y="25" text-anchor="middle" class="cl">match</text>
+    <path d="M467,54 L467,80 L300,80 L300,98" class="l-r" marker-end="url(#ar)"/>
+    <text x="390" y="76" text-anchor="middle" class="cl">no match</text>
+
+    <rect x="600" y="8" width="140" height="46" rx="5" class="box-ok"/>
+    <text x="670" y="26" text-anchor="middle" class="nt">Session set</text>
+    <text x="670" y="40" text-anchor="middle" class="ns">welcome toast</text>
+
+    <path d="M670,54 L670,120 L500,120" class="l-g" marker-end="url(#agn)"/>
+
+    <rect x="220" y="98" width="160" height="40" rx="5" class="box-bad"/>
+    <text x="300" y="114" text-anchor="middle" class="nt">Inline error</text>
+    <text x="300" y="127" text-anchor="middle" class="ns">form stays open, no redirect</text>
+
+    <rect x="340" y="106" width="160" height="28" rx="4" class="box-nav"/>
+    <text x="420" y="124" text-anchor="middle" class="nt">&rarr; /app/overview</text>
+  </svg>
+
+  <div class="panel pn-r">
+    <h4>Remove Before Deployment &mdash; Prefilled Credentials</h4>
+    <p>The login form currently ships with a working email and password <b>pre-populated in the input fields</b>,
+    and the same pair printed on-screen in a visible demo panel. This is prototype scaffolding. It must not
+    reach any shared or public environment. <span class="pill p-obs">Observed</span> &mdash; not an intended behaviour,
+    and deliberately excluded from the flow above.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Missing Account-Recovery Paths</h4>
+    <p>There is no forgotten-password flow, no password-change surface, and no email-verification step anywhere
+    in ANCRID. For the identity provider of the entire ecosystem, a user who loses their password currently has
+    no self-service route back in. <b>Three flows require specification before launch:</b> request reset &middot;
+    consume reset link &middot; change password while signed in.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Entry & Authentication &nbsp;&middot;&nbsp; 03 / 16</span></div>
+</section>
+
+
+<!-- ============================= 04 SESSION LIFECYCLE ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">04</span><h2>Session Lifecycle &amp; Route Guard</h2><span class="tag">Every Protected Page</span></div>
+
+  <p class="lead">This flow runs on every navigation into <span class="mono">/app/*</span>. It is the single
+  gate protecting all 16 authenticated destinations.</p>
+
+  <h3>Entering a protected route</h3>
+  <svg width="740" height="210" viewBox="0 0 740 210">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Request /app/*</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">any of 16 destinations</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="160" height="44" rx="5" class="box-auth"/>
+    <text x="276" y="28" text-anchor="middle" class="nt">Route guard</text>
+    <text x="276" y="41" text-anchor="middle" class="ns">verify ANCRID session</text>
+
+    <path d="M276,54 L276,78 L120,78 L120,96" class="l-o" marker-end="url(#ao)"/>
+    <text x="196" y="74" text-anchor="middle" class="cl">still checking</text>
+
+    <path d="M356,32 L420,32" class="l-g" marker-end="url(#agn)"/>
+    <text x="388" y="26" text-anchor="middle" class="cl">valid</text>
+
+    <path d="M276,54 L276,150 L430,150" class="l-r" marker-end="url(#ar)"/>
+    <text x="345" y="146" text-anchor="middle" class="cl">no / expired session</text>
+
+    <rect x="40" y="96" width="160" height="40" rx="5" class="box-dec"/>
+    <text x="120" y="112" text-anchor="middle" class="nt">Verifying identity&hellip;</text>
+    <text x="120" y="125" text-anchor="middle" class="ns">blocking state, no content</text>
+
+    <rect x="420" y="10" width="150" height="44" rx="5" class="box-ok"/>
+    <text x="495" y="28" text-anchor="middle" class="nt">Render shell</text>
+    <text x="495" y="41" text-anchor="middle" class="ns">sidebar + page content</text>
+
+    <rect x="430" y="132" width="170" height="36" rx="5" class="box-bad"/>
+    <text x="515" y="148" text-anchor="middle" class="nt">Redirect &rarr; /login</text>
+    <text x="515" y="161" text-anchor="middle" class="ns">replaces history entry</text>
+
+    <rect x="0" y="178" width="740" height="28" rx="4" class="box-gh"/>
+    <text x="370" y="196" text-anchor="middle" class="nt">PROPOSED &mdash; preserve the attempted destination and return the user to it after sign-in</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Return-To-Destination After Re-Authentication</h4>
+    <p>A user whose session expires mid-task is redirected to the login screen and, after signing in,
+    is delivered to the Overview page &mdash; not back to what they were doing. For a user part-way through
+    editing their identity or assembling a Booking Packet, the work context is lost. The dashed step above
+    is the proposed correction: capture the attempted route, then restore it after successful authentication.</p>
+  </div>
+
+  <h3>Signing out</h3>
+  <svg width="740" height="118" viewBox="0 0 740 118">
+    <rect x="0" y="10" width="170" height="44" rx="5" class="box-nav"/>
+    <text x="85" y="28" text-anchor="middle" class="nt">Sidebar &mdash; log out</text>
+    <text x="85" y="41" text-anchor="middle" class="ns">icon only, no text label</text>
+
+    <line x1="170" y1="32" x2="216" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="216" y="10" width="160" height="44" rx="5" class="box"/>
+    <text x="296" y="26" text-anchor="middle" class="nm-b">POST</text>
+    <text x="296" y="40" text-anchor="middle" class="nm">/auth/logout</text>
+
+    <path d="M376,32 L430,32" class="l-g" marker-end="url(#agn)"/>
+    <text x="403" y="26" text-anchor="middle" class="cl">ok</text>
+    <path d="M296,54 L296,84 L430,84" class="l-o" marker-end="url(#ao)"/>
+    <text x="360" y="80" text-anchor="middle" class="cl">request fails</text>
+
+    <rect x="430" y="10" width="150" height="44" rx="5" class="box-ok"/>
+    <text x="505" y="28" text-anchor="middle" class="nt">Session cleared</text>
+    <text x="505" y="41" text-anchor="middle" class="ns">server + client</text>
+
+    <rect x="430" y="66" width="150" height="36" rx="5" class="box-dec"/>
+    <text x="505" y="82" text-anchor="middle" class="nt">Cleared locally anyway</text>
+    <text x="505" y="95" text-anchor="middle" class="ns">error is swallowed</text>
+
+    <path d="M580,32 L620,32 L620,58 L640,58" class="l" marker-end="url(#ag)"/>
+    <path d="M580,84 L620,84 L620,58" class="l" />
+
+    <rect x="640" y="40" width="100" height="36" rx="5" class="box-nav"/>
+    <text x="690" y="62" text-anchor="middle" class="nt">&rarr; Landing</text>
+  </svg>
+
+  <div class="panel pn-b">
+    <h4>Intended &mdash; Sign-Out Must Be Unambiguous</h4>
+    <p>The user is returned to the Landing page in both branches, so sign-out always <i>appears</i> to succeed.
+    That is the correct user-facing behaviour. However the control is an <b>unlabelled icon</b> in the sidebar
+    footer. <span class="pill p-pro">Proposed</span> Give it a visible text label or an accessible name, and
+    confirm before signing out if unsaved edits exist on the Settings page.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Session Lifecycle & Route Guard &nbsp;&middot;&nbsp; 04 / 16</span></div>
+</section>
+
+
+<!-- ============================= 05 IDENTITY & SETTINGS ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">05</span><h2>Identity &amp; Settings</h2><span class="tag">The Only Write Surface</span></div>
+
+  <p class="lead">Settings is the single page in ANCRID where a user changes stored data. Identity is its
+  read-only counterpart. Everything else in the application is display-only.</p>
+
+  <h3>Editing and saving identity <span class="pill p-int">Intended</span></h3>
+  <svg width="740" height="180" viewBox="0 0 740 180">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Settings</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/app/settings</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="44" rx="5" class="box"/>
+    <text x="281" y="26" text-anchor="middle" class="nt">Edit fields</text>
+    <text x="281" y="40" text-anchor="middle" class="ns">bio &middot; mission &middot; location &middot; pronouns &middot; site</text>
+
+    <line x1="366" y1="32" x2="412" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="412" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="487" y="28" text-anchor="middle" class="nt">Click "Save Identity"</text>
+    <text x="487" y="41" text-anchor="middle" class="ns">button disabled while saving</text>
+
+    <line x1="562" y1="32" x2="608" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="608" y="10" width="132" height="44" rx="5" class="box"/>
+    <text x="674" y="26" text-anchor="middle" class="nm-b">PATCH</text>
+    <text x="674" y="40" text-anchor="middle" class="nm">/ancrid/identity</text>
+
+    <path d="M674,54 L674,86 L470,86" class="l-g" marker-end="url(#agn)"/>
+    <text x="590" y="82" text-anchor="middle" class="cl">saved</text>
+    <path d="M674,54 L674,140 L470,140" class="l-r" marker-end="url(#ar)"/>
+    <text x="590" y="136" text-anchor="middle" class="cl">rejected</text>
+
+    <rect x="310" y="68" width="160" height="36" rx="5" class="box-ok"/>
+    <text x="390" y="84" text-anchor="middle" class="nt">Confirmation toast</text>
+    <text x="390" y="97" text-anchor="middle" class="ns">profile re-read from server</text>
+
+    <rect x="310" y="122" width="160" height="36" rx="5" class="box-bad"/>
+    <text x="390" y="138" text-anchor="middle" class="nt">Error toast</text>
+    <text x="390" y="151" text-anchor="middle" class="ns">entered values retained</text>
+  </svg>
+
+  <h3>Image upload lifecycle &mdash; headshot and banner</h3>
+  <svg width="740" height="188" viewBox="0 0 740 188">
+    <rect x="0" y="10" width="140" height="44" rx="5" class="box"/>
+    <text x="70" y="28" text-anchor="middle" class="nt">Click "Upload"</text>
+    <text x="70" y="41" text-anchor="middle" class="ns">opens file picker</text>
+
+    <line x1="140" y1="32" x2="186" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="186" y="10" width="150" height="44" rx="5" class="box-dec"/>
+    <text x="261" y="28" text-anchor="middle" class="nt">Select image file</text>
+    <text x="261" y="41" text-anchor="middle" class="ns">accept: image/*</text>
+
+    <path d="M261,54 L261,78 L120,78 L120,96" class="l-o" marker-end="url(#ao)"/>
+    <text x="190" y="74" text-anchor="middle" class="cl">cancelled</text>
+    <line x1="336" y1="32" x2="382" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="40" y="96" width="160" height="34" rx="5" class="box"/>
+    <text x="120" y="117" text-anchor="middle" class="nt">No change &mdash; picker closes</text>
+
+    <rect x="382" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="457" y="26" text-anchor="middle" class="nt">Uploading&hellip;</text>
+    <text x="457" y="40" text-anchor="middle" class="ns">spinner, button disabled</text>
+
+    <line x1="532" y1="32" x2="578" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="578" y="10" width="162" height="44" rx="5" class="box-auth"/>
+    <text x="659" y="26" text-anchor="middle" class="nt">Approved media storage</text>
+    <text x="659" y="40" text-anchor="middle" class="ns">returns durable URL</text>
+
+    <path d="M659,54 L659,84 L470,84" class="l-g" marker-end="url(#agn)"/>
+    <text x="580" y="80" text-anchor="middle" class="cl">stored</text>
+    <path d="M659,54 L659,142 L470,142" class="l-r" marker-end="url(#ar)"/>
+    <text x="580" y="138" text-anchor="middle" class="cl">upload failed</text>
+
+    <rect x="310" y="66" width="160" height="36" rx="5" class="box-ok"/>
+    <text x="390" y="82" text-anchor="middle" class="nt">Preview updates</text>
+    <text x="390" y="95" text-anchor="middle" class="ns">success toast</text>
+
+    <rect x="310" y="124" width="160" height="36" rx="5" class="box-bad"/>
+    <text x="390" y="140" text-anchor="middle" class="nt">Error toast</text>
+    <text x="390" y="153" text-anchor="middle" class="ns">previous image retained</text>
+
+    <rect x="0" y="164" width="740" height="22" rx="4" class="box-dec"/>
+    <text x="370" y="179" text-anchor="middle" class="nt-s">Uploading an image does NOT save it &mdash; the user must still click "Save Identity" to persist the change</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Two-Step Save Is Easy to Lose</h4>
+    <p>Upload and save are separate actions. A user who uploads a headshot, sees the preview update and a success
+    toast, then navigates away, loses the image &mdash; it was never attached to their profile. The success toast
+    actively implies otherwise. <b>Options:</b> persist the image URL immediately on upload; or keep the two-step
+    save but warn on navigation with unsaved changes and reword the upload toast.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Upload Constraints Undefined</h4>
+    <p>The file picker accepts any image type with no stated maximum size, minimum dimensions, or aspect-ratio
+    guidance, and there is no crop step. A headshot and a wide banner have very different shape requirements.
+    <b>Specify:</b> accepted formats, size ceiling, recommended dimensions per slot, and whether a crop tool
+    is in scope.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:52mm">Control</th><th style="width:30mm">Type</th><th>Behaviour</th></tr>
+    <tr><td><b>Copy public link</b></td><td>Button</td><td>Copies the public identity URL to the clipboard. Icon changes to a tick for roughly 1.5 seconds, plus a toast.</td></tr>
+    <tr><td><b>Open public profile</b></td><td>Link</td><td>Opens <span class="mono">/@{handle}</span> in a new tab.</td></tr>
+    <tr><td><b>Paste image URL</b></td><td>Text input</td><td>Alternative to uploading. Sets the image directly from an external address. <span class="pill p-dec">Decision</span> Permits hot-linking to third-party hosts &mdash; confirm whether this should remain.</td></tr>
+  </table>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Identity & Settings &nbsp;&middot;&nbsp; 05 / 16</span></div>
+</section>
+
+
+<!-- ============================= 06 RECORD SURFACES ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">06</span><h2>Record Surfaces &mdash; Shared Pattern</h2><span class="tag">9 Pages, One Flow</span></div>
+
+  <p class="lead">Nine destinations are read-only record lists that behave identically. They are specified once
+  here rather than nine times. Each fetches its own collection on entry and renders a card or row list.</p>
+
+  <h3>The shared pattern</h3>
+  <svg width="740" height="188" viewBox="0 0 740 188">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Sidebar item clicked</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">no confirmation needed</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="271" y="28" text-anchor="middle" class="nt">Route renders</text>
+    <text x="271" y="41" text-anchor="middle" class="ns">shell stays mounted</text>
+
+    <line x1="346" y1="32" x2="392" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="392" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="467" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="467" y="40" text-anchor="middle" class="nm">/ancrid/{collection}</text>
+
+    <path d="M542,32 L600,32" class="l-g" marker-end="url(#agn)"/>
+    <text x="571" y="26" text-anchor="middle" class="cl">200</text>
+
+    <rect x="600" y="10" width="140" height="44" rx="5" class="box-ok"/>
+    <text x="670" y="28" text-anchor="middle" class="nt">Render list</text>
+    <text x="670" y="41" text-anchor="middle" class="ns">cards or rows</text>
+
+    <path d="M467,54 L467,84 L300,84 L300,102" class="l-o" marker-end="url(#ao)"/>
+    <text x="390" y="80" text-anchor="middle" class="cl">200, empty array</text>
+
+    <path d="M467,54 L467,146 L300,146 L300,152" class="l-r" marker-end="url(#ar)"/>
+    <text x="390" y="142" text-anchor="middle" class="cl">request fails</text>
+
+    <rect x="180" y="102" width="240" height="32" rx="5" class="box-gh"/>
+    <text x="300" y="122" text-anchor="middle" class="nt-s">PROPOSED &mdash; explicit empty state with guidance</text>
+
+    <rect x="180" y="152" width="240" height="32" rx="5" class="box-gh"/>
+    <text x="300" y="166" text-anchor="middle" class="nt-s">PROPOSED &mdash; error state with retry</text>
+    <text x="300" y="177" text-anchor="middle" class="ns">currently renders an empty list with no message</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:38mm">Destination</th><th style="width:44mm">Collection endpoint</th><th style="width:24mm">Controls</th><th>Notes</th></tr>
+    <tr><td><b>Identity</b></td><td class="mono">/ancrid/identity</td><td>External link only</td><td>Read-only view of what Settings writes.</td></tr>
+    <tr><td><b>Passport</b></td><td class="mono">/ancrid/passport</td><td>None</td><td>Country count and international activity stamps.</td></tr>
+    <tr><td><b>Collaborations</b></td><td class="mono">/ancrid/collaborations</td><td>None</td><td>Collaborator, role, project, verification badge.</td></tr>
+    <tr><td><b>Skills</b></td><td class="mono">/ancrid/skills</td><td>None</td><td>Level, project count, years, verifying body.</td></tr>
+    <tr><td><b>Education</b></td><td class="mono">/ancrid/education</td><td>None</td><td>Institution, degree, years, capstone, mentors.</td></tr>
+    <tr><td><b>Professional</b></td><td class="mono">/ancrid/history</td><td>None</td><td>Row list of role, organisation, type, years.</td></tr>
+    <tr><td><b>Achievements</b></td><td class="mono">/ancrid/achievements</td><td>None</td><td>Title, issuer, year, award type.</td></tr>
+    <tr><td><b>Credentials</b></td><td class="mono">/ancrid/credentials</td><td>None</td><td>Credential, issuer, date, status badge.</td></tr>
+    <tr><td><b>Connected Ecosystem</b></td><td class="mono">/ancrid/ecosystem</td><td>None</td><td>Module status grid. See page 08.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Applies to All Nine &mdash; No Failure State Exists</h4>
+    <p>None of these pages handles a failed request. If the collection cannot be loaded, the page renders as
+    though the user simply has no records &mdash; an empty Credentials page looks identical whether the user
+    has earned nothing or the service is unreachable. For a verified-identity product this is a meaningful
+    misrepresentation. <b>Every record surface needs three distinct states:</b> populated, genuinely empty
+    (with guidance on how to earn the first record), and failed-to-load (with a retry).</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; These Records Are Read-Only</h4>
+    <p>A creator cannot add, edit, or remove any skill, credential, achievement, collaboration or education
+    entry from within ANCRID. The specification describes these as accumulating from verified ecosystem
+    activity, which implies they arrive from other modules rather than by self-entry. <b>Confirm the intent:</b>
+    if records are populated exclusively by upstream modules, each empty state should say which module produces
+    that record type, so the user knows where to go.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Record Surfaces &nbsp;&middot;&nbsp; 06 / 16</span></div>
+</section>
+
+
+<!-- ============================= 07 PORTFOLIO & NETWORK ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">07</span><h2>Portfolio &amp; Network</h2><span class="tag">Filtering &amp; Search</span></div>
+
+  <h3>Portfolio &mdash; medium filter</h3>
+  <svg width="740" height="140" viewBox="0 0 740 140">
+    <rect x="0" y="10" width="150" height="42" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Portfolio</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/app/portfolio</text>
+
+    <line x1="150" y1="31" x2="196" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="180" height="42" rx="5" class="box"/>
+    <text x="286" y="26" text-anchor="middle" class="nt">Click a filter pill</text>
+    <text x="286" y="40" text-anchor="middle" class="ns">All / Music / Film / Photography / Writing / Design</text>
+
+    <line x1="376" y1="31" x2="422" y2="31" class="l" marker-end="url(#ag)"/>
+
+    <rect x="422" y="10" width="160" height="42" rx="5" class="box"/>
+    <text x="502" y="26" text-anchor="middle" class="nt">Filter in place</text>
+    <text x="502" y="40" text-anchor="middle" class="ns">no request, no reload</text>
+
+    <path d="M582,31 L640,31" class="l-g" marker-end="url(#agn)"/>
+    <rect x="640" y="10" width="100" height="42" rx="5" class="box-ok"/>
+    <text x="690" y="35" text-anchor="middle" class="nt">Grid updates</text>
+
+    <path d="M502,52 L502,84 L340,84" class="l-o" marker-end="url(#ao)"/>
+    <text x="430" y="80" text-anchor="middle" class="cl">no items match</text>
+
+    <rect x="180" y="68" width="160" height="32" rx="5" class="box-gh"/>
+    <text x="260" y="88" text-anchor="middle" class="nt-s">PROPOSED &mdash; "no work in this medium"</text>
+
+    <rect x="0" y="112" width="740" height="24" rx="4" class="box-bad"/>
+    <text x="370" y="128" text-anchor="middle" class="nt-s">DEAD CONTROL &mdash; the "Open" button on every portfolio card has no action attached</text>
+  </svg>
+
+  <h3>Network &mdash; directory search and filters</h3>
+  <svg width="740" height="160" viewBox="0 0 740 160">
+    <rect x="0" y="10" width="160" height="56" rx="5" class="box"/>
+    <text x="80" y="28" text-anchor="middle" class="nt">Type in search</text>
+    <text x="80" y="42" text-anchor="middle" class="ns">name, institution, skill</text>
+    <text x="80" y="56" text-anchor="middle" class="ns">no submit button</text>
+
+    <rect x="0" y="76" width="160" height="30" rx="5" class="box"/>
+    <text x="80" y="95" text-anchor="middle" class="nt-s">Select discipline</text>
+
+    <rect x="0" y="116" width="160" height="30" rx="5" class="box"/>
+    <text x="80" y="135" text-anchor="middle" class="nt-s">Select country</text>
+
+    <path d="M160,38 L210,38 L210,78 L240,78" class="l" marker-end="url(#ag)"/>
+    <path d="M160,91 L240,91" class="l" marker-end="url(#ag)"/>
+    <path d="M160,131 L210,131 L210,104 L240,104" class="l" marker-end="url(#ag)"/>
+
+    <rect x="240" y="62" width="170" height="56" rx="5" class="box"/>
+    <text x="325" y="82" text-anchor="middle" class="nt">Any change re-queries</text>
+    <text x="325" y="96" text-anchor="middle" class="nm">GET /ancrid/network</text>
+    <text x="325" y="110" text-anchor="middle" class="ns">q &middot; discipline &middot; country</text>
+
+    <path d="M410,90 L466,90" class="l-g" marker-end="url(#agn)"/>
+    <text x="438" y="84" text-anchor="middle" class="cl">results</text>
+
+    <rect x="466" y="46" width="150" height="40" rx="5" class="box-ok"/>
+    <text x="541" y="62" text-anchor="middle" class="nt">Creator cards</text>
+    <text x="541" y="75" text-anchor="middle" class="ns">list replaces previous</text>
+
+    <path d="M410,104 L440,104 L440,124 L466,124" class="l-o" marker-end="url(#ao)"/>
+    <text x="440" y="140" text-anchor="middle" class="cl">none</text>
+
+    <rect x="466" y="106" width="150" height="36" rx="5" class="box-dec"/>
+    <text x="541" y="122" text-anchor="middle" class="nt">Empty message</text>
+    <text x="541" y="135" text-anchor="middle" class="ns">"No creators match the filter."</text>
+
+    <rect x="636" y="46" width="104" height="40" rx="5" class="box-bad"/>
+    <text x="688" y="62" text-anchor="middle" class="nt-s">DEAD</text>
+    <text x="688" y="75" text-anchor="middle" class="ns">"View" button</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Search Fires On Every Keystroke</h4>
+    <p>The directory re-queries the server on each character typed, with no debounce and no loading indicator.
+    On a large directory this produces a request per keystroke and results that visibly churn while typing.
+    <span class="pill p-pro">Proposed</span> Debounce input by roughly 300&nbsp;ms, show a loading state during
+    the request, and discard responses that arrive out of order.</p>
+  </div>
+
+  <div class="panel pn-r">
+    <h4>Dead Controls On This Page Pair</h4>
+    <p>Portfolio's <b>"Open"</b> and Network's <b>"View"</b> are both rendered as interactive buttons and both
+    do nothing when clicked. They are the two most prominent affordances on their respective cards, so a user
+    will reasonably expect a detail view. <b>Decide per control:</b> wire it to a detail surface &mdash; which
+    does not currently exist and would need specifying &mdash; or remove the button.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Portfolio & Network &nbsp;&middot;&nbsp; 07 / 16</span></div>
+</section>
+
+
+<!-- ============================= 08 ECOSYSTEM & JOURNEY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">08</span><h2>Connected Ecosystem &amp; Creator Journey</h2><span class="tag">Display Surfaces</span></div>
+
+  <h3>Connected Ecosystem</h3>
+  <p class="lead">Presents each ANCR module and its connection state around a central ANCRID hub. This is the
+  user-facing expression of the "one identity, every module" promise, so what it claims matters.</p>
+
+  <svg width="740" height="132" viewBox="0 0 740 132">
+    <rect x="0" y="10" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="80" y="28" text-anchor="middle" class="nt">Connected Ecosystem</text>
+    <text x="80" y="41" text-anchor="middle" class="nm">/app/connected</text>
+
+    <line x1="160" y1="32" x2="206" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="206" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="281" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="281" y="40" text-anchor="middle" class="nm">/ancrid/ecosystem</text>
+
+    <line x1="356" y1="32" x2="402" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="402" y="10" width="170" height="44" rx="5" class="box-ok"/>
+    <text x="487" y="28" text-anchor="middle" class="nt">Module grid renders</text>
+    <text x="487" y="41" text-anchor="middle" class="ns">status dot &middot; name &middot; purpose &middot; last activity</text>
+
+    <rect x="592" y="10" width="148" height="44" rx="5" class="box-gh"/>
+    <text x="666" y="28" text-anchor="middle" class="nt-s">PROPOSED</text>
+    <text x="666" y="41" text-anchor="middle" class="ns">click module &rarr; open it</text>
+
+    <path d="M572,32 L592,32" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="0" y="70" width="740" height="24" rx="4" class="box-dec"/>
+    <text x="370" y="86" text-anchor="middle" class="nt-s">Module cards are not clickable &mdash; the ecosystem is shown but cannot be entered from here</text>
+
+    <rect x="0" y="102" width="740" height="24" rx="4" class="box-bad"/>
+    <text x="370" y="118" text-anchor="middle" class="nt-s">Connection status is presented as fact &mdash; confirm each state is derived from a real check, not a fixed value</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; This Page Should Be the Launcher</h4>
+    <p>The ANCRID Master Workflow recommends a central hub from which a user moves into any module without
+    encountering another sign-in. This page already renders exactly that grid &mdash; but the cards are inert.
+    Making each card open its module, carrying the ANCRID session, would deliver the recommended experience
+    with the surface that already exists. <b>This is the single highest-value interaction change in ANCRID.</b>
+    It depends on the SSO consumption flow on page 10.</p>
+  </div>
+
+  <div class="panel pn-r">
+    <h4>Verify Before Launch &mdash; Status Must Be Truthful</h4>
+    <p>Each module card displays a connection status and a last-activity summary. If any of these values are
+    fixed rather than derived from a live check, the page tells a creator their identity is synchronised with
+    modules that are not in fact connected. <b>Requirement:</b> every status shown must reflect a real
+    connectivity result, or be labelled as unavailable.</p>
+  </div>
+
+  <h3>Creator Journey</h3>
+  <svg width="740" height="104" viewBox="0 0 740 104">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Creator Journey</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/app/timeline</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="271" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="271" y="40" text-anchor="middle" class="nm">/ancrid/journey</text>
+
+    <line x1="346" y1="32" x2="392" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="392" y="10" width="170" height="44" rx="5" class="box-ok"/>
+    <text x="477" y="28" text-anchor="middle" class="nt">Chapters render</text>
+    <text x="477" y="41" text-anchor="middle" class="ns">milestones, gains, quote per chapter</text>
+
+    <path d="M477,54 L477,74 L280,74 L280,80" class="l-b" marker-end="url(#ab)"/>
+    <text x="380" y="70" text-anchor="middle" class="cl">click a chapter in the strip</text>
+
+    <rect x="160" y="80" width="240" height="22" rx="4" class="box-nav"/>
+    <text x="280" y="95" text-anchor="middle" class="nt-s">Scrolls to that chapter on the same page</text>
+  </svg>
+
+  <p class="lead">The chapter strip is in-page navigation only &mdash; it moves the viewport, it does not change
+  route. If the journey has no chapters, the strip and all chapter sections are omitted entirely, leaving only
+  the page heading. <span class="pill p-pro">Proposed</span> Add an empty state explaining how journey chapters
+  are earned.</p>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Connected Ecosystem & Creator Journey &nbsp;&middot;&nbsp; 08 / 16</span></div>
+</section>
+
+
+<!-- ============================= 09 SSO ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">09</span><h2>SSO Handshake</h2><span class="tag">Identity Provider Core</span></div>
+
+  <p class="lead">ANCRID issues identity tokens that other ANCR modules consume. This page is where a creator
+  authorises a module and inspects the resulting token.</p>
+
+  <h3>Authorise a module and verify the issued token</h3>
+  <svg width="740" height="230" viewBox="0 0 740 230">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">SSO Handshake</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/app/sso</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="160" height="44" rx="5" class="box"/>
+    <text x="276" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="276" y="40" text-anchor="middle" class="nm">/sso/clients &middot; /sso/grants</text>
+
+    <line x1="356" y1="32" x2="402" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="402" y="10" width="170" height="44" rx="5" class="box-ok"/>
+    <text x="487" y="28" text-anchor="middle" class="nt">Registered modules listed</text>
+    <text x="487" y="41" text-anchor="middle" class="ns">each with an Authorize action</text>
+
+    <path d="M487,54 L487,74 L276,74 L276,88" class="l-v" marker-end="url(#av)"/>
+    <text x="380" y="70" text-anchor="middle" class="cl">click "Authorize"</text>
+
+    <rect x="196" y="88" width="160" height="44" rx="5" class="box-auth"/>
+    <text x="276" y="104" text-anchor="middle" class="nm-b">POST</text>
+    <text x="276" y="118" text-anchor="middle" class="nm">/sso/authorize</text>
+
+    <path d="M356,110 L410,110" class="l-g" marker-end="url(#agn)"/>
+    <text x="383" y="104" text-anchor="middle" class="cl">granted</text>
+    <path d="M276,132 L276,158 L100,158 L100,176" class="l-r" marker-end="url(#ar)"/>
+    <text x="190" y="154" text-anchor="middle" class="cl">refused</text>
+
+    <rect x="410" y="88" width="180" height="44" rx="5" class="box-ok"/>
+    <text x="500" y="104" text-anchor="middle" class="nt">Token issued</text>
+    <text x="500" y="118" text-anchor="middle" class="ns">token panel appears, grants refresh</text>
+
+    <rect x="20" y="176" width="160" height="36" rx="5" class="box-bad"/>
+    <text x="100" y="192" text-anchor="middle" class="nt">Error toast</text>
+    <text x="100" y="205" text-anchor="middle" class="ns">no token panel shown</text>
+
+    <path d="M500,132 L500,152 L360,152 L360,176" class="l-b" marker-end="url(#ab)"/>
+    <text x="440" y="148" text-anchor="middle" class="cl">click "Copy token"</text>
+    <path d="M500,132 L500,152 L620,152 L620,176" class="l-v" marker-end="url(#av)"/>
+    <text x="580" y="148" text-anchor="middle" class="cl">click "Verify as partner"</text>
+
+    <rect x="280" y="176" width="160" height="36" rx="5" class="box-ok"/>
+    <text x="360" y="192" text-anchor="middle" class="nt">Copied to clipboard</text>
+    <text x="360" y="205" text-anchor="middle" class="ns">icon confirms briefly</text>
+
+    <rect x="540" y="176" width="180" height="36" rx="5" class="box-ok"/>
+    <text x="630" y="192" text-anchor="middle" class="nt">Claims panel appears</text>
+    <text x="630" y="205" text-anchor="middle" class="ns">verified token contents listed</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:44mm">Control</th><th style="width:34mm">State</th><th>Behaviour</th></tr>
+    <tr><td><b>Authorize</b> (per module)</td><td>Disabled while any authorisation is in flight</td><td>Issues a token for that module and refreshes grant history. <span class="pill p-dec">Decision</span> The disabled state is shared across every module card, so authorising one module blocks all others &mdash; confirm this should be per-card.</td></tr>
+    <tr><td><b>Copy token</b></td><td>Appears only after a token exists</td><td>Copies the raw identity token to the clipboard.</td></tr>
+    <tr><td><b>Verify as partner</b></td><td>Appears only after a token exists</td><td>Simulates a partner module validating the token, then displays the decoded claims.</td></tr>
+    <tr><td><b>Grant history</b></td><td>Empty message when none</td><td>"No grants issued yet." Read-only.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>The Central Gap &mdash; Tokens Are Issued But Never Consumed</h4>
+    <p>This page proves ANCRID can <b>issue</b> a valid identity token. Nothing in the ecosystem currently
+    <b>accepts</b> one. There is no redirect into a module carrying the session, no return path back to ANCRID,
+    and no module-side session establishment. Every other ANCR application presents its own separate sign-in.</p>
+    <p>Consequently the Master Workflow's core promise &mdash; sign in once, open any module without being asked
+    again &mdash; is <b>not achievable with the current build</b>. Closing this gap requires specifying the
+    consumption half of the handshake, shown below.</p>
+  </div>
+
+  <h3>Proposed &mdash; module consumption flow <span class="pill p-pro">Proposed</span></h3>
+  <svg width="740" height="112" viewBox="0 0 740 112">
+    <rect x="0" y="14" width="132" height="42" rx="5" class="box-gh"/>
+    <text x="66" y="31" text-anchor="middle" class="nt-s">User clicks a module</text>
+    <text x="66" y="45" text-anchor="middle" class="ns">from Connected Ecosystem</text>
+
+    <line x1="132" y1="35" x2="170" y2="35" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="170" y="14" width="132" height="42" rx="5" class="box-gh"/>
+    <text x="236" y="31" text-anchor="middle" class="nt-s">Module checks session</text>
+    <text x="236" y="45" text-anchor="middle" class="ns">valid ANCRID session?</text>
+
+    <line x1="302" y1="35" x2="340" y2="35" class="l-g" stroke-dasharray="3 2" marker-end="url(#agn)"/>
+    <text x="321" y="29" text-anchor="middle" class="cl">yes</text>
+
+    <rect x="340" y="14" width="132" height="42" rx="5" class="box-gh"/>
+    <text x="406" y="38" text-anchor="middle" class="nt-s">Module opens &mdash; no login</text>
+
+    <path d="M236,56 L236,84 L406,84" class="l-o" stroke-dasharray="3 2" marker-end="url(#ao)"/>
+    <text x="320" y="80" text-anchor="middle" class="cl">no / expired</text>
+
+    <rect x="406" y="70" width="150" height="30" rx="5" class="box-gh"/>
+    <text x="481" y="89" text-anchor="middle" class="nt-s">Redirect to ANCRID sign-in</text>
+
+    <line x1="556" y1="85" x2="594" y2="85" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+    <rect x="594" y="70" width="146" height="30" rx="5" class="box-gh"/>
+    <text x="667" y="89" text-anchor="middle" class="nt-s">Return to the module</text>
+
+    <line x1="472" y1="35" x2="510" y2="35" class="l" stroke-dasharray="3 2" marker-end="url(#ag)"/>
+    <rect x="510" y="14" width="230" height="42" rx="5" class="box-gh"/>
+    <text x="625" y="31" text-anchor="middle" class="nt-s">User moves freely between modules</text>
+    <text x="625" y="45" text-anchor="middle" class="ns">until sign-out or session expiry</text>
+  </svg>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">SSO Handshake &nbsp;&middot;&nbsp; 09 / 16</span></div>
+</section>
+
+
+<!-- ============================= 10 MOBILITY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">10</span><h2>Creator Mobility</h2><span class="tag">15 Tabs</span></div>
+
+  <p class="lead">The largest single surface in ANCRID. All data loads once on entry; switching tabs is local
+  and issues no further requests. Fourteen tabs are read-only; only Booking Packet is interactive.</p>
+
+  <h3>Page entry and tab behaviour</h3>
+  <svg width="740" height="150" viewBox="0 0 740 150">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Creator Mobility</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/app/mobility</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="180" height="44" rx="5" class="box"/>
+    <text x="286" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="286" y="40" text-anchor="middle" class="nm">/mobility/profile + /booking-packets</text>
+
+    <path d="M376,32 L430,32" class="l-g" marker-end="url(#agn)"/>
+    <text x="403" y="26" text-anchor="middle" class="cl">loaded</text>
+    <path d="M286,54 L286,86 L180,86 L180,104" class="l-r" marker-end="url(#ar)"/>
+    <text x="235" y="82" text-anchor="middle" class="cl">fails</text>
+
+    <rect x="430" y="10" width="150" height="44" rx="5" class="box-ok"/>
+    <text x="505" y="28" text-anchor="middle" class="nt">Tab bar renders</text>
+    <text x="505" y="41" text-anchor="middle" class="ns">first tab selected</text>
+
+    <path d="M580,32 L626,32" class="l-b" marker-end="url(#ab)"/>
+    <rect x="626" y="10" width="114" height="44" rx="5" class="box-nav"/>
+    <text x="683" y="28" text-anchor="middle" class="nt-s">Click any tab</text>
+    <text x="683" y="41" text-anchor="middle" class="ns">local switch only</text>
+
+    <rect x="100" y="104" width="160" height="36" rx="5" class="box-bad"/>
+    <text x="180" y="120" text-anchor="middle" class="nt">Blank screen</text>
+    <text x="180" y="133" text-anchor="middle" class="ns">no message, no spinner</text>
+
+    <rect x="290" y="104" width="450" height="36" rx="5" class="box-gh"/>
+    <text x="515" y="120" text-anchor="middle" class="nt-s">PROPOSED &mdash; loading state while fetching, and an error state with retry on failure</text>
+    <text x="515" y="133" text-anchor="middle" class="ns">the page currently renders nothing at all until both requests resolve</text>
+  </svg>
+
+  <h3>The fifteen tabs</h3>
+  <table>
+    <tr><th style="width:38mm">Tab</th><th style="width:26mm">Interactive</th><th>Contents</th></tr>
+    <tr><td><b>Personal</b></td><td>No</td><td>Traveller identity details.</td></tr>
+    <tr><td><b>Programs</b></td><td>No</td><td>Loyalty and membership programmes.</td></tr>
+    <tr><td><b>Preferences</b></td><td>No</td><td>Seat, cabin, and travel preferences.</td></tr>
+    <tr><td><b>Dietary</b></td><td>No</td><td>Restrictions and requirements.</td></tr>
+    <tr><td><b>Medical</b></td><td>No</td><td>Medical notes. <span class="pill p-dec">Decision</span> Sensitive category &mdash; see panel below.</td></tr>
+    <tr><td><b>Emergency</b></td><td>No</td><td>Emergency contacts. <span class="pill p-dec">Decision</span> Sensitive category.</td></tr>
+    <tr><td><b>Team</b></td><td>No</td><td>Touring and working team.</td></tr>
+    <tr><td><b>Booking</b></td><td>No</td><td>Booking representation contacts.</td></tr>
+    <tr><td><b>Riders</b></td><td>No</td><td>Technical and hospitality riders.</td></tr>
+    <tr><td><b>Documents</b></td><td>No</td><td>Travel documents.</td></tr>
+    <tr><td><b>Global History</b></td><td>No</td><td>Prior international activity.</td></tr>
+    <tr><td><b>Calendar</b></td><td>No</td><td>Scheduled movement.</td></tr>
+    <tr><td><b>AI Assistant</b></td><td>Partly</td><td>Travel suggestions. <span class="pill p-dead">Dead</span> Each suggestion renders an action button with no handler.</td></tr>
+    <tr><td><b>Permissions</b></td><td>No</td><td>Sharing rules.</td></tr>
+    <tr><td><b>Booking Packet</b></td><td><b>Yes</b></td><td>Generate, share and revoke packets &mdash; see page 11.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Decision Required &mdash; Sensitive Data Has No Access Controls</h4>
+    <p>The Medical and Emergency tabs hold health information and third-party contact details. Within ANCRID
+    these sit behind the ordinary session gate with no additional protection, no field masking, and no access
+    logging. They can also be included in a shared Booking Packet (page 11). <b>Specify before any real data is
+    entered:</b> who may view these tabs, whether values are masked by default, whether access is recorded, and
+    the retention and deletion rules that apply.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Fourteen Tabs, No Way to Edit Any of Them</h4>
+    <p>Every mobility tab is read-only. A creator whose passport expires, dietary requirement changes, or
+    emergency contact moves cannot correct any of it from this page. <b>Confirm the source of truth:</b> if
+    this data is maintained elsewhere, each tab should say where and link to it; if ANCRID owns it, editing
+    surfaces need specifying for all fourteen.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Creator Mobility &nbsp;&middot;&nbsp; 10 / 16</span></div>
+</section>
+
+
+<!-- ============================= 11 BOOKING PACKET ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">11</span><h2>Booking Packet Lifecycle</h2><span class="tag">Generate &middot; Share &middot; Revoke</span></div>
+
+  <p class="lead">A Booking Packet is a shareable public link exposing a filtered subset of the creator's
+  mobility profile. It is the only feature in ANCRID that publishes private data to an unauthenticated
+  audience, so each control carries real consequence.</p>
+
+  <h3>Generating a packet</h3>
+  <svg width="740" height="200" viewBox="0 0 740 200">
+    <rect x="0" y="10" width="150" height="52" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Booking Packet tab</text>
+    <text x="75" y="42" text-anchor="middle" class="ns">within Creator Mobility</text>
+
+    <line x1="150" y1="36" x2="196" y2="36" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="164" height="52" rx="5" class="box-dec"/>
+    <text x="278" y="26" text-anchor="middle" class="nt">Choose visibility</text>
+    <text x="278" y="40" text-anchor="middle" class="ns">public &middot; booking only &middot; team</text>
+    <text x="278" y="53" text-anchor="middle" class="ns">defaults to booking only</text>
+
+    <line x1="360" y1="36" x2="406" y2="36" class="l" marker-end="url(#ag)"/>
+
+    <rect x="406" y="10" width="164" height="52" rx="5" class="box-dec"/>
+    <text x="488" y="26" text-anchor="middle" class="nt">Emergency contacts</text>
+    <text x="488" y="40" text-anchor="middle" class="ns">toggle On / Off</text>
+    <text x="488" y="53" text-anchor="middle" class="ns">defaults to Off</text>
+
+    <line x1="570" y1="36" x2="616" y2="36" class="l" marker-end="url(#ag)"/>
+
+    <rect x="616" y="10" width="124" height="52" rx="5" class="box"/>
+    <text x="678" y="32" text-anchor="middle" class="nt">Click</text>
+    <text x="678" y="46" text-anchor="middle" class="nt">"Generate Packet"</text>
+
+    <path d="M678,62 L678,88 L500,88" class="l-g" marker-end="url(#agn)"/>
+    <text x="600" y="84" text-anchor="middle" class="cl">created</text>
+    <path d="M678,62 L678,150 L500,150" class="l-r" marker-end="url(#ar)"/>
+    <text x="600" y="146" text-anchor="middle" class="cl">failed</text>
+
+    <rect x="330" y="70" width="170" height="38" rx="5" class="box-ok"/>
+    <text x="415" y="87" text-anchor="middle" class="nt">Packet appears in list</text>
+    <text x="415" y="100" text-anchor="middle" class="ns">success toast, list refreshes</text>
+
+    <rect x="330" y="132" width="170" height="38" rx="5" class="box-bad"/>
+    <text x="415" y="149" text-anchor="middle" class="nt">Error toast</text>
+    <text x="415" y="162" text-anchor="middle" class="ns">no packet created</text>
+
+    <rect x="0" y="176" width="740" height="22" rx="4" class="box-gh"/>
+    <text x="370" y="191" text-anchor="middle" class="nt-s">PROPOSED &mdash; preview exactly what the recipient will see, before the link is created</text>
+  </svg>
+
+  <h3>Managing an existing packet</h3>
+  <svg width="740" height="170" viewBox="0 0 740 170">
+    <rect x="250" y="10" width="240" height="34" rx="5" class="box-nav"/>
+    <text x="370" y="31" text-anchor="middle" class="nt">Packet row &mdash; three icon-only controls</text>
+
+    <path d="M310,44 L310,66 L120,66 L120,84" class="l-b" marker-end="url(#ab)"/>
+    <path d="M370,44 L370,84" class="l-b" marker-end="url(#ab)"/>
+    <path d="M430,44 L430,66 L620,66 L620,84" class="l-o" marker-end="url(#ao)"/>
+    <text x="150" y="62" text-anchor="middle" class="cl">Copy</text>
+    <text x="392" y="62" text-anchor="middle" class="cl">Open</text>
+    <text x="592" y="62" text-anchor="middle" class="cl">Revoke</text>
+
+    <rect x="40" y="84" width="160" height="38" rx="5" class="box-ok"/>
+    <text x="120" y="101" text-anchor="middle" class="nt">Link copied</text>
+    <text x="120" y="114" text-anchor="middle" class="ns">toast confirms</text>
+
+    <rect x="290" y="84" width="160" height="38" rx="5" class="box-nav"/>
+    <text x="370" y="101" text-anchor="middle" class="nt">Opens in new tab</text>
+    <text x="370" y="114" text-anchor="middle" class="nm">/packet/{token}</text>
+
+    <rect x="540" y="84" width="160" height="38" rx="5" class="box-dec"/>
+    <text x="620" y="101" text-anchor="middle" class="nt">Confirm dialog</text>
+    <text x="620" y="114" text-anchor="middle" class="ns">"link will stop working"</text>
+
+    <path d="M620,122 L620,140 L470,140" class="l-r" marker-end="url(#ar)"/>
+    <text x="560" y="136" text-anchor="middle" class="cl">confirmed</text>
+    <path d="M700,103 L730,103 L730,158 L500,158" class="l" marker-end="url(#ag)"/>
+    <text x="640" y="154" text-anchor="middle" class="cl">cancelled &mdash; no change</text>
+
+    <rect x="310" y="126" width="160" height="30" rx="5" class="box-bad"/>
+    <text x="390" y="145" text-anchor="middle" class="nt">Packet revoked</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Three Unlabelled Icon Controls, One Destructive</h4>
+    <p>Copy, Open and Revoke are rendered as icons with no text labels, sitting adjacent on each row. Revoke is
+    irreversible and permanently breaks a link that may already be in a promoter's inbox. <span class="pill p-pro">Proposed</span>
+    Give each control a visible or accessible label, and separate the destructive action from the two safe ones.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Packets Have No Expiry and No Audit</h4>
+    <p>A generated link stays live indefinitely until manually revoked. There is no expiry option at creation,
+    no record of how many times a packet has been opened, and no indication to the creator that a link is being
+    accessed. For a document that can include medical and emergency contact information, this is a significant
+    omission. <b>Specify:</b> optional expiry at generation, an access count per packet, and whether the creator
+    is notified on first open.</p>
+  </div>
+
+  <div class="panel pn-r">
+    <h4>Confirm &mdash; What Each Visibility Level Actually Exposes</h4>
+    <p>Three visibility levels are offered but the page does not state what each one includes or withholds.
+    A creator choosing "team" over "booking only" has no way to know what changes. <b>Requirement:</b> each
+    level must be described at the point of choice, and the emergency-contact toggle must state plainly that
+    enabling it publishes third-party personal contact details to anyone holding the link.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Booking Packet Lifecycle &nbsp;&middot;&nbsp; 11 / 16</span></div>
+</section>
+
+
+<!-- ============================= 12 PUBLIC SURFACES ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">12</span><h2>Public Surfaces</h2><span class="tag">No Session Required</span></div>
+
+  <p class="lead">Two surfaces are reachable by anyone holding the address. Both are read-only, both are
+  outside the application shell, and both are the creator's public face.</p>
+
+  <h3>Public creator identity</h3>
+  <svg width="740" height="156" viewBox="0 0 740 156">
+    <rect x="0" y="10" width="150" height="46" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Visitor opens link</text>
+    <text x="75" y="42" text-anchor="middle" class="nm">/@{handle}</text>
+
+    <line x1="150" y1="33" x2="196" y2="33" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="46" rx="5" class="box"/>
+    <text x="281" y="28" text-anchor="middle" class="nm-b">GET</text>
+    <text x="281" y="42" text-anchor="middle" class="nm">/public/creator/{handle}</text>
+
+    <path d="M366,33 L420,33" class="l-g" marker-end="url(#agn)"/>
+    <text x="393" y="27" text-anchor="middle" class="cl">found</text>
+    <path d="M281,56 L281,86 L200,86 L200,104" class="l-r" marker-end="url(#ar)"/>
+    <text x="248" y="82" text-anchor="middle" class="cl">not found</text>
+
+    <rect x="420" y="10" width="180" height="46" rx="5" class="box-ok"/>
+    <text x="510" y="28" text-anchor="middle" class="nt">Identity document renders</text>
+    <text x="510" y="42" text-anchor="middle" class="ns">bio &middot; skills &middot; portfolio &middot; credentials</text>
+
+    <rect x="620" y="10" width="120" height="46" rx="5" class="box-nav"/>
+    <text x="680" y="28" text-anchor="middle" class="nt-s">"Claim your ANCRID"</text>
+    <text x="680" y="42" text-anchor="middle" class="ns">&rarr; /signup</text>
+
+    <line x1="600" y1="33" x2="620" y2="33" class="l-b" marker-end="url(#ab)"/>
+
+    <rect x="120" y="104" width="160" height="40" rx="5" class="box-bad"/>
+    <text x="200" y="121" text-anchor="middle" class="nt">Identity not found</text>
+    <text x="200" y="134" text-anchor="middle" class="ns">link back to ANCRID</text>
+
+    <rect x="310" y="104" width="430" height="40" rx="5" class="box-dec"/>
+    <text x="525" y="120" text-anchor="middle" class="nt-s">All failures render the same message, whether the handle is wrong or the service is down</text>
+    <text x="525" y="134" text-anchor="middle" class="ns">a visitor cannot tell a typo from an outage &mdash; distinguish the two</text>
+  </svg>
+
+  <h3>Public booking packet</h3>
+  <svg width="740" height="126" viewBox="0 0 740 126">
+    <rect x="0" y="10" width="150" height="46" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Recipient opens link</text>
+    <text x="75" y="42" text-anchor="middle" class="nm">/packet/{token}</text>
+
+    <line x1="150" y1="33" x2="196" y2="33" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="46" rx="5" class="box"/>
+    <text x="281" y="28" text-anchor="middle" class="nm-b">GET</text>
+    <text x="281" y="42" text-anchor="middle" class="nm">/public/packet/{token}</text>
+
+    <path d="M366,33 L420,33" class="l-g" marker-end="url(#agn)"/>
+    <text x="393" y="27" text-anchor="middle" class="cl">valid</text>
+    <path d="M281,56 L281,86 L250,86 L250,94" class="l-r" marker-end="url(#ar)"/>
+    <text x="330" y="82" text-anchor="middle" class="cl">revoked / invalid</text>
+
+    <rect x="420" y="10" width="180" height="46" rx="5" class="box-ok"/>
+    <text x="510" y="28" text-anchor="middle" class="nt">Packet renders</text>
+    <text x="510" y="42" text-anchor="middle" class="ns">filtered by visibility level</text>
+
+    <rect x="620" y="10" width="120" height="46" rx="5" class="box-nav"/>
+    <text x="680" y="28" text-anchor="middle" class="nt-s">"View identity"</text>
+    <text x="680" y="42" text-anchor="middle" class="ns">&rarr; /@{handle}</text>
+
+    <line x1="600" y1="33" x2="620" y2="33" class="l-b" marker-end="url(#ab)"/>
+
+    <rect x="150" y="94" width="200" height="28" rx="5" class="box-bad"/>
+    <text x="250" y="112" text-anchor="middle" class="nt-s">Packet unavailable &mdash; reason shown</text>
+
+    <rect x="380" y="94" width="360" height="28" rx="5" class="box-ok"/>
+    <text x="560" y="112" text-anchor="middle" class="nt-s">This surface correctly reports why access failed &mdash; apply the same to public identity</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Public Identity Has No Visibility Control</h4>
+    <p>Any creator with a handle has a live public page. There is no setting to make it private, no preview of
+    how it appears to a visitor, and no indication within the application that it is publicly visible. The only
+    hint is a copy-link control in Settings. <b>Specify:</b> a visibility toggle, a preview, and a clear
+    statement in Settings of what a visitor can see.</p>
+  </div>
+
+  <div class="panel pn-b">
+    <h4>Intended &mdash; Both Surfaces Are Recruitment Points</h4>
+    <p>Each public surface carries a call to action inviting the visitor to claim their own ANCRID. This is
+    correct and should be preserved: the public identity page is the primary organic entry point into the
+    ecosystem, and the flow from visitor to new account should be as short as possible.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Public Surfaces &nbsp;&middot;&nbsp; 12 / 16</span></div>
+</section>
+
+
+<!-- ============================= 13 CLICK REGISTER ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">13</span><h2>Click-Action Register</h2><span class="tag">Complete Control List</span></div>
+
+  <p class="lead">Every remaining interactive control not already covered by a flow diagram, with its
+  destination or effect. Controls marked <span class="pill p-dead">Dead</span> render but do nothing.</p>
+
+  <table>
+    <tr><th style="width:34mm">Surface</th><th style="width:46mm">Control</th><th style="width:22mm">Type</th><th>Result</th></tr>
+
+    <tr><td><b>Landing</b></td><td>"Claim your ANCRID" &times;3</td><td>Link</td><td>Goes to signup. Appears in header, hero and footer.</td></tr>
+    <tr><td></td><td>"Sign in"</td><td>Link</td><td>Goes to login.</td></tr>
+    <tr><td></td><td>Identity / Ecosystem / For Whom</td><td>Anchor</td><td>Scrolls within the page. No route change.</td></tr>
+
+    <tr><td><b>Shell</b></td><td>Brand mark</td><td>Link</td><td>Returns to Landing &mdash; leaves the application shell.</td></tr>
+    <tr><td></td><td>Sidebar item &times;16</td><td>Nav link</td><td>Routes to that destination; active item is highlighted.</td></tr>
+    <tr><td></td><td>Log out</td><td>Icon button</td><td>Ends the session, returns to Landing. See page 04.</td></tr>
+
+    <tr><td><b>Overview</b></td><td>Copy public link</td><td>Button</td><td>Copies public identity URL; brief tick confirmation.</td></tr>
+    <tr><td></td><td>"View public"</td><td>Link</td><td>Opens public identity in a new tab.</td></tr>
+    <tr><td></td><td>Insight action <span class="pill p-dead">Dead</span></td><td>Button</td><td>Rendered on every AI insight card. No handler attached.</td></tr>
+    <tr><td></td><td>"See all" (insights)</td><td>Link</td><td>Goes to Network.</td></tr>
+    <tr><td></td><td>"See all" (milestones)</td><td>Link</td><td>Goes to Creator Journey.</td></tr>
+
+    <tr><td><b>Identity</b></td><td>Website</td><td>External link</td><td>Opens the creator's own site in a new tab. Only control on the page.</td></tr>
+
+    <tr><td><b>Settings</b></td><td>Copy public link</td><td>Button</td><td>Copies URL, tick confirmation plus toast.</td></tr>
+    <tr><td></td><td>"Open"</td><td>Link</td><td>Opens public identity in a new tab.</td></tr>
+    <tr><td></td><td>Upload headshot / banner</td><td>Button + file</td><td>See upload lifecycle, page 05.</td></tr>
+    <tr><td></td><td>Paste image URL &times;2</td><td>Text input</td><td>Sets image from an external address instead of uploading.</td></tr>
+    <tr><td></td><td>"Save Identity"</td><td>Submit</td><td>Persists all fields. See page 05.</td></tr>
+
+    <tr><td><b>Portfolio</b></td><td>Filter pill &times;6</td><td>Button</td><td>Filters the grid locally. No request.</td></tr>
+    <tr><td></td><td>"Open" <span class="pill p-dead">Dead</span></td><td>Button</td><td>On every card. No handler attached.</td></tr>
+
+    <tr><td><b>Creator Journey</b></td><td>Chapter marker</td><td>Anchor</td><td>Scrolls to that chapter.</td></tr>
+
+    <tr><td><b>Network</b></td><td>Search field</td><td>Text input</td><td>Re-queries on every keystroke.</td></tr>
+    <tr><td></td><td>Discipline / Country</td><td>Select &times;2</td><td>Re-queries on change.</td></tr>
+    <tr><td></td><td>"View" <span class="pill p-dead">Dead</span></td><td>Button</td><td>On every creator card. No handler attached.</td></tr>
+
+    <tr><td><b>SSO</b></td><td>"Authorize"</td><td>Button</td><td>Issues a token for that module. See page 09.</td></tr>
+    <tr><td></td><td>"Copy token"</td><td>Button</td><td>Copies the issued token.</td></tr>
+    <tr><td></td><td>"Verify as partner"</td><td>Button</td><td>Validates and displays claims.</td></tr>
+
+    <tr><td><b>Mobility</b></td><td>Tab &times;15</td><td>Button</td><td>Local switch. No request.</td></tr>
+    <tr><td></td><td>Visibility level &times;3</td><td>Button</td><td>Sets packet visibility before generation.</td></tr>
+    <tr><td></td><td>Emergency toggle</td><td>Toggle</td><td>Includes or excludes emergency contacts.</td></tr>
+    <tr><td></td><td>"Generate Packet"</td><td>Button</td><td>Creates a shareable link. See page 11.</td></tr>
+    <tr><td></td><td>Copy / Open / Revoke</td><td>Icon buttons</td><td>Per packet row. Revoke confirms first.</td></tr>
+    <tr><td></td><td>Suggestion action <span class="pill p-dead">Dead</span></td><td>Button</td><td>On every AI travel suggestion. No handler attached.</td></tr>
+
+    <tr><td><b>Public identity</b></td><td>"Claim your ANCRID" &times;2</td><td>Link</td><td>Goes to signup.</td></tr>
+    <tr><td></td><td>Website</td><td>External link</td><td>Opens creator's site in a new tab.</td></tr>
+
+    <tr><td><b>Public packet</b></td><td>"View verified identity"</td><td>Link</td><td>Goes to the creator's public identity page.</td></tr>
+    <tr><td></td><td>Website</td><td>External link</td><td>Opens creator's site in a new tab.</td></tr>
+  </table>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Click-Action Register &nbsp;&middot;&nbsp; 13 / 16</span></div>
+</section>
+
+
+<!-- ============================= 14 DECISIONS ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">14</span><h2>Decisions Required &amp; Dead Controls</h2><span class="tag">Blocking Items</span></div>
+
+  <p class="lead">Consolidated from every page. Each item needs a product decision before the affected control
+  can be built correctly. Nothing here should be resolved by the developer alone.</p>
+
+  <h3>Dead controls &mdash; rendered, but no action attached</h3>
+  <table>
+    <tr><th style="width:34mm">Surface</th><th style="width:44mm">Control</th><th>Decision needed</th></tr>
+    <tr><td><b>Overview</b></td><td>Action button on each AI insight</td><td>Each insight names an action. Should the button perform it, navigate to where it can be done, or be removed?</td></tr>
+    <tr><td><b>Portfolio</b></td><td>"Open" on each work card</td><td>Requires a portfolio detail view, which does not exist and is not specified. Build it or remove the button.</td></tr>
+    <tr><td><b>Network</b></td><td>"View" on each creator card</td><td>Should route to that creator's public identity page &mdash; which already exists. Lowest-effort fix of the four.</td></tr>
+    <tr><td><b>Mobility</b></td><td>Action on each travel suggestion</td><td>Same question as Overview insights.</td></tr>
+  </table>
+
+  <h3>Behaviour decisions</h3>
+  <table>
+    <tr><th style="width:30mm">Area</th><th style="width:52mm">Question</th><th>Why it matters</th></tr>
+    <tr><td><b>Account recovery</b></td><td>Password reset, password change, and email verification are all absent.</td><td>A user who forgets their password has no route back into the identity provider for the entire ecosystem.</td></tr>
+    <tr><td><b>Password policy</b></td><td>Only a 6-character client-side minimum is enforced.</td><td>Server-side strength rules and rate limiting on sign-in attempts need defining.</td></tr>
+    <tr><td><b>Role at signup</b></td><td>Users self-select Faculty, Mentor or Employer with no approval.</td><td>If role ever grants privilege, self-selection becomes an escalation path.</td></tr>
+    <tr><td><b>Session return</b></td><td>Expiry sends the user to Overview, not back to their task.</td><td>Work in progress is silently abandoned.</td></tr>
+    <tr><td><b>Upload persistence</b></td><td>Uploading an image does not save it; a separate save is required.</td><td>The success toast implies the change was saved when it was not.</td></tr>
+    <tr><td><b>Upload constraints</b></td><td>No size limit, dimensions, or crop step defined.</td><td>Headshot and banner have very different shape needs.</td></tr>
+    <tr><td><b>Clearing a field</b></td><td>An identity field that has a value cannot be emptied &mdash; only replaced.</td><td>A creator who adds a website or pronoun and later wants it removed from their public page has no way to do so.</td></tr>
+    <tr><td><b>Packet freshness</b></td><td>Does an issued packet reflect later profile edits, or the values at the moment it was created?</td><td>A promoter holding a link may be reading stale riders or contacts. Determines whether packets are live views or snapshots.</td></tr>
+    <tr><td><b>Uploaded image reach</b></td><td>Uploaded headshots and banners are served without access control and are not removable.</td><td>An image uploaded once stays publicly addressable indefinitely, even after the creator replaces it.</td></tr>
+    <tr><td><b>Record editing</b></td><td>Nine record surfaces are entirely read-only.</td><td>Confirm records arrive from other modules, and say which in each empty state.</td></tr>
+    <tr><td><b>Failure states</b></td><td>No record surface distinguishes "empty" from "failed to load".</td><td>An outage is presented to the user as an empty record.</td></tr>
+  </table>
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Decisions Required &nbsp;&middot;&nbsp; 14 / 16</span></div>
+</section>
+
+<section class="page">
+  <div class="ph"><span class="pn">15</span><h2>Decisions Required <span style="color:#5f6b7d;font-weight:normal">(continued)</span></h2><span class="tag">Blocking Items</span></div>
+  <h3>Behaviour decisions &mdash; continued</h3>
+  <table>
+    <tr><th style="width:30mm">Area</th><th style="width:52mm">Question</th><th>Why it matters</th></tr>
+    <tr><td><b>Ecosystem launch</b></td><td>Module cards are not clickable.</td><td>Blocks the Master Workflow's central promise. Highest-value change available.</td></tr>
+    <tr><td><b>Module status</b></td><td>Connection states may not reflect live checks.</td><td>Tells creators their identity is synchronised when it may not be.</td></tr>
+    <tr><td><b>SSO consumption</b></td><td>Tokens are issued but no module consumes them.</td><td>Every module still presents its own login, contradicting the specification.</td></tr>
+    <tr><td><b>Sensitive tabs</b></td><td>Medical and Emergency data have no additional protection.</td><td>Health and third-party contact data need access rules before real entry.</td></tr>
+    <tr><td><b>Mobility editing</b></td><td>Fourteen tabs are read-only.</td><td>Expired documents and changed contacts cannot be corrected.</td></tr>
+    <tr><td><b>Packet expiry</b></td><td>Links never expire and access is not recorded.</td><td>Sensitive data stays exposed indefinitely with no audit trail.</td></tr>
+    <tr><td><b>Packet visibility</b></td><td>Three levels offered, none explained at the point of choice.</td><td>Creator cannot make an informed sharing decision.</td></tr>
+    <tr><td><b>Public visibility</b></td><td>No way to make a public identity private.</td><td>Every creator has a live public page with no opt-out.</td></tr>
+    <tr><td><b>Unmatched routes</b></td><td>Any unknown path redirects to Landing.</td><td>Authenticated users are dropped out of the shell by a typo.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Must Be Removed Before Any Shared Environment</h4>
+    <p>Working credentials are pre-filled into the login form and additionally printed on screen. This is
+    prototype scaffolding and is not a product behaviour. It is excluded from every flow in this document
+    and must not survive into a deployed build.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Decisions Required (cont.) &nbsp;&middot;&nbsp; 15 / 16</span></div>
+</section>
+
+
+<!-- ============================= 15 VOCABULARY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">16</span><h2>Target-State Vocabulary</h2><span class="tag">Self-Hosted Translation</span></div>
+
+  <p class="lead">The prototype was built on a hosted development platform. This document uses neutral,
+  target-state language throughout. Where a replacement service does not yet exist, that is stated rather
+  than assumed &mdash; a developer must not read a neutral phrase as an available service.</p>
+
+  <table>
+    <tr><th style="width:56mm">Prototype implementation</th><th style="width:56mm">Documented as</th><th>Status for self-hosted build</th></tr>
+    <tr><td>Hosted platform session cookie</td><td><b>Authenticated ANCRID session</b></td><td>Session mechanism is ANCRID's own. Carries over directly.</td></tr>
+    <tr><td>Hosted platform OAuth exchange</td><td><b>ANCRID sign-in</b></td><td><span class="pill p-dec">Decision</span> Whether federated sign-in is offered at all is a product decision.</td></tr>
+    <tr><td>Hosted object storage</td><td><b>Approved media storage service</b></td><td><span class="pill p-dec">Decision</span> <b>No such service is provisioned.</b> Headshot and banner upload cannot work until one exists.</td></tr>
+    <tr><td>Hosted AI service key</td><td><b>Configured AI service</b></td><td><span class="pill p-dec">Decision</span> Insight and suggestion content depends on this. Provider and account not yet chosen.</td></tr>
+    <tr><td>Seeded demonstration records</td><td>&mdash;</td><td>Excluded. Not product behaviour. Every record surface must handle a genuinely empty account.</td></tr>
+    <tr><td>Pre-filled login credentials</td><td>&mdash;</td><td>Excluded. Must be removed before deployment.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Blocking Dependency &mdash; Media Storage</h4>
+    <p>The image upload flow on page 05 is specified against an approved media storage service. No such service
+    is currently provisioned for the self-hosted build. Until one is chosen and configured, headshot and banner
+    upload cannot function, and the paste-a-URL fallback becomes the only working path &mdash; which means every
+    creator image is hot-linked from a third-party host outside your control. <b>This should be resolved early;
+    it is a prerequisite, not a detail.</b></p>
+  </div>
+
+  <h3>How to extend this document to the other modules</h3>
+  <p class="lead">This specification is the pattern for the remaining ANCR applications. The method that
+  produced it:</p>
+  <ul>
+    <li><b>Inventory every control first.</b> Read each page and record the literal label, what it calls, and what happens on success and failure. Controls with no handler are found this way, not by inspection of the running app.</li>
+    <li><b>Consolidate repeated patterns.</b> Nine ANCRID record surfaces share one flow. Documenting them once made the difference between a readable specification and ninety pages of near-identical diagrams.</li>
+    <li><b>Separate intended from observed.</b> Where the build and the specification disagree, say so and mark it for decision. Never let current behaviour silently become the requirement.</li>
+    <li><b>Name every dead control.</b> A rendered button that does nothing is a defect the user meets directly. List each one and require a decision: wire it, or remove it.</li>
+    <li><b>State what does not exist.</b> Empty states, error states and missing services are the parts a developer will otherwise invent inconsistently.</li>
+  </ul>
+
+  <div class="panel pn-b">
+    <h4>Companion Documents</h4>
+    <p><b>ANCRID Master Workflow</b> &mdash; ecosystem-level identity architecture and the single sign-on principle
+    this document implements.<br>
+    <b>ANCRID Functional Requirements</b> &mdash; endpoint-level behaviour, request and response contracts, and
+    test coverage analysis for the current build.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRID Click-Flow Specification</span><span class="fr">Target-State Vocabulary &nbsp;&middot;&nbsp; 16 / 16</span></div>
+</section>
+
+</body>
+</html>
