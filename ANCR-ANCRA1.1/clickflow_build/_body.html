@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: 297mm 420mm; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background:#0a0d14; color:#e8edf2;
+         font-size:9.5pt; line-height:1.5; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .page { page-break-after:always; width:297mm; height:420mm; padding:16mm 18mm 12mm 18mm;
+          background:#0a0d14; display:flex; flex-direction:column; overflow:hidden; }
+  .page:last-child { page-break-after:auto; }
+  .pfoot { margin-top:auto; padding-top:6mm; border-top:1px solid #171c26;
+           display:flex; align-items:baseline; gap:4mm; }
+  .pfoot .fl { font-size:7pt; letter-spacing:.18em; text-transform:uppercase; color:#454f5e; font-weight:bold; }
+  .pfoot .fr { margin-left:auto; font-size:7pt; letter-spacing:.18em; color:#454f5e; font-weight:bold; }
+
+  .ph { display:flex; align-items:baseline; gap:5mm; border-bottom:1px solid #1f2433;
+        padding-bottom:3mm; margin-bottom:6mm; }
+  .ph .pn { font-size:8pt; color:#2e6bff; font-weight:bold; letter-spacing:.18em; }
+  .ph h2 { font-size:16.5pt; font-weight:bold; letter-spacing:-.01em; }
+  .ph .tag { margin-left:auto; font-size:7pt; letter-spacing:.2em; color:#5f6b7d;
+             text-transform:uppercase; font-weight:bold; }
+
+  h3 { font-size:11pt; font-weight:bold; margin:6mm 0 2.5mm 0; color:#e8edf2; }
+  h3:first-of-type { margin-top:0; }
+  .lead { font-size:9.5pt; color:#aab4c4; line-height:1.6; margin-bottom:4mm; }
+
+  svg { display:block; margin:0 auto 3mm auto; }
+  .nt { font:bold 9px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .nt-s { font:bold 8px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .ns { font:7.5px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .nm { font:7px "Courier New", monospace; fill:#7d8899; }
+  .nm-b { font:bold 7px "Courier New", monospace; fill:#aab4c4; }
+  .cl { font:bold 7px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .cap { font:bold 7.5px Arial, Helvetica, sans-serif; letter-spacing:.12em; }
+
+  .box { fill:#12171f; stroke:#1f2433; stroke-width:1; }
+  .box-auth { fill:#151329; stroke:#8a4fff; stroke-width:1.2; }
+  .box-nav  { fill:#101a2e; stroke:#2e6bff; stroke-width:1.2; }
+  .box-dec  { fill:#1e1509; stroke:#ff6b00; stroke-width:1.2; }
+  .box-ok   { fill:#0d1f16; stroke:#22c55e; stroke-width:1.2; }
+  .box-bad  { fill:#210f11; stroke:#ef4444; stroke-width:1.2; }
+  .box-gh   { fill:#0e1219; stroke:#2b3242; stroke-width:1; stroke-dasharray:3 2.5; }
+
+  .l  { stroke:#39414f; stroke-width:1.1; fill:none; }
+  .l-v{ stroke:#8a4fff; stroke-width:1.2; fill:none; }
+  .l-b{ stroke:#2e6bff; stroke-width:1.2; fill:none; }
+  .l-o{ stroke:#ff6b00; stroke-width:1.2; fill:none; }
+  .l-g{ stroke:#22c55e; stroke-width:1.2; fill:none; }
+  .l-r{ stroke:#ef4444; stroke-width:1.2; fill:none; }
+
+  table { width:100%; border-collapse:collapse; margin:2.5mm 0 4mm 0; font-size:8.5pt; }
+  th { text-align:left; font-size:6.8pt; letter-spacing:.16em; text-transform:uppercase;
+       color:#5f6b7d; border-bottom:1px solid #2b3242; padding:2mm 2.5mm 1.6mm 0; font-weight:bold; }
+  td { padding:2mm 2.5mm 2mm 0; border-bottom:1px solid #171c26; color:#c3ccd8;
+       vertical-align:top; line-height:1.45; }
+  td.mono, .mono { font-family:"Courier New", monospace; font-size:8pt; color:#9fb0c9; }
+  td b { color:#e8edf2; }
+
+  .pill { display:inline-block; font-size:6.5pt; font-weight:bold; letter-spacing:.1em;
+          padding:.9mm 2mm; border-radius:2mm; text-transform:uppercase; white-space:nowrap; }
+  .p-int { background:rgba(46,107,255,.15); color:#7aa5ff; border:1px solid rgba(46,107,255,.45); }
+  .p-obs { background:rgba(139,149,166,.13); color:#9aa5b5; border:1px solid rgba(139,149,166,.4); }
+  .p-dec { background:rgba(255,107,0,.14); color:#ff9c4d; border:1px solid rgba(255,107,0,.5); }
+  .p-pro { background:rgba(138,79,255,.14); color:#b98cff; border:1px solid rgba(138,79,255,.5); border-style:dashed; }
+  .p-dead{ background:rgba(239,68,68,.13); color:#f08d8d; border:1px solid rgba(239,68,68,.45); }
+
+  .panel { border:1px solid #1f2433; background:#12171f; padding:4.5mm 5mm; margin:4mm 0; }
+  .panel h4 { font-size:7.5pt; letter-spacing:.2em; text-transform:uppercase; margin-bottom:2.5mm; font-weight:bold; }
+  .panel p { font-size:9pt; color:#aab4c4; line-height:1.6; }
+  .panel p + p { margin-top:2.5mm; }
+  .pn-v { border-left:3pt solid #8a4fff; } .pn-v h4 { color:#8a4fff; }
+  .pn-o { border-left:3pt solid #ff6b00; } .pn-o h4 { color:#ff6b00; }
+  .pn-b { border-left:3pt solid #2e6bff; } .pn-b h4 { color:#2e6bff; }
+  .pn-r { border-left:3pt solid #ef4444; } .pn-r h4 { color:#ef4444; }
+  .pn-g { border-left:3pt solid #22c55e; } .pn-g h4 { color:#22c55e; }
+
+  ul { margin:2mm 0 3mm 5mm; } li { font-size:9pt; color:#aab4c4; line-height:1.55; margin-bottom:1.4mm; }
+  li b { color:#e8edf2; }
+  code { font-family:"Courier New", monospace; font-size:8.2pt; color:#9fb0c9; }
+  .fig { font-size:7pt; color:#5f6b7d; letter-spacing:.14em; text-transform:uppercase;
+         text-align:center; margin-bottom:4mm; font-weight:bold; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:6mm; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="ag" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#39414f"/></marker>
+    <marker id="av" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#8a4fff"/></marker>
+    <marker id="ab" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#2e6bff"/></marker>
+    <marker id="ao" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ff6b00"/></marker>
+    <marker id="agn" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#22c55e"/></marker>
+    <marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ef4444"/></marker>
+  </defs>
+</svg>
+
+
+
+<!-- ============================= 01 READING KEY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">01</span><h2>How to Read This Document</h2><span class="tag">Key</span></div>
+
+  <p class="lead">Every interactive control in ANCRA is documented as a small connected flow: what the user clicks,
+  what the system does, and where each outcome leads. Shapes and colours carry fixed meaning &mdash; they are not decorative.</p>
+
+  <h3>Shape &amp; colour vocabulary</h3>
+  <svg width="740" height="112" viewBox="0 0 740 112">
+    <rect x="0" y="0" width="140" height="40" rx="5" class="box-auth"/>
+    <text x="70" y="18" text-anchor="middle" class="nt">Identity / Persona</text>
+    <text x="70" y="30" text-anchor="middle" class="ns">violet outline</text>
+    <rect x="150" y="0" width="140" height="40" rx="5" class="box-nav"/>
+    <text x="220" y="18" text-anchor="middle" class="nt">Navigation / Screen</text>
+    <text x="220" y="30" text-anchor="middle" class="ns">blue outline</text>
+    <rect x="300" y="0" width="140" height="40" rx="5" class="box-dec"/>
+    <text x="370" y="18" text-anchor="middle" class="nt">Decision / Warning</text>
+    <text x="370" y="30" text-anchor="middle" class="ns">orange outline</text>
+    <rect x="450" y="0" width="140" height="40" rx="5" class="box-ok"/>
+    <text x="520" y="18" text-anchor="middle" class="nt">Success outcome</text>
+    <text x="520" y="30" text-anchor="middle" class="ns">green outline</text>
+    <rect x="600" y="0" width="140" height="40" rx="5" class="box-bad"/>
+    <text x="670" y="18" text-anchor="middle" class="nt">Failure / Dead control</text>
+    <text x="670" y="30" text-anchor="middle" class="ns">red outline</text>
+
+    <rect x="0" y="58" width="140" height="40" rx="5" class="box"/>
+    <text x="70" y="76" text-anchor="middle" class="nt">System / API step</text>
+    <text x="70" y="88" text-anchor="middle" class="ns">neutral</text>
+    <rect x="150" y="58" width="140" height="40" rx="5" class="box-gh"/>
+    <text x="220" y="76" text-anchor="middle" class="nt">Proposed / not built</text>
+    <text x="220" y="88" text-anchor="middle" class="ns">dashed outline</text>
+    <line x1="310" y1="78" x2="425" y2="78" class="l" marker-end="url(#ag)"/>
+    <text x="367" y="72" text-anchor="middle" class="cl">sequence</text>
+    <line x1="450" y1="78" x2="565" y2="78" class="l-o" marker-end="url(#ao)"/>
+    <text x="507" y="72" text-anchor="middle" class="cl">branch</text>
+    <text x="600" y="74" class="cl">Connector labels state the condition</text>
+    <text x="600" y="86" class="cl">that selects that path.</text>
+  </svg>
+
+  <h3>Behaviour classification</h3>
+  <table>
+    <tr><th style="width:26mm">Label</th><th style="width:52mm">Meaning</th><th>How the developer should treat it</th></tr>
+    <tr><td><span class="pill p-int">Intended</span></td>
+        <td>Supported by the ANCRA product specification and User Flow.</td>
+        <td><b>Build this.</b> The current application may or may not already do it.</td></tr>
+    <tr><td><span class="pill p-obs">Observed</span></td>
+        <td>What the current application actually does today.</td>
+        <td>Reference only. Shown where it <b>differs</b> from Intended. Never a target.</td></tr>
+    <tr><td><span class="pill p-dec">Decision</span></td>
+        <td>Application and specification disagree, or behaviour is undefined.</td>
+        <td><b>Do not guess.</b> Requires a product decision before building.</td></tr>
+    <tr><td><span class="pill p-pro">Proposed</span></td>
+        <td>Needed to complete the experience, not yet approved.</td>
+        <td>Awaiting sign-off. Drawn dashed.</td></tr>
+    <tr><td><span class="pill p-dead">Dead</span></td>
+        <td>Control renders in the UI but has no handler attached.</td>
+        <td>Wire it to the flow specified here, or remove it from the page.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Read This First &mdash; Scale of the Dead-Control Problem</h4>
+    <p>ANCRA renders <b>65 buttons that have no handler attached</b> and <b>13 form fields whose values cannot be
+    read back</b>. This is not a scattering of minor omissions. It includes <b>Approve</b> on faculty submissions,
+    <b>Sign &amp; Return</b> on grading, <b>Publish</b> on lesson authoring, <b>Save &amp; Sign</b> on the student
+    portfolio, and <b>Send Packet</b> on graduation.</p>
+    <p>Every one of those is an action a user will reasonably believe succeeded. The full register is on
+    pages 12&ndash;13. <b>No flow in this document should be built without first resolving whether the control
+    it describes is meant to exist.</b></p>
+  </div>
+
+  <div class="panel pn-v">
+    <h4>Target-State Language</h4>
+    <p>This document describes the <b>self-hosted</b> product. Prototype-platform specifics are translated:
+    a vendor AI key becomes the <b>configured AI service</b>; seeded demonstration records are excluded from
+    intended flows. Where a replacement capability does not yet exist, that is stated rather than assumed.
+    The full translation table is on the final page.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">How to Read This Document &nbsp;&middot;&nbsp; 01 / 15</span></div>
+</section>
+
+
+<!-- ============================= 02 IDENTITY & PERSONA ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">02</span><h2>Identity &amp; Persona Model</h2><span class="tag">Read First</span></div>
+
+  <p class="lead">ANCRA has two personas &mdash; student and faculty &mdash; controlling which of the 45 routes
+  are meaningful and what each surface displays. How a user becomes one or the other is the single most
+  consequential behaviour in the application.</p>
+
+  <h3>How the persona is currently selected <span class="pill p-obs">Observed</span></h3>
+  <svg width="740" height="200" viewBox="0 0 740 200">
+    <rect x="0" y="10" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="80" y="28" text-anchor="middle" class="nt">User opens ANCRA</text>
+    <text x="80" y="41" text-anchor="middle" class="ns">no sign-in of any kind</text>
+
+    <line x1="160" y1="32" x2="206" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="206" y="10" width="170" height="44" rx="5" class="box-dec"/>
+    <text x="291" y="28" text-anchor="middle" class="nt">Read browser storage</text>
+    <text x="291" y="41" text-anchor="middle" class="ns">key: ancra_role</text>
+
+    <path d="M376,32 L430,32" class="l" marker-end="url(#ag)"/>
+    <text x="403" y="26" text-anchor="middle" class="cl">absent</text>
+    <path d="M291,54 L291,84 L520,84 L520,96" class="l-o" marker-end="url(#ao)"/>
+    <text x="400" y="80" text-anchor="middle" class="cl">present</text>
+
+    <rect x="430" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="505" y="28" text-anchor="middle" class="nt">Default to student</text>
+    <text x="505" y="41" text-anchor="middle" class="ns">no server involvement</text>
+
+    <rect x="440" y="96" width="160" height="40" rx="5" class="box-bad"/>
+    <text x="520" y="112" text-anchor="middle" class="nt">Adopt stored persona</text>
+    <text x="520" y="125" text-anchor="middle" class="ns">student or faculty</text>
+
+    <rect x="0" y="96" width="170" height="40" rx="5" class="box-bad"/>
+    <text x="85" y="112" text-anchor="middle" class="nt">Toggle in top bar</text>
+    <text x="85" y="125" text-anchor="middle" class="ns">two-button switch, always visible</text>
+
+    <path d="M170,116 L440,116" class="l-r" marker-end="url(#ar)"/>
+    <text x="305" y="110" text-anchor="middle" class="cl">any user may switch persona at any time</text>
+
+    <rect x="0" y="152" width="740" height="40" rx="5" class="box-bad"/>
+    <text x="370" y="169" text-anchor="middle" class="nt">The backend accepts the persona as an unauthenticated query parameter</text>
+    <text x="370" y="183" text-anchor="middle" class="ns">There is no session, no token, no credential and no authorisation check anywhere in the application</text>
+  </svg>
+
+  <div class="panel pn-r">
+    <h4>Observed &mdash; There Is No Authentication</h4>
+    <p>The ANCRA backend contains <b>no authentication construct of any kind</b>: no session handling, no token
+    verification, no credential check, and no authorisation dependency on any of its 24 endpoints. Persona is a
+    client-side preference stored in the browser and echoed to the server as a query parameter.</p>
+    <p>Consequently <b>every faculty surface is reachable by any visitor</b> &mdash; the command centre, the
+    student roster, grading, approvals, cohort analytics and the entire authoring suite &mdash; by clicking a
+    toggle that is permanently visible in the top bar. No flow in this document should be read as implying
+    otherwise until the identity model below is built.</p>
+  </div>
+
+  <h3>Intended persona model <span class="pill p-pro">Proposed</span></h3>
+  <svg width="740" height="128" viewBox="0 0 740 128">
+    <rect x="0" y="14" width="150" height="44" rx="5" class="box-gh"/>
+    <text x="75" y="32" text-anchor="middle" class="nt-s">User opens ANCRA</text>
+    <text x="75" y="46" text-anchor="middle" class="ns">no local session</text>
+
+    <line x1="150" y1="36" x2="190" y2="36" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="190" y="14" width="160" height="44" rx="5" class="box-gh"/>
+    <text x="270" y="32" text-anchor="middle" class="nt-s">Redirect to ANCRID</text>
+    <text x="270" y="46" text-anchor="middle" class="ns">ecosystem identity provider</text>
+
+    <line x1="350" y1="36" x2="390" y2="36" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="390" y="14" width="170" height="44" rx="5" class="box-gh"/>
+    <text x="475" y="32" text-anchor="middle" class="nt-s">Session returned with role</text>
+    <text x="475" y="46" text-anchor="middle" class="ns">role asserted by ANCRID, not chosen</text>
+
+    <line x1="560" y1="36" x2="600" y2="36" class="l-g" stroke-dasharray="3 2" marker-end="url(#agn)"/>
+    <rect x="600" y="14" width="140" height="44" rx="5" class="box-gh"/>
+    <text x="670" y="32" text-anchor="middle" class="nt-s">Shell renders</text>
+    <text x="670" y="46" text-anchor="middle" class="ns">for that role only</text>
+
+    <rect x="0" y="74" width="740" height="24" rx="4" class="box-gh"/>
+    <text x="370" y="90" text-anchor="middle" class="nt-s">Faculty routes reject a student session server-side &mdash; not merely hidden in the interface</text>
+
+    <rect x="0" y="104" width="740" height="20" rx="4" class="box-dec"/>
+    <text x="370" y="118" text-anchor="middle" class="nt-s">The persona toggle is removed; a user cannot select their own role</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Is the Persona Toggle a Demonstration Device?</h4>
+    <p>A visible student/faculty switch is genuinely useful for showing the product. It is also the mechanism by
+    which any visitor grants themselves faculty access. <b>Decide:</b> remove it in favour of an ANCRID-asserted
+    role; retain it only behind an explicit demonstration-environment flag; or keep it and accept that ANCRA has
+    no access control. The third option should be chosen deliberately, not by default.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Identity & Persona Model &nbsp;&middot;&nbsp; 02 / 15</span></div>
+</section>
+
+
+<!-- ============================= 03 NAVIGATION MAP ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">03</span><h2>Master Navigation Map</h2><span class="tag">45 Routes</span></div>
+
+  <p class="lead">Every route in ANCRA. The shell is common to both personas; the destination set differs.
+  All routes are reachable regardless of the active persona (see page 02).</p>
+
+  <svg width="740" height="430" viewBox="0 0 740 430">
+    <text x="0" y="10" class="cap" fill="#5f6b7d">ENTRY</text>
+    <line x1="0" y1="16" x2="740" y2="16" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="230" y="26" width="130" height="36" rx="5" class="box-nav"/>
+    <text x="295" y="42" text-anchor="middle" class="nt">Welcome</text>
+    <text x="295" y="54" text-anchor="middle" class="nm">/welcome</text>
+
+    <rect x="380" y="26" width="130" height="36" rx="5" class="box-nav"/>
+    <text x="445" y="42" text-anchor="middle" class="nt">Landing</text>
+    <text x="445" y="54" text-anchor="middle" class="nm">/</text>
+
+    <path d="M295,62 L295,78 L370,78 L370,92" class="l-b" marker-end="url(#ab)"/>
+    <path d="M445,62 L445,78 L370,78" class="l-b"/>
+
+    <rect x="240" y="92" width="260" height="30" rx="4" class="box"/>
+    <text x="370" y="111" text-anchor="middle" class="nt">Application shell &mdash; top bar, command palette, AIAH dock</text>
+
+    <path d="M370,122 L370,138" class="l-b" marker-end="url(#ab)"/>
+
+    <text x="0" y="146" class="cap" fill="#8a4fff">STUDENT PERSONA &mdash; 20 DESTINATIONS</text>
+    <line x1="0" y1="152" x2="740" y2="152" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="0"   y="160" width="142" height="24" rx="4" class="box-nav"/><text x="8" y="176" class="nt-s">Dashboard</text><text x="135" y="176" text-anchor="end" class="nm">/dashboard</text>
+    <rect x="150" y="160" width="142" height="24" rx="4" class="box-nav"/><text x="158" y="176" class="nt-s">Learning Journey</text><text x="285" y="176" text-anchor="end" class="nm">/journey</text>
+    <rect x="300" y="160" width="142" height="24" rx="4" class="box-nav"/><text x="308" y="176" class="nt-s">Progress</text><text x="435" y="176" text-anchor="end" class="nm">/progress</text>
+    <rect x="450" y="160" width="142" height="24" rx="4" class="box-nav"/><text x="458" y="176" class="nt-s">Experience</text><text x="585" y="176" text-anchor="end" class="nm">/experience/:id</text>
+    <rect x="600" y="160" width="140" height="24" rx="4" class="box-nav"/><text x="608" y="176" class="nt-s">Lesson Player</text><text x="733" y="176" text-anchor="end" class="nm">/lesson/:id</text>
+
+    <rect x="0"   y="190" width="142" height="24" rx="4" class="box-nav"/><text x="8" y="206" class="nt-s">Assignments</text><text x="135" y="206" text-anchor="end" class="nm">/assignments</text>
+    <rect x="150" y="190" width="142" height="24" rx="4" class="box-nav"/><text x="158" y="206" class="nt-s">Projects</text><text x="285" y="206" text-anchor="end" class="nm">/projects</text>
+    <rect x="300" y="190" width="142" height="24" rx="4" class="box-nav"/><text x="308" y="206" class="nt-s">Peer Reviews</text><text x="435" y="206" text-anchor="end" class="nm">/peer-reviews</text>
+    <rect x="450" y="190" width="142" height="24" rx="4" class="box-nav"/><text x="458" y="206" class="nt-s">Portfolio Builder</text><text x="585" y="206" text-anchor="end" class="nm">/portfolio-builder</text>
+    <rect x="600" y="190" width="140" height="24" rx="4" class="box-nav"/><text x="608" y="206" class="nt-s">AI Companion</text><text x="733" y="206" text-anchor="end" class="nm">/companion</text>
+
+    <rect x="0"   y="220" width="142" height="24" rx="4" class="box-nav"/><text x="8" y="236" class="nt-s">Graduation</text><text x="135" y="236" text-anchor="end" class="nm">/graduation</text>
+    <rect x="150" y="220" width="142" height="24" rx="4" class="box-nav"/><text x="158" y="236" class="nt-s">Capstones</text><text x="285" y="236" text-anchor="end" class="nm">/capstones</text>
+    <rect x="300" y="220" width="142" height="24" rx="4" class="box-nav"/><text x="308" y="236" class="nt-s">30 Song Project</text><text x="435" y="236" text-anchor="end" class="nm">/thirty-song</text>
+    <rect x="450" y="220" width="142" height="24" rx="4" class="box-nav"/><text x="458" y="236" class="nt-s">Portfolio</text><text x="585" y="236" text-anchor="end" class="nm">/portfolio</text>
+    <rect x="600" y="220" width="140" height="24" rx="4" class="box-nav"/><text x="608" y="236" class="nt-s">Teams</text><text x="733" y="236" text-anchor="end" class="nm">/teams</text>
+
+    <rect x="0"   y="250" width="142" height="24" rx="4" class="box-nav"/><text x="8" y="266" class="nt-s">Messages</text><text x="135" y="266" text-anchor="end" class="nm">/messages</text>
+    <rect x="150" y="250" width="142" height="24" rx="4" class="box-nav"/><text x="158" y="266" class="nt-s">Calendar</text><text x="285" y="266" text-anchor="end" class="nm">/calendar</text>
+    <rect x="300" y="250" width="142" height="24" rx="4" class="box-nav"/><text x="308" y="266" class="nt-s">Achievements</text><text x="435" y="266" text-anchor="end" class="nm">/achievements</text>
+    <rect x="450" y="250" width="142" height="24" rx="4" class="box-nav"/><text x="458" y="266" class="nt-s">Creator Passport</text><text x="585" y="266" text-anchor="end" class="nm">/passport</text>
+    <rect x="600" y="250" width="140" height="24" rx="4" class="box-nav"/><text x="608" y="266" class="nt-s">Library</text><text x="733" y="266" text-anchor="end" class="nm">/library</text>
+
+    <text x="0" y="292" class="cap" fill="#ff6b00">FACULTY PERSONA &mdash; 14 DESTINATIONS</text>
+    <line x1="0" y1="298" x2="740" y2="298" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="0"   y="306" width="142" height="24" rx="4" class="box-dec"/><text x="8" y="322" class="nt-s">Command Center</text><text x="135" y="322" text-anchor="end" class="nm">/faculty</text>
+    <rect x="150" y="306" width="142" height="24" rx="4" class="box-dec"/><text x="158" y="322" class="nt-s">Students</text><text x="285" y="322" text-anchor="end" class="nm">/students</text>
+    <rect x="300" y="306" width="142" height="24" rx="4" class="box-dec"/><text x="308" y="322" class="nt-s">Approvals</text><text x="435" y="322" text-anchor="end" class="nm">/approvals</text>
+    <rect x="450" y="306" width="142" height="24" rx="4" class="box-dec"/><text x="458" y="322" class="nt-s">Reviews</text><text x="585" y="322" text-anchor="end" class="nm">/reviews</text>
+    <rect x="600" y="306" width="140" height="24" rx="4" class="box-dec"/><text x="608" y="322" class="nt-s">Grading</text><text x="733" y="322" text-anchor="end" class="nm">/grading</text>
+
+    <rect x="0"   y="336" width="142" height="24" rx="4" class="box-dec"/><text x="8" y="352" class="nt-s">Curriculum Builder</text><text x="135" y="352" text-anchor="end" class="nm">/curriculum</text>
+    <rect x="150" y="336" width="142" height="24" rx="4" class="box-dec"/><text x="158" y="352" class="nt-s">Experience Builder</text><text x="285" y="352" text-anchor="end" class="nm">/experience-builder</text>
+    <rect x="300" y="336" width="142" height="24" rx="4" class="box-dec"/><text x="308" y="352" class="nt-s">Lesson Builder</text><text x="435" y="352" text-anchor="end" class="nm">/lesson-builder</text>
+    <rect x="450" y="336" width="142" height="24" rx="4" class="box-dec"/><text x="458" y="352" class="nt-s">Assignment Builder</text><text x="585" y="352" text-anchor="end" class="nm">/assignment-builder</text>
+    <rect x="600" y="336" width="140" height="24" rx="4" class="box-dec"/><text x="608" y="352" class="nt-s">AI Course Builder</text><text x="733" y="352" text-anchor="end" class="nm">/ai-course-builder</text>
+
+    <rect x="0"   y="366" width="142" height="24" rx="4" class="box-dec"/><text x="8" y="382" class="nt-s">Rubrics</text><text x="135" y="382" text-anchor="end" class="nm">/rubrics</text>
+    <rect x="150" y="366" width="142" height="24" rx="4" class="box-dec"/><text x="158" y="382" class="nt-s">Creative Teams</text><text x="285" y="382" text-anchor="end" class="nm">/teams</text>
+    <rect x="300" y="366" width="142" height="24" rx="4" class="box-dec"/><text x="308" y="382" class="nt-s">Analytics</text><text x="435" y="382" text-anchor="end" class="nm">/analytics</text>
+    <rect x="450" y="366" width="142" height="24" rx="4" class="box-dec"/><text x="458" y="382" class="nt-s">Cohorts</text><text x="585" y="382" text-anchor="end" class="nm">/cohorts</text>
+
+    <rect x="600" y="366" width="140" height="24" rx="4" class="box-auth"/><text x="608" y="382" class="nt-s">Settings</text><text x="733" y="382" text-anchor="end" class="nm">/settings</text>
+
+    <text x="0" y="406" class="cap" fill="#2e6bff">ECOSYSTEM &mdash; 11 ROUTES</text>
+    <line x1="0" y1="411" x2="740" y2="411" stroke="#1f2433" stroke-width="1"/>
+    <rect x="0" y="416" width="740" height="14" rx="3" class="box"/>
+    <text x="370" y="426" text-anchor="middle" class="ns">/hub/:module &nbsp;·&nbsp; /hub/COHEIR &nbsp;·&nbsp; /module/ANCRLAB &nbsp;·&nbsp; /module/ANCRSync &nbsp;·&nbsp; /module/COHEIR &nbsp;·&nbsp; /module/INHEIRA &nbsp;·&nbsp; /module/ANCRID &nbsp;·&nbsp; /module/:name</text>
+  </svg>
+  <div class="fig">Figure 1 &mdash; All 45 routes. Persona affects what is displayed, not what is reachable.</div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Master Navigation Map &nbsp;&middot;&nbsp; 03 / 15</span></div>
+</section>
+
+
+<!-- ============================= 04 SHELL ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">04</span><h2>Application Shell</h2><span class="tag">Top Bar &middot; Palette &middot; AIAH</span></div>
+
+  <p class="lead">Three surfaces are present on every authenticated screen: the top bar, the command palette,
+  and the AIAH dock. They are the only navigation available &mdash; ANCRA has no persistent sidebar.</p>
+
+  <h3>Command palette <span class="pill p-int">Intended</span></h3>
+  <svg width="740" height="164" viewBox="0 0 740 164">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Open palette</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">top-bar control or shortcut</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="160" height="44" rx="5" class="box"/>
+    <text x="276" y="28" text-anchor="middle" class="nt">Type a query</text>
+    <text x="276" y="41" text-anchor="middle" class="ns">filters as you type</text>
+
+    <line x1="356" y1="32" x2="402" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="402" y="10" width="170" height="44" rx="5" class="box-dec"/>
+    <text x="487" y="28" text-anchor="middle" class="nt">16 result groups</text>
+    <text x="487" y="41" text-anchor="middle" class="ns">7 live &middot; 9 fixed catalogues</text>
+
+    <path d="M572,32 L620,32" class="l-g" marker-end="url(#agn)"/>
+    <rect x="620" y="10" width="120" height="44" rx="5" class="box-ok"/>
+    <text x="680" y="28" text-anchor="middle" class="nt">Navigate</text>
+    <text x="680" y="41" text-anchor="middle" class="ns">palette closes</text>
+
+    <path d="M487,54 L487,84 L300,84" class="l-o" marker-end="url(#ao)"/>
+    <text x="400" y="80" text-anchor="middle" class="cl">no match</text>
+    <rect x="140" y="70" width="160" height="28" rx="5" class="box-gh"/>
+    <text x="220" y="88" text-anchor="middle" class="nt-s">PROPOSED &mdash; explicit no-results state</text>
+
+    <rect x="0" y="110" width="740" height="22" rx="4" class="box-dec"/>
+    <text x="370" y="125" text-anchor="middle" class="nt-s">Nine of the sixteen groups are fixed in-code catalogues, not live data &mdash; they cannot reflect real content</text>
+    <rect x="0" y="138" width="740" height="22" rx="4" class="box-gh"/>
+    <text x="370" y="153" text-anchor="middle" class="nt-s">PROPOSED &mdash; keyboard navigation of results (arrow keys, Enter to select, Escape to dismiss)</text>
+  </svg>
+
+  <h3>Top bar and AIAH dock</h3>
+  <table>
+    <tr><th style="width:44mm">Control</th><th style="width:26mm">State</th><th>Behaviour</th></tr>
+    <tr><td><b>Palette trigger</b></td><td>Wired</td><td>Opens the command palette overlay.</td></tr>
+    <tr><td><b>Persona toggle</b></td><td>Wired</td><td>Two-button switch, student / faculty. Changes the entire application. See page 02.</td></tr>
+    <tr><td><b>Notification bell</b> <span class="pill p-dead">Dead</span></td><td>No handler</td><td>Renders with an indicator dot. Clicking does nothing. No notification surface exists anywhere in ANCRA.</td></tr>
+    <tr><td><b>AIAH dock</b></td><td>Wired</td><td>Opens a streaming assistant panel. Sends the prompt to the configured AI service and streams the reply into the transcript.</td></tr>
+    <tr><td><b>AIAH history</b></td><td>Partial</td><td>A history endpoint exists and sessions are persisted, but <b>the transcript is never restored</b> &mdash; reopening the dock always starts empty. <span class="pill p-dec">Decision</span></td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; AIAH Conversations Are Written But Never Read</h4>
+    <p>Assistant exchanges are stored server-side and a retrieval endpoint exists, yet no surface calls it.
+    A student who closes the dock loses the conversation, while the record persists in the database. Either
+    restore the transcript on open, or stop persisting it &mdash; the current arrangement has the storage cost
+    and the privacy footprint of history with none of the benefit.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Application Shell &nbsp;&middot;&nbsp; 04 / 15</span></div>
+</section>
+
+
+<!-- ============================= 05 LEARNING FLOW ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">05</span><h2>The Core Learning Flow</h2><span class="tag">Journey &rarr; Experience &rarr; Lesson</span></div>
+
+  <p class="lead">This is the path a student takes to consume content, and the reason ANCRA exists.
+  It is three routes deep.</p>
+
+  <svg width="740" height="150" viewBox="0 0 740 150">
+    <rect x="0" y="10" width="150" height="46" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Learning Journey</text>
+    <text x="75" y="42" text-anchor="middle" class="nm">/journey</text>
+
+    <line x1="150" y1="33" x2="196" y2="33" class="l-b" marker-end="url(#ab)"/>
+    <text x="173" y="27" text-anchor="middle" class="cl">select</text>
+
+    <rect x="196" y="10" width="160" height="46" rx="5" class="box-nav"/>
+    <text x="276" y="28" text-anchor="middle" class="nt">Studio Experience</text>
+    <text x="276" y="42" text-anchor="middle" class="nm">/experience/:id</text>
+
+    <line x1="356" y1="33" x2="402" y2="33" class="l-b" marker-end="url(#ab)"/>
+    <text x="379" y="27" text-anchor="middle" class="cl">select</text>
+
+    <rect x="402" y="10" width="160" height="46" rx="5" class="box-nav"/>
+    <text x="482" y="28" text-anchor="middle" class="nt">Lesson Player</text>
+    <text x="482" y="42" text-anchor="middle" class="nm">/lesson/:id</text>
+
+    <path d="M482,56 L482,80 L300,80 L300,96" class="l-r" marker-end="url(#ar)"/>
+    <text x="392" y="76" text-anchor="middle" class="cl">unknown id</text>
+    <path d="M276,56 L276,80 L110,80 L110,96" class="l-o" marker-end="url(#ao)"/>
+
+    <rect x="30" y="96" width="160" height="40" rx="5" class="box-dec"/>
+    <text x="110" y="112" text-anchor="middle" class="nt">Experience 404</text>
+    <text x="110" y="125" text-anchor="middle" class="ns">returns a not-found response</text>
+
+    <rect x="220" y="96" width="180" height="40" rx="5" class="box-bad"/>
+    <text x="310" y="112" text-anchor="middle" class="nt">Lesson renders empty</text>
+    <text x="310" y="125" text-anchor="middle" class="ns">no 404 &mdash; asymmetric with experience</text>
+
+    <rect x="430" y="96" width="310" height="40" rx="5" class="box-gh"/>
+    <text x="585" y="112" text-anchor="middle" class="nt-s">PROPOSED &mdash; consistent not-found handling across both routes</text>
+    <text x="585" y="126" text-anchor="middle" class="ns">with a route back into the journey</text>
+  </svg>
+
+  <h3>Inside the lesson player</h3>
+  <svg width="740" height="176" viewBox="0 0 740 176">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Lesson opens</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">poster image displayed</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="271" y="28" text-anchor="middle" class="nt">Click play</text>
+    <text x="271" y="41" text-anchor="middle" class="ns">wired control</text>
+
+    <line x1="346" y1="32" x2="392" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="392" y="10" width="180" height="44" rx="5" class="box-bad"/>
+    <text x="482" y="26" text-anchor="middle" class="nt">Poster image scales slightly</text>
+    <text x="482" y="40" text-anchor="middle" class="ns">no audio or video element exists</text>
+
+    <rect x="600" y="10" width="140" height="44" rx="5" class="box-gh"/>
+    <text x="670" y="26" text-anchor="middle" class="nt-s">PROPOSED</text>
+    <text x="670" y="40" text-anchor="middle" class="ns">real media playback</text>
+    <line x1="572" y1="32" x2="600" y2="32" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="0" y="70" width="180" height="30" rx="4" class="box-nav"/>
+    <text x="90" y="89" text-anchor="middle" class="nt-s">Chapter list &mdash; wired, jumps chapter</text>
+
+    <rect x="200" y="70" width="120" height="30" rx="4" class="box-bad"/>
+    <text x="260" y="89" text-anchor="middle" class="nt-s">Bookmark &mdash; dead</text>
+    <rect x="330" y="70" width="120" height="30" rx="4" class="box-bad"/>
+    <text x="390" y="89" text-anchor="middle" class="nt-s">Discussion &mdash; dead</text>
+    <rect x="460" y="70" width="120" height="30" rx="4" class="box-bad"/>
+    <text x="520" y="89" text-anchor="middle" class="nt-s">Share &mdash; dead</text>
+
+    <rect x="0" y="112" width="740" height="26" rx="4" class="box-bad"/>
+    <text x="370" y="129" text-anchor="middle" class="nt-s">A lesson cannot actually be played, bookmarked, discussed or shared &mdash; the chapter list is the only working control</text>
+
+    <rect x="0" y="146" width="740" height="26" rx="4" class="box-dec"/>
+    <text x="370" y="163" text-anchor="middle" class="nt-s">Lesson completion is therefore never recorded, so progress and graduation readiness cannot be derived from real activity</text>
+  </svg>
+
+  <div class="panel pn-r">
+    <h4>Observed &mdash; The Central Learning Interaction Does Not Function</h4>
+    <p>The lesson player mounts <b>no audio or video element</b>. Pressing play sets a flag that applies a small
+    CSS transform to a still poster image. There is no media source, no timeline, no progress event and no
+    completion signal.</p>
+    <p>This has a consequence beyond the player itself: because no lesson can be completed, <b>every downstream
+    progress indicator &mdash; journey completion, graduation readiness, the portfolio score &mdash; is
+    necessarily derived from seeded values rather than student activity.</b> Specifying media playback is the
+    prerequisite for those surfaces meaning anything.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">The Core Learning Flow &nbsp;&middot;&nbsp; 05 / 15</span></div>
+</section>
+
+<!-- ============================= 06 STUDENT RECORD SURFACES ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">06</span><h2>Student Record Surfaces</h2><span class="tag">7 Pages, One Pattern</span></div>
+
+  <p class="lead">Seven student destinations are read-only record lists behaving identically. They are specified
+  once here rather than seven times.</p>
+
+  <svg width="740" height="150" viewBox="0 0 740 150">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Destination opened</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">from palette or dashboard</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="160" height="44" rx="5" class="box"/>
+    <text x="276" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="276" y="40" text-anchor="middle" class="nm">/student/{collection}</text>
+
+    <path d="M356,32 L410,32" class="l-g" marker-end="url(#agn)"/>
+    <text x="383" y="26" text-anchor="middle" class="cl">200</text>
+
+    <rect x="410" y="10" width="150" height="44" rx="5" class="box-ok"/>
+    <text x="485" y="28" text-anchor="middle" class="nt">Render list</text>
+    <text x="485" y="41" text-anchor="middle" class="ns">cards or rows</text>
+
+    <path d="M276,54 L276,82 L180,82 L180,96" class="l-o" marker-end="url(#ao)"/>
+    <text x="240" y="78" text-anchor="middle" class="cl">empty</text>
+    <path d="M276,54 L276,120 L420,120" class="l-r" marker-end="url(#ar)"/>
+    <text x="350" y="116" text-anchor="middle" class="cl">request fails</text>
+
+    <rect x="60" y="96" width="240" height="28" rx="5" class="box-gh"/>
+    <text x="180" y="114" text-anchor="middle" class="nt-s">PROPOSED &mdash; empty state naming how records are earned</text>
+
+    <rect x="420" y="106" width="320" height="28" rx="5" class="box-gh"/>
+    <text x="580" y="124" text-anchor="middle" class="nt-s">PROPOSED &mdash; error state with retry</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:38mm">Destination</th><th style="width:40mm">Endpoint</th><th style="width:24mm">Controls</th><th>Notes</th></tr>
+    <tr><td><b>Assignments</b></td><td class="mono">/student/assignments</td><td>None</td><td>Read-only. A student cannot submit an assignment from this surface.</td></tr>
+    <tr><td><b>Calendar</b></td><td class="mono">/student/calendar</td><td>None</td><td>Read-only. No event creation, RSVP or reminder.</td></tr>
+    <tr><td><b>Achievements</b></td><td class="mono">/student/achievements</td><td>None</td><td>Badge and milestone display.</td></tr>
+    <tr><td><b>Portfolio</b></td><td class="mono">/student/portfolio</td><td>None</td><td>Display only. Editing lives in Portfolio Builder (page 07).</td></tr>
+    <tr><td><b>Teams</b></td><td class="mono">/student/teams</td><td>None</td><td>Team membership display. No join or leave.</td></tr>
+    <tr><td><b>30 Song Project</b></td><td class="mono">/student/songs</td><td>None</td><td>Progress across the songwriting programme.</td></tr>
+    <tr><td><b>Progress</b></td><td>&mdash;</td><td>None</td><td>Renders entirely from values passed in; issues no request of its own.</td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; These Surfaces Are Entirely Passive</h4>
+    <p>None of the seven permits any action. A student can see an assignment but not submit it, see a calendar
+    but not respond to an event, see a team but not join one. <b>Confirm the intent:</b> if these records are
+    produced by faculty action or by other ecosystem modules, each empty state should say which, so the student
+    knows where the record comes from. If a student is meant to act here, those actions need specifying &mdash;
+    they do not currently exist.</p>
+  </div>
+
+  <div class="panel pn-r">
+    <h4>Applies to All Seven &mdash; No Failure State</h4>
+    <p>None of these surfaces distinguishes an empty record from a failed request. A student whose assignment
+    list fails to load sees the same screen as a student with no assignments. For an academic product this is a
+    meaningful misrepresentation and should be corrected across the pattern in one change.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Student Record Surfaces &nbsp;&middot;&nbsp; 06 / 15</span></div>
+</section>
+
+
+<!-- ============================= 07 STUDENT ACTION SURFACES ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">07</span><h2>Student Action Surfaces</h2><span class="tag">Where Students Submit</span></div>
+
+  <p class="lead">Five surfaces present the student with consequential actions. <b>Every terminal action on this
+  page is currently a dead control.</b></p>
+
+  <h3>Portfolio Builder &mdash; assembling and submitting work</h3>
+  <svg width="740" height="140" viewBox="0 0 740 140">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Portfolio Builder</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/portfolio-builder</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="44" rx="5" class="box-ok"/>
+    <text x="281" y="28" text-anchor="middle" class="nt">Toggle works in / out</text>
+    <text x="281" y="41" text-anchor="middle" class="ns">wired &mdash; selection held in view state</text>
+
+    <line x1="366" y1="32" x2="412" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="412" y="10" width="150" height="44" rx="5" class="box-bad"/>
+    <text x="487" y="26" text-anchor="middle" class="nt">Save &amp; Sign</text>
+    <text x="487" y="40" text-anchor="middle" class="ns">DEAD &mdash; no handler</text>
+
+    <rect x="592" y="10" width="148" height="44" rx="5" class="box-bad"/>
+    <text x="666" y="26" text-anchor="middle" class="nt">Preview</text>
+    <text x="666" y="40" text-anchor="middle" class="ns">DEAD &mdash; no handler</text>
+
+    <rect x="0" y="70" width="740" height="26" rx="4" class="box-bad"/>
+    <text x="370" y="87" text-anchor="middle" class="nt-s">Selection is held only in the browser &mdash; navigating away discards the assembled portfolio entirely</text>
+
+    <rect x="0" y="104" width="740" height="26" rx="4" class="box-gh"/>
+    <text x="370" y="121" text-anchor="middle" class="nt-s">PROPOSED &mdash; persist selection on change, then let Save &amp; Sign perform the submission and confirm it</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:40mm">Surface</th><th style="width:44mm">Terminal action</th><th>Consequence of it being dead</th></tr>
+    <tr><td><b>Portfolio Builder</b></td><td><b>Save &amp; Sign</b> <span class="pill p-dead">Dead</span></td><td>Assembled portfolio is never submitted or stored. Lost on navigation.</td></tr>
+    <tr><td><b>Graduation</b></td><td><b>Send Packet</b> <span class="pill p-dead">Dead</span></td><td>The graduation submission &mdash; the culmination of the programme &mdash; does nothing.</td></tr>
+    <tr><td><b>Graduation</b></td><td><b>Schedule ANCRLAB session</b> <span class="pill p-dead">Dead</span></td><td>No booking is made and no request reaches ANCRLAB.</td></tr>
+    <tr><td><b>Peer Reviews</b></td><td><b>Review</b>, <b>Reply</b>, <b>Listen</b> <span class="pill p-dead">Dead</span></td><td>A peer review can be read but never given, answered or listened to.</td></tr>
+    <tr><td><b>Creative Projects</b></td><td><b>New Project</b>, <b>Continue</b> <span class="pill p-dead">Dead</span></td><td>Projects can neither be created nor resumed.</td></tr>
+    <tr><td><b>Dashboard</b></td><td><b>RSVP</b>, <b>Add to Calendar</b> <span class="pill p-dead">Dead</span></td><td>Events surface on the dashboard but cannot be acted on.</td></tr>
+    <tr><td><b>Creator Passport</b></td><td>Share control <span class="pill p-dead">Dead</span></td><td>The passport cannot be shared outward.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Decision Required &mdash; No Student Submission Path Exists Anywhere</h4>
+    <p>Taken together, a student using ANCRA today can browse everything and submit nothing. Assignments cannot
+    be handed in, portfolios cannot be signed, peer reviews cannot be written, projects cannot be started, and
+    the graduation packet cannot be sent.</p>
+    <p>This is a coherent gap rather than seven separate defects: <b>the application has no student-submission
+    capability at all.</b> It should be scoped and specified as one workstream, with a decision on where
+    submissions are stored and who is notified when one arrives.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Student Action Surfaces &nbsp;&middot;&nbsp; 07 / 15</span></div>
+</section>
+
+
+<!-- ============================= 08 FACULTY AUTHORING ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">08</span><h2>Faculty Authoring Suite</h2><span class="tag">7 Tools, One Pattern</span></div>
+
+  <p class="lead">Seven authoring tools share an identical structure and an identical defect. They are specified
+  once. <b>None of them can currently produce anything.</b></p>
+
+  <h3>The shared authoring pattern <span class="pill p-obs">Observed</span></h3>
+  <svg width="740" height="168" viewBox="0 0 740 168">
+    <rect x="0" y="10" width="150" height="46" rx="5" class="box-dec"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Tool opens</text>
+    <text x="75" y="42" text-anchor="middle" class="ns">fields pre-filled with samples</text>
+
+    <line x1="150" y1="33" x2="196" y2="33" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="46" rx="5" class="box-bad"/>
+    <text x="281" y="26" text-anchor="middle" class="nt">Faculty edits fields</text>
+    <text x="281" y="40" text-anchor="middle" class="ns">values cannot be read back</text>
+    <text x="281" y="52" text-anchor="middle" class="ns">no change handler bound</text>
+
+    <line x1="366" y1="33" x2="412" y2="33" class="l" marker-end="url(#ag)"/>
+
+    <rect x="412" y="10" width="160" height="46" rx="5" class="box-bad"/>
+    <text x="492" y="26" text-anchor="middle" class="nt">Click Publish / Save</text>
+    <text x="492" y="40" text-anchor="middle" class="ns">DEAD &mdash; no handler</text>
+
+    <line x1="572" y1="33" x2="618" y2="33" class="l-r" marker-end="url(#ar)"/>
+    <rect x="618" y="10" width="122" height="46" rx="5" class="box-bad"/>
+    <text x="679" y="27" text-anchor="middle" class="nt">Nothing happens</text>
+    <text x="679" y="41" text-anchor="middle" class="ns">no request, no feedback</text>
+
+    <rect x="0" y="72" width="740" height="26" rx="4" class="box-bad"/>
+    <text x="370" y="89" text-anchor="middle" class="nt-s">Two independent failures compound: the field values are unreadable, and the save control is unwired</text>
+
+    <rect x="0" y="106" width="740" height="26" rx="4" class="box-gh"/>
+    <text x="370" y="123" text-anchor="middle" class="nt-s">PROPOSED &mdash; bind every field to state, wire the save control, persist to an authoring endpoint</text>
+
+    <rect x="0" y="140" width="740" height="24" rx="4" class="box-dec"/>
+    <text x="370" y="156" text-anchor="middle" class="nt-s">No authoring endpoint exists in the backend &mdash; the destination for authored content must be specified first</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:44mm">Tool</th><th style="width:56mm">Dead controls (exact labels)</th><th>Unreadable fields</th></tr>
+    <tr><td><b>Lesson Builder</b></td><td>Publish to Studio Experience &middot; Upload &middot; Add &middot; Run AIAH assist</td><td>4 &mdash; title, subtitle, 2 chapter fields</td></tr>
+    <tr><td><b>Rubrics</b></td><td>New Rubric &middot; Add criterion &middot; Insert</td><td>3 &mdash; criterion, weight, description</td></tr>
+    <tr><td><b>Assignment Builder</b></td><td>Assign to cohort &middot; Open in Rubrics</td><td>2 &mdash; title, brief</td></tr>
+    <tr><td><b>Experience Builder</b></td><td>Preview student view &middot; Publish &middot; Apply all</td><td>1 &mdash; experience title</td></tr>
+    <tr><td><b>Grading</b></td><td>Use as starting point &middot; <b>Sign &amp; Return</b></td><td>1 &mdash; feedback textarea</td></tr>
+    <tr><td><b>Curriculum Builder</b></td><td>Add block</td><td>&mdash; canvas state never persists</td></tr>
+    <tr><td><b>Creative Teams</b></td><td>New Team</td><td>&mdash;</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Observed &mdash; Faculty Cannot Author, Grade or Approve</h4>
+    <p>Across the suite: <b>18 dead controls and 11 unreadable fields.</b> The consequences are specific.
+    A lesson cannot be published. A rubric cannot be created. An assignment cannot be issued to a cohort.
+    <b>A grade cannot be returned to a student</b> &mdash; the <b>Sign &amp; Return</b> control is dead and the
+    feedback textarea cannot be read. On the Approvals surface, <b>Approve</b> is likewise dead.</p>
+    <p>A faculty member can compose feedback, press Sign &amp; Return, receive no error, and reasonably believe
+    the student has been graded. Nothing was sent and nothing was stored.</p>
+  </div>
+
+  <h3>AI Course Builder <span class="pill p-obs">Observed</span></h3>
+  <svg width="740" height="96" viewBox="0 0 740 96">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Click Compose draft</text>
+    <text x="75" y="41" text-anchor="middle" class="ns">wired control</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="170" height="44" rx="5" class="box-bad"/>
+    <text x="281" y="26" text-anchor="middle" class="nt">Timer runs for 1.4 seconds</text>
+    <text x="281" y="40" text-anchor="middle" class="ns">spinner shown, no request made</text>
+
+    <line x1="366" y1="32" x2="412" y2="32" class="l-r" marker-end="url(#ar)"/>
+
+    <rect x="412" y="10" width="180" height="44" rx="5" class="box-bad"/>
+    <text x="502" y="26" text-anchor="middle" class="nt">Pre-written content revealed</text>
+    <text x="502" y="40" text-anchor="middle" class="ns">identical every time</text>
+
+    <rect x="612" y="10" width="128" height="44" rx="5" class="box-bad"/>
+    <text x="676" y="26" text-anchor="middle" class="nt">Send to Builder</text>
+    <text x="676" y="40" text-anchor="middle" class="ns">DEAD</text>
+
+    <rect x="0" y="66" width="740" height="26" rx="4" class="box-bad"/>
+    <text x="370" y="83" text-anchor="middle" class="nt-s">No AI service is contacted &mdash; the spinner simulates generation the application never performs</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Simulated Generation</h4>
+    <p>The AI Course Builder shows a loading state for a fixed 1.4 seconds and then reveals fixed content. ANCRA
+    has a working AI integration used by the AIAH dock, so the capability exists. <b>Decide:</b> connect this
+    tool to the configured AI service, or remove the simulated generation. It should not ship presenting fixed
+    text as a generated draft.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Faculty Authoring Suite &nbsp;&middot;&nbsp; 08 / 15</span></div>
+</section>
+
+
+<!-- ============================= 09 FACULTY OVERSIGHT ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">09</span><h2>Faculty Oversight Surfaces</h2><span class="tag">Command Centre &middot; Approvals</span></div>
+
+  <h3>Command Centre and Approvals</h3>
+  <svg width="740" height="170" viewBox="0 0 740 170">
+    <rect x="0" y="10" width="150" height="44" rx="5" class="box-dec"/>
+    <text x="75" y="28" text-anchor="middle" class="nt">Command Centre</text>
+    <text x="75" y="41" text-anchor="middle" class="nm">/faculty</text>
+
+    <line x1="150" y1="32" x2="196" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="10" width="160" height="44" rx="5" class="box"/>
+    <text x="276" y="26" text-anchor="middle" class="nm-b">GET</text>
+    <text x="276" y="40" text-anchor="middle" class="nm">/faculty/dashboard</text>
+
+    <line x1="356" y1="32" x2="402" y2="32" class="l-g" marker-end="url(#agn)"/>
+
+    <rect x="402" y="10" width="170" height="44" rx="5" class="box-ok"/>
+    <text x="487" y="26" text-anchor="middle" class="nt">Alerts and queues render</text>
+    <text x="487" y="40" text-anchor="middle" class="ns">each row offers three actions</text>
+
+    <path d="M487,54 L487,74 L180,74 L180,88" class="l-r" marker-end="url(#ar)"/>
+    <path d="M487,54 L487,74 L370,74 L370,88" class="l-r" marker-end="url(#ar)"/>
+    <path d="M487,54 L487,74 L560,74 L560,88" class="l-r" marker-end="url(#ar)"/>
+
+    <rect x="110" y="88" width="140" height="30" rx="5" class="box-bad"/>
+    <text x="180" y="107" text-anchor="middle" class="nt-s">Review &mdash; dead</text>
+    <rect x="300" y="88" width="140" height="30" rx="5" class="box-bad"/>
+    <text x="370" y="107" text-anchor="middle" class="nt-s">Schedule &mdash; dead</text>
+    <rect x="490" y="88" width="140" height="30" rx="5" class="box-bad"/>
+    <text x="560" y="107" text-anchor="middle" class="nt-s">Dismiss &mdash; dead</text>
+
+    <rect x="0" y="130" width="740" height="34" rx="4" class="box-bad"/>
+    <text x="370" y="146" text-anchor="middle" class="nt-s">Every action on the faculty command centre is dead &mdash; an alert cannot be reviewed, scheduled or dismissed</text>
+    <text x="370" y="159" text-anchor="middle" class="ns">The queue therefore never changes, and the same alerts persist across every visit</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:36mm">Surface</th><th style="width:36mm">Endpoint</th><th>Controls and state</th></tr>
+    <tr><td><b>Command Centre</b></td><td class="mono">/faculty/dashboard</td><td><b>Review</b>, <b>Schedule</b>, <b>Dismiss</b> &mdash; all <span class="pill p-dead">Dead</span>.</td></tr>
+    <tr><td><b>Approvals</b></td><td>&mdash;</td><td><b>Preview</b> and <b>Approve</b> &mdash; both <span class="pill p-dead">Dead</span>. Nothing can be approved.</td></tr>
+    <tr><td><b>Students</b></td><td class="mono">/faculty/students</td><td>Roster with a search field. Read-only.</td></tr>
+    <tr><td><b>Reviews</b></td><td class="mono">/faculty/reviews</td><td>Read-only list.</td></tr>
+    <tr><td><b>Cohorts</b></td><td class="mono">/faculty/cohorts</td><td>Read-only list.</td></tr>
+    <tr><td><b>Analytics</b></td><td class="mono">/faculty/analytics</td><td>Read-only. <span class="pill p-dec">Decision</span> Served from a fixed payload rather than computed from student activity.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Decision Required &mdash; The Approval Chain Is Entirely Non-Functional</h4>
+    <p>Approvals is the surface through which faculty accept student work. Both of its controls are dead. Combined
+    with dead grading (page 08) and the absence of any student submission path (page 07), <b>the full
+    submit &rarr; review &rarr; approve &rarr; grade cycle does not exist in any part.</b></p>
+    <p>That cycle is the core academic workflow of a learning platform. It should be treated as a single
+    specification and build effort rather than as fifteen individual dead buttons.</p>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; Analytics Are Not Derived From Activity</h4>
+    <p>Cohort analytics render from a fixed payload. Because no lesson can be completed (page 05) and no work can
+    be submitted (page 07), there is currently no activity from which real analytics could be computed.
+    <b>Analytics should be specified after the submission and completion paths exist</b>, or the surface should
+    state plainly that figures are illustrative.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Faculty Oversight &nbsp;&middot;&nbsp; 09 / 15</span></div>
+</section>
+
+
+<!-- ============================= 10 ECOSYSTEM ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">10</span><h2>Ecosystem Hubs &amp; Modules</h2><span class="tag">11 Routes, One Pattern</span></div>
+
+  <p class="lead">ANCRA presents the surrounding ANCR modules through hub and module routes. All follow one
+  pattern: a described surface with no working outbound path.</p>
+
+  <svg width="740" height="160" viewBox="0 0 740 160">
+    <rect x="0" y="10" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="80" y="28" text-anchor="middle" class="nt">Ecosystem hub</text>
+    <text x="80" y="41" text-anchor="middle" class="nm">/hub/:module</text>
+
+    <line x1="160" y1="32" x2="206" y2="32" class="l" marker-end="url(#ag)"/>
+
+    <rect x="206" y="10" width="170" height="44" rx="5" class="box"/>
+    <text x="291" y="28" text-anchor="middle" class="nt">Module surface renders</text>
+    <text x="291" y="41" text-anchor="middle" class="ns">description, status, actions</text>
+
+    <path d="M376,32 L430,32" class="l-r" marker-end="url(#ar)"/>
+    <text x="403" y="26" text-anchor="middle" class="cl">click any action</text>
+
+    <rect x="430" y="10" width="150" height="44" rx="5" class="box-bad"/>
+    <text x="505" y="28" text-anchor="middle" class="nt">Nothing happens</text>
+    <text x="505" y="41" text-anchor="middle" class="ns">no handler on any control</text>
+
+    <rect x="610" y="10" width="130" height="44" rx="5" class="box-gh"/>
+    <text x="675" y="28" text-anchor="middle" class="nt-s">PROPOSED</text>
+    <text x="675" y="41" text-anchor="middle" class="ns">open the real module</text>
+    <line x1="580" y1="32" x2="610" y2="32" class="l-v" stroke-dasharray="3 2" marker-end="url(#av)"/>
+
+    <rect x="0" y="72" width="740" height="26" rx="4" class="box-bad"/>
+    <text x="370" y="89" text-anchor="middle" class="nt-s">18 dead controls across the six module surfaces &mdash; including Open the DAW, Upload stems, Book room and Export to INHEIRA</text>
+
+    <rect x="0" y="106" width="740" height="24" rx="4" class="box-dec"/>
+    <text x="370" y="122" text-anchor="middle" class="nt-s">Modules marked &ldquo;coming soon&rdquo; still render clickable actions &mdash; Notify me at launch and Read the spec are both dead</text>
+
+    <rect x="0" y="138" width="740" height="20" rx="4" class="box-dec"/>
+    <text x="370" y="152" text-anchor="middle" class="nt-s">Where a module link does navigate, it opens a route inside ANCRA rather than the module itself</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:34mm">Module surface</th><th style="width:60mm">Dead controls</th><th>Notes</th></tr>
+    <tr><td><b>ANCRLAB</b></td><td>Open the DAW &middot; Upload stems &middot; Book room &middot; Export to INHEIRA</td><td>The most action-rich module surface; none of it functions.</td></tr>
+    <tr><td><b>ANCRSync</b></td><td>3 controls, plus an unreadable input</td><td>Collaboration entry point.</td></tr>
+    <tr><td><b>COHEIR</b></td><td>3 controls</td><td>Mentorship entry point.</td></tr>
+    <tr><td><b>INHEIRA</b></td><td>2 controls</td><td>Publishing entry point.</td></tr>
+    <tr><td><b>ANCRID</b></td><td>1 control</td><td>Identity entry point.</td></tr>
+    <tr><td><b>Coming Soon</b></td><td>Notify me at launch &middot; Read the spec</td><td>Presented as available actions on an unavailable module.</td></tr>
+    <tr><td><b>COHEIR Suite</b></td><td>RSVP &middot; Recording via ANCRVIEW &middot; session slots</td><td>Hub surface with three dead actions.</td></tr>
+    <tr><td><b>Ecosystem Hub</b></td><td>2 controls</td><td>Generic module hub.</td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Decision Required &mdash; What Should a Module Card Do?</h4>
+    <p>These surfaces are ANCRA's expression of the connected ecosystem, and they are the natural place for the
+    cross-module navigation the ANCR architecture describes. Three options: open the real module carrying the
+    user's session; deep-link to a specific view within it; or present the module as informational only and
+    remove the action controls. <b>The current state &mdash; actions that look live and do nothing &mdash; is
+    the one option that should not ship.</b></p>
+  </div>
+
+  <div class="panel pn-b">
+    <h4>Intended &mdash; &ldquo;Coming Soon&rdquo; Should Not Offer Actions</h4>
+    <p>A module that has not launched should not present a clickable <b>Notify me at launch</b> control unless
+    that notification is actually registered somewhere. Either wire it to a real waitlist or render the state
+    without actions.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Ecosystem Hubs & Modules &nbsp;&middot;&nbsp; 10 / 15</span></div>
+</section>
+
+<!-- ============================= 11 CLICK REGISTER ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">11</span><h2>Click-Action Register</h2><span class="tag">Working Controls</span></div>
+
+  <p class="lead">Every control that currently does something, with its result. Dead controls are registered
+  separately on pages 12&ndash;13.</p>
+
+  <table>
+    <tr><th style="width:34mm">Surface</th><th style="width:44mm">Control</th><th style="width:20mm">Type</th><th>Result</th></tr>
+
+    <tr><td><b>Shell</b></td><td>Palette trigger</td><td>Button</td><td>Opens the command palette overlay.</td></tr>
+    <tr><td></td><td>Persona toggle</td><td>Two-state</td><td>Switches student / faculty. Persists to browser storage. Changes the whole application.</td></tr>
+    <tr><td></td><td>AIAH dock</td><td>Panel</td><td>Opens the assistant; prompt is sent to the configured AI service and the reply streams in.</td></tr>
+
+    <tr><td><b>Command palette</b></td><td>Query field</td><td>Text input</td><td>Filters 16 result groups as the user types.</td></tr>
+    <tr><td></td><td>Result row</td><td>Button</td><td>Navigates to that destination and closes the palette.</td></tr>
+
+    <tr><td><b>Learning Journey</b></td><td>Journey card</td><td>Card</td><td>Opens the corresponding Studio Experience.</td></tr>
+    <tr><td><b>Experience</b></td><td>Lesson row</td><td>Card</td><td>Opens the Lesson Player for that lesson.</td></tr>
+
+    <tr><td><b>Lesson Player</b></td><td>Play</td><td>Button</td><td>Sets a playing flag. Applies a CSS transform to the poster image. <b>No media plays</b> &mdash; see page 05.</td></tr>
+    <tr><td></td><td>Pause</td><td>Button</td><td>Clears the playing flag.</td></tr>
+    <tr><td></td><td>Chapter row</td><td>Button</td><td>Sets the current chapter. The only fully functional control on the page.</td></tr>
+
+    <tr><td><b>Portfolio Builder</b></td><td>Work toggle</td><td>Button</td><td>Adds or removes a work from the selection, held in view state only.</td></tr>
+
+    <tr><td><b>Peer Reviews</b></td><td>Tab</td><td>Button</td><td>Switches between review tabs.</td></tr>
+    <tr><td><b>COHEIR Suite</b></td><td>Tab</td><td>Button</td><td>Switches hub sections.</td></tr>
+
+    <tr><td><b>AI Companion</b></td><td>Prompt field + send</td><td>Input</td><td>Sends to the configured AI service; response streams into the transcript.</td></tr>
+
+    <tr><td><b>Faculty &mdash; Rubrics</b></td><td>Rubric row</td><td>Button</td><td>Selects which rubric is displayed. Selection only &mdash; no editing takes effect.</td></tr>
+    <tr><td><b>Faculty &mdash; Grading</b></td><td>Student row</td><td>Button</td><td>Selects which submission is displayed.</td></tr>
+    <tr><td><b>Faculty &mdash; Assignment Builder</b></td><td>Kind selector</td><td>Button</td><td>Sets the assignment type in view state.</td></tr>
+    <tr><td><b>Faculty &mdash; AI Course Builder</b></td><td>Compose draft</td><td>Button</td><td>Runs a 1.4-second timer then reveals fixed content. <b>No AI service is called</b> &mdash; see page 08.</td></tr>
+
+    <tr><td><b>Faculty &mdash; Students</b></td><td>Search field</td><td>Text input</td><td>Filters the roster.</td></tr>
+    <tr><td><b>Ecosystem Hub</b></td><td>Module card</td><td>Card</td><td>Navigates to a module route inside ANCRA.</td></tr>
+    <tr><td><b>Settings</b></td><td>2 controls</td><td>Button</td><td>Local preference toggles.</td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Observation &mdash; Twenty-One Working Controls Against Sixty-Five Dead Ones</h4>
+    <p>Of the working controls above, the large majority are <b>navigation and view-state selection</b> &mdash;
+    opening a screen, switching a tab, choosing which record to display. Only three perform an operation with any
+    external effect, and two of those (Play, Compose draft) do not do what their label implies.</p>
+    <p>Stated plainly: <b>ANCRA can currently be navigated but not used.</b> That framing should drive
+    prioritisation more than any individual control in this register.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Click-Action Register &nbsp;&middot;&nbsp; 11 / 15</span></div>
+</section>
+
+
+<!-- ============================= 12 DEAD REGISTER A ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">12</span><h2>Dead-Control Register</h2><span class="tag">Student &amp; Shell</span></div>
+
+  <p class="lead">Controls that render in the interface with no handler attached. Each requires a decision:
+  wire it to the flow specified in this document, or remove it from the page.</p>
+
+  <table>
+    <tr><th style="width:34mm">Surface</th><th style="width:48mm">Control label</th><th>Decision required</th></tr>
+
+    <tr><td><b>Top bar</b></td><td>Notification bell</td><td>No notification surface exists anywhere in ANCRA. Build one, or remove the bell.</td></tr>
+    <tr><td><b>Module shell</b></td><td>1 control</td><td>Shared across module routes &mdash; see page 10.</td></tr>
+
+    <tr><td><b>Dashboard</b></td><td>RSVP</td><td>Requires an event-response capability. None exists.</td></tr>
+    <tr><td></td><td>Add to Calendar</td><td>Calendar is read-only. Requires a write path.</td></tr>
+
+    <tr><td><b>Lesson Player</b></td><td>Bookmark</td><td>Requires a per-student bookmark store.</td></tr>
+    <tr><td></td><td>Discussion</td><td>Requires a lesson discussion surface. None exists.</td></tr>
+    <tr><td></td><td>Share</td><td>Define share target &mdash; internal link, or outward.</td></tr>
+
+    <tr><td><b>Portfolio Builder</b></td><td><b>Save &amp; Sign</b></td><td>The portfolio submission action. Highest-priority student control.</td></tr>
+    <tr><td></td><td>Preview</td><td>Requires a student-facing preview of the assembled portfolio.</td></tr>
+    <tr><td></td><td>Insert work (named suggestion)</td><td>Should add the named work to the selection.</td></tr>
+
+    <tr><td><b>Peer Reviews</b></td><td>Review</td><td>The action of giving a peer review. No authoring surface exists.</td></tr>
+    <tr><td></td><td>Reply</td><td>Requires a threaded response capability.</td></tr>
+    <tr><td></td><td>Listen</td><td>Requires audio playback &mdash; same absent capability as the Lesson Player.</td></tr>
+    <tr><td></td><td>2 further controls</td><td>Unlabelled icon controls on review rows.</td></tr>
+
+    <tr><td><b>Graduation</b></td><td><b>Send Packet</b></td><td>The graduation submission. Terminal action of the entire programme.</td></tr>
+    <tr><td></td><td>Schedule ANCRLAB session</td><td>Requires a booking path into ANCRLAB. No integration exists.</td></tr>
+
+    <tr><td><b>Creative Projects</b></td><td>New Project</td><td>Requires project creation. No endpoint exists.</td></tr>
+    <tr><td></td><td>Continue</td><td>Requires resumable project state.</td></tr>
+
+    <tr><td><b>Capstones</b></td><td>1 control</td><td>Capstone action, unspecified.</td></tr>
+    <tr><td><b>Creator Passport</b></td><td>Share control</td><td>Define whether the passport is externally shareable, and to whom.</td></tr>
+    <tr><td><b>Messages</b></td><td>1 control + unreadable input</td><td>A message cannot be composed or sent.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Priority Within This Page</h4>
+    <p>Three controls carry materially more weight than the rest: <b>Save &amp; Sign</b> (portfolio submission),
+    <b>Send Packet</b> (graduation submission), and <b>Review</b> (peer review authoring). Each is the terminal
+    action of a student workflow, and each currently fails silently. If only part of this register is addressed,
+    it should be these three.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Dead-Control Register &nbsp;&middot;&nbsp; 12 / 15</span></div>
+</section>
+
+
+<!-- ============================= 13 DEAD REGISTER B ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">13</span><h2>Dead-Control Register</h2><span class="tag">Faculty &amp; Ecosystem</span></div>
+
+  <table>
+    <tr><th style="width:34mm">Surface</th><th style="width:48mm">Control label</th><th>Decision required</th></tr>
+
+    <tr><td><b>Command Centre</b></td><td>Review</td><td>Should open the item in its review surface.</td></tr>
+    <tr><td></td><td>Schedule</td><td>Requires a scheduling capability. None exists.</td></tr>
+    <tr><td></td><td>Dismiss</td><td>Requires alert state to persist. The queue currently cannot change.</td></tr>
+
+    <tr><td><b>Approvals</b></td><td>Preview</td><td>Should open the submitted work.</td></tr>
+    <tr><td></td><td><b>Approve</b></td><td>The academic approval action. Nothing can currently be approved.</td></tr>
+    <tr><td></td><td>1 further control</td><td>Unlabelled icon control on the approval row.</td></tr>
+
+    <tr><td><b>Grading</b></td><td>Use as starting point</td><td>Should populate feedback from a rubric or prior comment.</td></tr>
+    <tr><td></td><td><b>Sign &amp; Return</b></td><td>The grade-return action. Compounded by an unreadable feedback field.</td></tr>
+
+    <tr><td><b>Lesson Builder</b></td><td>Publish to Studio Experience</td><td>The lesson publication action. No authoring endpoint exists.</td></tr>
+    <tr><td></td><td>Upload</td><td>Requires media storage. No upload path exists anywhere in ANCRA.</td></tr>
+    <tr><td></td><td>Add</td><td>Should append a chapter.</td></tr>
+    <tr><td></td><td>Run AIAH assist</td><td>ANCRA has a working AI integration; this could be wired to it.</td></tr>
+    <tr><td></td><td>1 block control</td><td>Content block action.</td></tr>
+
+    <tr><td><b>Rubrics</b></td><td>New Rubric</td><td>Rubric creation.</td></tr>
+    <tr><td></td><td>Add criterion</td><td>Should append a criterion row.</td></tr>
+    <tr><td></td><td>Insert</td><td>Should insert the rubric into an assignment.</td></tr>
+
+    <tr><td><b>Assignment Builder</b></td><td>Assign to cohort</td><td>The assignment issue action.</td></tr>
+    <tr><td></td><td>Open in Rubrics</td><td>Cross-navigation to the rubric tool.</td></tr>
+
+    <tr><td><b>Experience Builder</b></td><td>Preview student view</td><td>Requires a student-view renderer.</td></tr>
+    <tr><td></td><td>Publish</td><td>The experience publication action.</td></tr>
+    <tr><td></td><td>Apply all</td><td>Bulk application of settings.</td></tr>
+
+    <tr><td><b>Curriculum Builder</b></td><td>Add block</td><td>Canvas state is never persisted regardless.</td></tr>
+    <tr><td><b>Creative Teams</b></td><td>New Team</td><td>Team creation.</td></tr>
+    <tr><td><b>AI Course Builder</b></td><td>Send to Builder</td><td>Should hand the draft to the Lesson Builder.</td></tr>
+
+    <tr><td><b>ANCRLAB</b></td><td>Open the DAW &middot; Upload stems &middot; Book room &middot; Export to INHEIRA</td><td>All four require real ANCRLAB integration.</td></tr>
+    <tr><td><b>ANCRSync</b></td><td>3 controls</td><td>Require ANCRSync integration.</td></tr>
+    <tr><td><b>COHEIR</b></td><td>3 controls</td><td>Require COHEIR integration.</td></tr>
+    <tr><td><b>INHEIRA</b></td><td>2 controls</td><td>Require INHEIRA integration.</td></tr>
+    <tr><td><b>ANCRID</b></td><td>1 control</td><td>Requires ANCRID integration.</td></tr>
+    <tr><td><b>Coming Soon</b></td><td>Notify me at launch &middot; Read the spec</td><td>Wire to a real waitlist and a real document, or remove.</td></tr>
+    <tr><td><b>COHEIR Suite</b></td><td>RSVP &middot; Recording via ANCRVIEW &middot; slot controls</td><td>Require event and recording capabilities.</td></tr>
+    <tr><td><b>Ecosystem Hub</b></td><td>2 controls</td><td>See page 10.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Grouping for Delivery</h4>
+    <p>The faculty half of this register resolves into <b>three coherent workstreams</b> rather than thirty-odd
+    fixes: an <b>authoring pipeline</b> (Lesson Builder, Rubrics, Assignment Builder, Experience Builder,
+    Curriculum Builder &mdash; all needing state binding and a destination endpoint); an <b>assessment cycle</b>
+    (Approvals, Grading, Command Centre); and <b>ecosystem integration</b> (all module surfaces, which cannot be
+    wired until the corresponding modules expose entry points).</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Dead-Control Register &nbsp;&middot;&nbsp; 13 / 15</span></div>
+</section>
+
+
+<!-- ============================= 14 DECISIONS ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">14</span><h2>Decisions Required</h2><span class="tag">Blocking Items</span></div>
+
+  <p class="lead">Consolidated from every page. Each needs a product decision before the affected surface can be
+  built correctly. Ordered by consequence.</p>
+
+  <table>
+    <tr><th style="width:30mm">Area</th><th style="width:52mm">Question</th><th>Why it matters</th></tr>
+
+    <tr><td><b>Identity</b></td><td>ANCRA has no authentication and persona is a user-selectable toggle.</td><td>Every faculty surface &mdash; grading, approvals, rosters, analytics &mdash; is reachable by any visitor. Blocks any real deployment.</td></tr>
+    <tr><td><b>Submission</b></td><td>No student submission path exists anywhere in the application.</td><td>Assignments, portfolios, peer reviews, projects and graduation packets can all be composed but never submitted.</td></tr>
+    <tr><td><b>Assessment</b></td><td>Approve, Sign &amp; Return and the whole Command Centre queue are dead.</td><td>Faculty cannot approve, grade or clear an alert. The academic cycle has no working step.</td></tr>
+    <tr><td><b>Authoring</b></td><td>Seven authoring tools have unreadable fields and unwired save controls.</td><td>No lesson, rubric, assignment or experience can be created. Needs a destination endpoint first.</td></tr>
+    <tr><td><b>Media</b></td><td>The lesson player mounts no audio or video element.</td><td>The core learning interaction does not function, and no completion can be recorded.</td></tr>
+    <tr><td><b>Progress</b></td><td>Progress, graduation readiness and portfolio scores derive from seeded values.</td><td>Cannot be real until lesson completion and submission exist. Sequence accordingly.</td></tr>
+    <tr><td><b>Upload</b></td><td>No file upload capability exists anywhere in ANCRA.</td><td>Blocks lesson media, stem upload, portfolio artefacts and assignment attachments.</td></tr>
+    <tr><td><b>AI Course Builder</b></td><td>Simulated generation via a fixed timer.</td><td>Presents fixed text as a generated draft. ANCRA already has a working AI integration to connect instead.</td></tr>
+    <tr><td><b>AIAH history</b></td><td>Conversations are stored but the transcript is never restored.</td><td>Storage cost and privacy footprint of history with none of the benefit.</td></tr>
+    <tr><td><b>Ecosystem</b></td><td>Module surfaces present actions with no outbound path.</td><td>18 dead controls. Requires module entry points to exist before wiring.</td></tr>
+    <tr><td><b>Command palette</b></td><td>Nine of sixteen result groups are fixed in-code catalogues.</td><td>Cannot reflect real content; results will diverge from the application as it grows.</td></tr>
+    <tr><td><b>Analytics</b></td><td>Faculty analytics render from a fixed payload.</td><td>No real activity exists to compute from yet. Specify after submission and completion land.</td></tr>
+    <tr><td><b>Failure states</b></td><td>No record surface distinguishes empty from failed-to-load.</td><td>An outage is presented to a student as an empty assignment list.</td></tr>
+    <tr><td><b>Not-found handling</b></td><td>Unknown experience returns 404; unknown lesson renders empty.</td><td>Inconsistent handling of the same class of error across two adjacent routes.</td></tr>
+    <tr><td><b>Notifications</b></td><td>A bell renders with an indicator but no notification surface exists.</td><td>Implies unread activity that cannot be viewed.</td></tr>
+    <tr><td><b>Coming soon</b></td><td>Unlaunched modules present clickable actions.</td><td>Offers a waitlist signup that registers nothing.</td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Suggested Sequence</h4>
+    <p>Several of these are prerequisites for others and should not be scheduled in parallel. <b>Identity</b>
+    first, since nothing else can be safely deployed without it. Then <b>media playback and file upload</b>
+    together, as both are infrastructure that several surfaces depend on. Then the <b>submission and assessment
+    cycle</b> as one workstream, since a submission with nowhere to go is not useful. <b>Progress and analytics
+    last</b> &mdash; they can only be truthful once real activity exists to compute from.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Decisions Required &nbsp;&middot;&nbsp; 14 / 15</span></div>
+</section>
+
+
+<!-- ============================= 15 VOCABULARY ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">15</span><h2>Target-State Vocabulary</h2><span class="tag">Self-Hosted Translation</span></div>
+
+  <p class="lead">The prototype was built on a hosted development platform. This document uses neutral,
+  target-state language. Where a replacement capability does not exist, that is stated rather than assumed.</p>
+
+  <table>
+    <tr><th style="width:54mm">Prototype implementation</th><th style="width:52mm">Documented as</th><th>Status for the self-hosted build</th></tr>
+    <tr><td>Hosted AI service key</td><td><b>Configured AI service</b></td><td>Working today for the AIAH dock and AI Companion. Provider and account must be chosen for the self-hosted build.</td></tr>
+    <tr><td>Persona query parameter</td><td><b>ANCRID-asserted role</b></td><td><span class="pill p-dec">Decision</span> No identity provider is connected. See page 02 &mdash; this is the blocking item.</td></tr>
+    <tr><td>&mdash;</td><td><b>Approved media storage service</b></td><td><span class="pill p-dec">Decision</span> <b>No upload capability exists at all.</b> Blocks lesson media, stems and portfolio artefacts.</td></tr>
+    <tr><td>Seeded demonstration records</td><td>&mdash;</td><td>Excluded from intended flows. Every surface must handle a genuinely empty account.</td></tr>
+    <tr><td>Fixed in-code catalogues (palette, analytics)</td><td>&mdash;</td><td>Excluded. Must be replaced by live queries before either surface is truthful.</td></tr>
+  </table>
+
+  <div class="panel pn-r">
+    <h4>Blocking Dependency &mdash; No Upload Capability</h4>
+    <p>ANCRA has no file upload anywhere: not for lesson media, not for stems, not for portfolio artefacts, not
+    for assignment attachments. Several flows in this document are specified against an approved media storage
+    service that does not yet exist. <b>This is a prerequisite for the learning and authoring surfaces to
+    function at all, and should be resolved before either is scheduled.</b></p>
+  </div>
+
+  <h3>Relationship to the other ANCRA documents</h3>
+  <ul>
+    <li><b>ANCRA User Flow</b> &mdash; the journey-level narrative this document implements at control level.</li>
+    <li><b>ANCRA Functional Requirements</b> &mdash; endpoint behaviour, request and response contracts, and test
+    coverage for the current build. Where this document says a control is dead, that document records the
+    corresponding backend gap.</li>
+    <li><b>ANCRID Click-Flow Specification</b> &mdash; the companion document for the identity layer, and the
+    source of the persona model proposed on page 02.</li>
+  </ul>
+
+  <div class="panel pn-b">
+    <h4>How This Document Was Produced</h4>
+    <p>Every control label, handler binding and dead control in this specification was extracted directly from
+    the application source rather than observed in a running build or inferred from the interface. The counts
+    are exact: <b>65 controls with no handler, 13 fields whose values cannot be read, 21 working controls.</b>
+    The same method applies to the remaining ANCR applications.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Click-Flow Specification</span><span class="fr">Target-State Vocabulary &nbsp;&middot;&nbsp; 15 / 15</span></div>
+</section>
+
+</body>
+</html>
