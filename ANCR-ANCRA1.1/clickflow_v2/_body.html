@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: 297mm 420mm; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background:#0a0d14; color:#e8edf2;
+         font-size:9.5pt; line-height:1.5; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+
+  .page { page-break-after:always; width:297mm; height:420mm; padding:16mm 18mm 12mm 18mm;
+          background:#0a0d14; display:flex; flex-direction:column; overflow:hidden; }
+  .page:last-child { page-break-after:auto; }
+  .pfoot { margin-top:auto; padding-top:6mm; border-top:1px solid #171c26;
+           display:flex; align-items:baseline; gap:4mm; }
+  .pfoot .fl { font-size:7pt; letter-spacing:.18em; text-transform:uppercase; color:#454f5e; font-weight:bold; }
+  .pfoot .fr { margin-left:auto; font-size:7pt; letter-spacing:.18em; color:#454f5e; font-weight:bold; }
+
+  .ph { display:flex; align-items:baseline; gap:5mm; border-bottom:1px solid #1f2433;
+        padding-bottom:3mm; margin-bottom:6mm; }
+  .ph .pn { font-size:8pt; color:#2e6bff; font-weight:bold; letter-spacing:.18em; }
+  .ph h2 { font-size:16.5pt; font-weight:bold; letter-spacing:-.01em; }
+  .ph .tag { margin-left:auto; font-size:7pt; letter-spacing:.2em; color:#5f6b7d;
+             text-transform:uppercase; font-weight:bold; }
+
+  h3 { font-size:11pt; font-weight:bold; margin:6mm 0 2.5mm 0; color:#e8edf2; }
+  h3:first-of-type { margin-top:0; }
+  .lead { font-size:9.5pt; color:#aab4c4; line-height:1.6; margin-bottom:4mm; }
+
+  svg { display:block; margin:0 auto 3mm auto; }
+  .nt { font:bold 9px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .nt-s { font:bold 8px Arial, Helvetica, sans-serif; fill:#e8edf2; }
+  .ns { font:7.5px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .nm { font:7px "Courier New", monospace; fill:#7d8899; }
+  .nm-b { font:bold 7px "Courier New", monospace; fill:#aab4c4; }
+  .cl { font:bold 7px Arial, Helvetica, sans-serif; fill:#8b95a6; }
+  .cap { font:bold 7.5px Arial, Helvetica, sans-serif; letter-spacing:.12em; }
+
+  .box { fill:#12171f; stroke:#1f2433; stroke-width:1; }
+  .box-auth { fill:#151329; stroke:#8a4fff; stroke-width:1.2; }
+  .box-nav  { fill:#101a2e; stroke:#2e6bff; stroke-width:1.2; }
+  .box-dec  { fill:#1e1509; stroke:#ff6b00; stroke-width:1.2; }
+  .box-ok   { fill:#0d1f16; stroke:#22c55e; stroke-width:1.2; }
+  .box-bad  { fill:#210f11; stroke:#ef4444; stroke-width:1.2; }
+  .box-gh   { fill:#0e1219; stroke:#2b3242; stroke-width:1; stroke-dasharray:3 2.5; }
+
+  .l  { stroke:#39414f; stroke-width:1.1; fill:none; }
+  .l-v{ stroke:#8a4fff; stroke-width:1.2; fill:none; }
+  .l-b{ stroke:#2e6bff; stroke-width:1.2; fill:none; }
+  .l-o{ stroke:#ff6b00; stroke-width:1.2; fill:none; }
+  .l-g{ stroke:#22c55e; stroke-width:1.2; fill:none; }
+  .l-r{ stroke:#ef4444; stroke-width:1.2; fill:none; }
+
+  table { width:100%; border-collapse:collapse; margin:2.5mm 0 4mm 0; font-size:8.5pt; }
+  th { text-align:left; font-size:6.8pt; letter-spacing:.16em; text-transform:uppercase;
+       color:#5f6b7d; border-bottom:1px solid #2b3242; padding:2mm 2.5mm 1.6mm 0; font-weight:bold; }
+  td { padding:2mm 2.5mm 2mm 0; border-bottom:1px solid #171c26; color:#c3ccd8;
+       vertical-align:top; line-height:1.45; }
+  td.mono, .mono { font-family:"Courier New", monospace; font-size:8pt; color:#9fb0c9; }
+  td b { color:#e8edf2; }
+
+  .pill { display:inline-block; font-size:6.5pt; font-weight:bold; letter-spacing:.1em;
+          padding:.9mm 2mm; border-radius:2mm; text-transform:uppercase; white-space:nowrap; }
+  .p-int { background:rgba(46,107,255,.15); color:#7aa5ff; border:1px solid rgba(46,107,255,.45); }
+  .p-obs { background:rgba(139,149,166,.13); color:#9aa5b5; border:1px solid rgba(139,149,166,.4); }
+  .p-dec { background:rgba(255,107,0,.14); color:#ff9c4d; border:1px solid rgba(255,107,0,.5); }
+  .p-pro { background:rgba(138,79,255,.14); color:#b98cff; border:1px solid rgba(138,79,255,.5); border-style:dashed; }
+  .p-dead{ background:rgba(239,68,68,.13); color:#f08d8d; border:1px solid rgba(239,68,68,.45); }
+
+  .panel { border:1px solid #1f2433; background:#12171f; padding:4.5mm 5mm; margin:4mm 0; }
+  .panel h4 { font-size:7.5pt; letter-spacing:.2em; text-transform:uppercase; margin-bottom:2.5mm; font-weight:bold; }
+  .panel p { font-size:9pt; color:#aab4c4; line-height:1.6; }
+  .panel p + p { margin-top:2.5mm; }
+  .pn-v { border-left:3pt solid #8a4fff; } .pn-v h4 { color:#8a4fff; }
+  .pn-o { border-left:3pt solid #ff6b00; } .pn-o h4 { color:#ff6b00; }
+  .pn-b { border-left:3pt solid #2e6bff; } .pn-b h4 { color:#2e6bff; }
+  .pn-r { border-left:3pt solid #ef4444; } .pn-r h4 { color:#ef4444; }
+  .pn-g { border-left:3pt solid #22c55e; } .pn-g h4 { color:#22c55e; }
+
+  ul { margin:2mm 0 3mm 5mm; } li { font-size:9pt; color:#aab4c4; line-height:1.55; margin-bottom:1.4mm; }
+  li b { color:#e8edf2; }
+  code { font-family:"Courier New", monospace; font-size:8.2pt; color:#9fb0c9; }
+  .fig { font-size:7pt; color:#5f6b7d; letter-spacing:.14em; text-transform:uppercase;
+         text-align:center; margin-bottom:4mm; font-weight:bold; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:6mm; }
+
+  /* ---- v2: design-intent classification ---- */
+  .p-spec { background:rgba(46,107,255,.15); color:#7aa5ff; border:1px solid rgba(46,107,255,.45); }
+  .p-prop { background:rgba(138,79,255,.14); color:#b98cff; border:1px dashed rgba(138,79,255,.6); }
+  .p-todef{ background:rgba(255,107,0,.14); color:#ff9c4d; border:1px dashed rgba(255,107,0,.65); }
+  .p-dcn  { background:rgba(255,107,0,.16); color:#ffb066; border:1px solid rgba(255,107,0,.55); }
+
+  /* ---- v2: fill-in areas ---- */
+  .fill { border:1px dashed #ff6b00; background:rgba(255,107,0,.045); padding:4mm 5mm 3mm 5mm; margin:3.5mm 0; }
+  .fill .fid { font-size:6.8pt; letter-spacing:.16em; color:#ff9c4d; font-weight:bold;
+               text-transform:uppercase; display:inline-block; margin-bottom:1.5mm; }
+  .fill .fq  { font-size:9.5pt; color:#e8edf2; line-height:1.5; margin-bottom:3mm; }
+  .fill .fq b { color:#fff; }
+  .fill .rule { height:7mm; border-bottom:1px solid rgba(255,255,255,.14); }
+  .fill .rule:last-child { border-bottom:none; }
+  .fill .hint { font-size:8pt; color:#7d8899; font-style:italic; margin-top:2mm; }
+
+  /* ---- v2: control specification blocks ---- */
+  .ctl { border:1px solid #1f2433; background:#12171f; margin:3.5mm 0; }
+  .ctl .ch { background:#171c26; padding:2.5mm 4mm; border-bottom:1px solid #1f2433;
+             display:flex; align-items:baseline; gap:3mm; }
+  .ctl .ch .lbl { font-size:10.5pt; font-weight:bold; color:#e8edf2; }
+  .ctl .ch .typ { font-size:7pt; letter-spacing:.14em; text-transform:uppercase; color:#5f6b7d; font-weight:bold; }
+  .ctl .ch .pill { margin-left:auto; }
+  .ctl .cb { padding:3mm 4mm; }
+  .ctl dl { display:grid; grid-template-columns:26mm 1fr; gap:1.6mm 4mm; }
+  .ctl dt { font-size:7pt; letter-spacing:.13em; text-transform:uppercase; color:#5f6b7d;
+            font-weight:bold; padding-top:.6mm; }
+  .ctl dd { font-size:9pt; color:#c3ccd8; line-height:1.5; }
+  .ctl dd b { color:#e8edf2; }
+
+  /* ---- v2: svg fill-in box ---- */
+  .box-fill { fill:rgba(255,107,0,.05); stroke:#ff6b00; stroke-width:1.1; stroke-dasharray:4 2.5; }
+  .rl { stroke:rgba(255,255,255,.16); stroke-width:.7; }
+  .ft { font:bold 7px Arial, Helvetica, sans-serif; fill:#ff9c4d; letter-spacing:.08em; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <marker id="ag" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#39414f"/></marker>
+    <marker id="av" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#8a4fff"/></marker>
+    <marker id="ab" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#2e6bff"/></marker>
+    <marker id="ao" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ff6b00"/></marker>
+    <marker id="agn" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#22c55e"/></marker>
+    <marker id="ar" markerWidth="7" markerHeight="7" refX="6" refY="2.5" orient="auto">
+      <path d="M0,0 L6,2.5 L0,5 Z" fill="#ef4444"/></marker>
+  </defs>
+</svg>
+
+
+
+
+<!-- ============================= 01 HOW TO READ ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">01</span><h2>How to Read &amp; Complete This Document</h2><span class="tag">Key</span></div>
+
+  <p class="lead">This document maps the ANCRA design to the behaviour a developer must build. For every element
+  the designer placed on screen, it states what that element is <b>for</b> and what must happen when a user
+  uses it. It is written to be built from &mdash; and, where the design is incomplete, to be <b>completed by
+  the team</b> before building.</p>
+
+  <div class="panel pn-b">
+    <h4>This Is Not a Defect Report</h4>
+    <p>ANCRA is a design prototype. Its controls are not wired to a backend, and that is expected &mdash; it is
+    the reason this specification exists. Nothing in this document reports a control as broken. Every entry
+    describes <b>intended behaviour for the production build on our own infrastructure.</b></p>
+  </div>
+
+  <h3>Classification</h3>
+  <table>
+    <tr><th style="width:28mm">Label</th><th style="width:56mm">Meaning</th><th>What you do with it</th></tr>
+    <tr><td><span class="pill p-spec">Specified</span></td>
+        <td>Defined by the ANCRA product specification or User Flow, or unambiguous from the design itself.</td>
+        <td><b>Build it as written.</b></td></tr>
+    <tr><td><span class="pill p-prop">Proposed</span></td>
+        <td>Behaviour inferred from surrounding context. A reasonable reading, but not confirmed.</td>
+        <td><b>Confirm or correct.</b> Drawn with a dashed violet outline.</td></tr>
+    <tr><td><span class="pill p-todef">To define</span></td>
+        <td>The design does not answer this and it cannot be safely inferred.</td>
+        <td><b>Fill it in.</b> Each carries an ID and a ruled space to write in.</td></tr>
+    <tr><td><span class="pill p-dcn">Decision</span></td>
+        <td>A genuine product choice with more than one defensible answer.</td>
+        <td><b>Choose.</b> Options are listed where known.</td></tr>
+  </table>
+
+  <h3>How the fill-in areas work</h3>
+  <p class="lead">Where the design leaves a question open, this document does not guess. It leaves you space.
+  Each open item is numbered <span class="mono">TD-01</span>, <span class="mono">TD-02</span> and so on, appears
+  at the point in the document where it matters, and is collected into a single register on the final page so
+  you can see how much is outstanding and work through it in order.</p>
+
+  <div class="fill">
+    <span class="fid">TD-00 &nbsp;·&nbsp; Example</span>
+    <div class="fq">This is what an open item looks like. The question is stated here, with any context needed
+    to answer it. <b>Write your answer on the ruled lines below</b> &mdash; on a printed copy, or in the editable
+    HTML source supplied alongside this PDF.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+    <div class="hint">Answered items should be marked complete in the register on the final page.</div>
+  </div>
+
+  <h3>What each control specification contains</h3>
+  <table>
+    <tr><th style="width:26mm">Field</th><th>Meaning</th></tr>
+    <tr><td><b>Purpose</b></td><td>What the user is trying to accomplish by using this control.</td></tr>
+    <tr><td><b>On activation</b></td><td>What the system does when it is used, including what data is sent.</td></tr>
+    <tr><td><b>Success</b></td><td>What the user sees, and where they end up.</td></tr>
+    <tr><td><b>Failure</b></td><td>What the user sees, and what is preserved so their work is not lost.</td></tr>
+    <tr><td><b>Preconditions</b></td><td>What must be true for the control to be available or enabled.</td></tr>
+  </table>
+
+  <div class="panel pn-v">
+    <h4>Target Infrastructure</h4>
+    <p>This document describes the build on <b>our own server</b>. Where the prototype relied on a hosted
+    development platform, the capability is named neutrally &mdash; a <b>configured AI service</b>, an
+    <b>approved media storage service</b>. Where that capability does not yet exist on our infrastructure,
+    it appears as a cross-screen requirement on page 13 rather than being assumed available.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">How to Read & Complete &nbsp;&middot;&nbsp; 01 / 19</span></div>
+</section>
+
+
+<!-- ============================= 02 IDENTITY & ROLE ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">02</span><h2>Identity &amp; Role Model</h2><span class="tag">Foundation</span></div>
+
+  <p class="lead">ANCRA presents two experiences &mdash; student and faculty. Which one a user receives determines
+  what they can see and do across all 45 routes. This is the foundation every other page depends on.</p>
+
+  <h3>Intended sign-in and role assignment <span class="pill p-prop">Proposed</span></h3>
+  <svg width="740" height="132" viewBox="0 0 740 132">
+    <rect x="0" y="14" width="146" height="46" rx="5" class="box-nav"/>
+    <text x="73" y="33" text-anchor="middle" class="nt">User opens ANCRA</text>
+    <text x="73" y="47" text-anchor="middle" class="ns">no active session</text>
+
+    <line x1="146" y1="37" x2="186" y2="37" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="186" y="14" width="156" height="46" rx="5" class="box-auth"/>
+    <text x="264" y="33" text-anchor="middle" class="nt">Sign in via ANCRID</text>
+    <text x="264" y="47" text-anchor="middle" class="ns">ecosystem identity provider</text>
+
+    <line x1="342" y1="37" x2="382" y2="37" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="382" y="14" width="166" height="46" rx="5" class="box-auth"/>
+    <text x="465" y="33" text-anchor="middle" class="nt">Role returned with session</text>
+    <text x="465" y="47" text-anchor="middle" class="ns">asserted by ANCRID, not chosen by user</text>
+
+    <line x1="548" y1="37" x2="588" y2="37" class="l-g" marker-end="url(#agn)"/>
+
+    <rect x="588" y="14" width="152" height="46" rx="5" class="box-ok"/>
+    <text x="664" y="33" text-anchor="middle" class="nt">Experience renders</text>
+    <text x="664" y="47" text-anchor="middle" class="ns">for that role only</text>
+
+    <rect x="0" y="76" width="740" height="24" rx="4" class="box-nav"/>
+    <text x="370" y="92" text-anchor="middle" class="nt-s">Faculty routes are enforced server-side &mdash; a student session is refused, not merely hidden in the interface</text>
+
+    <rect x="0" y="106" width="740" height="22" rx="4" class="box-dec"/>
+    <text x="370" y="121" text-anchor="middle" class="nt-s">The prototype's visible student/faculty toggle is a demonstration device and is not part of the production design</text>
+  </svg>
+
+  <div class="panel pn-o">
+    <h4>Why This Page Contrasts With the Prototype</h4>
+    <p>This is the one place in the document where current prototype behaviour is worth naming, because it
+    would otherwise mislead. The prototype lets any user switch between student and faculty using a toggle in
+    the top bar, with the role stored in the browser. <b>A developer reading only the prototype would reasonably
+    conclude that role is user-selectable.</b> It is not. Role comes from ANCRID and the user cannot change it.</p>
+  </div>
+
+  <h3>What each role may reach</h3>
+  <table>
+    <tr><th style="width:32mm">Role</th><th style="width:60mm">Reaches</th><th>Must not reach</th></tr>
+    <tr><td><b>Student</b></td><td>Dashboard, learning journey, experiences, lessons, assignments, projects,
+      peer reviews, portfolio, graduation, capstones, teams, messages, calendar, achievements, passport, library</td>
+      <td>All faculty routes, all other students' work</td></tr>
+    <tr><td><b>Faculty</b></td><td>Command centre, students, approvals, reviews, grading, all authoring tools,
+      analytics, cohorts, creative teams</td>
+      <td><span class="pill p-todef">TD-01</span> &mdash; see below</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-01 &nbsp;·&nbsp; Faculty scope</span>
+    <div class="fq">Does a faculty member see <b>all</b> students, or only students in cohorts they teach?
+    This determines whether the roster, grading queue and analytics are filtered by teaching assignment,
+    and whether a cohort-to-faculty relationship needs to exist in the data model.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-02 &nbsp;·&nbsp; Additional roles</span>
+    <div class="fq">The ANCR ecosystem describes mentors, artists in residence, and institution administrators.
+    <b>Do any of these need an ANCRA experience?</b> If so, list the role and what it reaches. If not, state
+    that ANCRA is student and faculty only.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Identity & Role Model &nbsp;&middot;&nbsp; 02 / 19</span></div>
+</section>
+
+
+<!-- ============================= 03 NAVIGATION MAP ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">03</span><h2>Navigation Map</h2><span class="tag">45 Routes</span></div>
+
+  <p class="lead">Every destination in ANCRA and which role reaches it. The shell &mdash; top bar, command
+  palette and assistant &mdash; is present on every screen inside the application.</p>
+
+  <svg width="740" height="410" viewBox="0 0 740 410">
+    <text x="0" y="10" class="cap" fill="#5f6b7d">ENTRY</text>
+    <line x1="0" y1="16" x2="740" y2="16" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="230" y="26" width="130" height="34" rx="5" class="box-nav"/>
+    <text x="295" y="42" text-anchor="middle" class="nt">Welcome</text>
+    <text x="295" y="53" text-anchor="middle" class="nm">/welcome</text>
+    <rect x="380" y="26" width="130" height="34" rx="5" class="box-nav"/>
+    <text x="445" y="42" text-anchor="middle" class="nt">Landing</text>
+    <text x="445" y="53" text-anchor="middle" class="nm">/</text>
+
+    <path d="M295,60 L295,74 L370,74 L370,86" class="l-b" marker-end="url(#ab)"/>
+    <path d="M445,60 L445,74 L370,74" class="l-b"/>
+
+    <rect x="240" y="86" width="260" height="28" rx="4" class="box-auth"/>
+    <text x="370" y="104" text-anchor="middle" class="nt">Application shell &mdash; top bar &middot; palette &middot; assistant</text>
+
+    <text x="0" y="134" class="cap" fill="#2e6bff">STUDENT EXPERIENCE &mdash; 20 DESTINATIONS</text>
+    <line x1="0" y1="140" x2="740" y2="140" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="0"   y="148" width="142" height="23" rx="4" class="box-nav"/><text x="8" y="163" class="nt-s">Dashboard</text><text x="135" y="163" text-anchor="end" class="nm">/dashboard</text>
+    <rect x="150" y="148" width="142" height="23" rx="4" class="box-nav"/><text x="158" y="163" class="nt-s">Learning Journey</text><text x="285" y="163" text-anchor="end" class="nm">/journey</text>
+    <rect x="300" y="148" width="142" height="23" rx="4" class="box-nav"/><text x="308" y="163" class="nt-s">Studio Experience</text><text x="435" y="163" text-anchor="end" class="nm">/experience/:id</text>
+    <rect x="450" y="148" width="142" height="23" rx="4" class="box-nav"/><text x="458" y="163" class="nt-s">Lesson Player</text><text x="585" y="163" text-anchor="end" class="nm">/lesson/:id</text>
+    <rect x="600" y="148" width="140" height="23" rx="4" class="box-nav"/><text x="608" y="163" class="nt-s">Progress</text><text x="733" y="163" text-anchor="end" class="nm">/progress</text>
+
+    <rect x="0"   y="177" width="142" height="23" rx="4" class="box-nav"/><text x="8" y="192" class="nt-s">Assignments</text><text x="135" y="192" text-anchor="end" class="nm">/assignments</text>
+    <rect x="150" y="177" width="142" height="23" rx="4" class="box-nav"/><text x="158" y="192" class="nt-s">Creative Projects</text><text x="285" y="192" text-anchor="end" class="nm">/projects</text>
+    <rect x="300" y="177" width="142" height="23" rx="4" class="box-nav"/><text x="308" y="192" class="nt-s">Peer Reviews</text><text x="435" y="192" text-anchor="end" class="nm">/peer-reviews</text>
+    <rect x="450" y="177" width="142" height="23" rx="4" class="box-nav"/><text x="458" y="192" class="nt-s">Portfolio Builder</text><text x="585" y="192" text-anchor="end" class="nm">/portfolio-builder</text>
+    <rect x="600" y="177" width="140" height="23" rx="4" class="box-nav"/><text x="608" y="192" class="nt-s">AI Companion</text><text x="733" y="192" text-anchor="end" class="nm">/companion</text>
+
+    <rect x="0"   y="206" width="142" height="23" rx="4" class="box-nav"/><text x="8" y="221" class="nt-s">Graduation</text><text x="135" y="221" text-anchor="end" class="nm">/graduation</text>
+    <rect x="150" y="206" width="142" height="23" rx="4" class="box-nav"/><text x="158" y="221" class="nt-s">Capstones</text><text x="285" y="221" text-anchor="end" class="nm">/capstones</text>
+    <rect x="300" y="206" width="142" height="23" rx="4" class="box-nav"/><text x="308" y="221" class="nt-s">30 Song Project</text><text x="435" y="221" text-anchor="end" class="nm">/thirty-song</text>
+    <rect x="450" y="206" width="142" height="23" rx="4" class="box-nav"/><text x="458" y="221" class="nt-s">Portfolio</text><text x="585" y="221" text-anchor="end" class="nm">/portfolio</text>
+    <rect x="600" y="206" width="140" height="23" rx="4" class="box-nav"/><text x="608" y="221" class="nt-s">Teams</text><text x="733" y="221" text-anchor="end" class="nm">/teams</text>
+
+    <rect x="0"   y="235" width="142" height="23" rx="4" class="box-nav"/><text x="8" y="250" class="nt-s">Messages</text><text x="135" y="250" text-anchor="end" class="nm">/messages</text>
+    <rect x="150" y="235" width="142" height="23" rx="4" class="box-nav"/><text x="158" y="250" class="nt-s">Calendar</text><text x="285" y="250" text-anchor="end" class="nm">/calendar</text>
+    <rect x="300" y="235" width="142" height="23" rx="4" class="box-nav"/><text x="308" y="250" class="nt-s">Achievements</text><text x="435" y="250" text-anchor="end" class="nm">/achievements</text>
+    <rect x="450" y="235" width="142" height="23" rx="4" class="box-nav"/><text x="458" y="250" class="nt-s">Creator Passport</text><text x="585" y="250" text-anchor="end" class="nm">/passport</text>
+    <rect x="600" y="235" width="140" height="23" rx="4" class="box-nav"/><text x="608" y="250" class="nt-s">Library</text><text x="733" y="250" text-anchor="end" class="nm">/library</text>
+
+    <text x="0" y="276" class="cap" fill="#ff6b00">FACULTY EXPERIENCE &mdash; 14 DESTINATIONS</text>
+    <line x1="0" y1="282" x2="740" y2="282" stroke="#1f2433" stroke-width="1"/>
+
+    <rect x="0"   y="290" width="142" height="23" rx="4" class="box-dec"/><text x="8" y="305" class="nt-s">Command Centre</text><text x="135" y="305" text-anchor="end" class="nm">/faculty</text>
+    <rect x="150" y="290" width="142" height="23" rx="4" class="box-dec"/><text x="158" y="305" class="nt-s">Students</text><text x="285" y="305" text-anchor="end" class="nm">/students</text>
+    <rect x="300" y="290" width="142" height="23" rx="4" class="box-dec"/><text x="308" y="305" class="nt-s">Approvals</text><text x="435" y="305" text-anchor="end" class="nm">/approvals</text>
+    <rect x="450" y="290" width="142" height="23" rx="4" class="box-dec"/><text x="458" y="305" class="nt-s">Reviews</text><text x="585" y="305" text-anchor="end" class="nm">/reviews</text>
+    <rect x="600" y="290" width="140" height="23" rx="4" class="box-dec"/><text x="608" y="305" class="nt-s">Grading</text><text x="733" y="305" text-anchor="end" class="nm">/grading</text>
+
+    <rect x="0"   y="319" width="142" height="23" rx="4" class="box-dec"/><text x="8" y="334" class="nt-s">Curriculum Builder</text><text x="135" y="334" text-anchor="end" class="nm">/curriculum</text>
+    <rect x="150" y="319" width="142" height="23" rx="4" class="box-dec"/><text x="158" y="334" class="nt-s">Experience Builder</text><text x="285" y="334" text-anchor="end" class="nm">/experience-builder</text>
+    <rect x="300" y="319" width="142" height="23" rx="4" class="box-dec"/><text x="308" y="334" class="nt-s">Lesson Builder</text><text x="435" y="334" text-anchor="end" class="nm">/lesson-builder</text>
+    <rect x="450" y="319" width="142" height="23" rx="4" class="box-dec"/><text x="458" y="334" class="nt-s">Assignment Builder</text><text x="585" y="334" text-anchor="end" class="nm">/assignment-builder</text>
+    <rect x="600" y="319" width="140" height="23" rx="4" class="box-dec"/><text x="608" y="334" class="nt-s">AI Course Builder</text><text x="733" y="334" text-anchor="end" class="nm">/ai-course-builder</text>
+
+    <rect x="0"   y="348" width="142" height="23" rx="4" class="box-dec"/><text x="8" y="363" class="nt-s">Rubrics</text><text x="135" y="363" text-anchor="end" class="nm">/rubrics</text>
+    <rect x="150" y="348" width="142" height="23" rx="4" class="box-dec"/><text x="158" y="363" class="nt-s">Creative Teams</text><text x="285" y="363" text-anchor="end" class="nm">/teams</text>
+    <rect x="300" y="348" width="142" height="23" rx="4" class="box-dec"/><text x="308" y="363" class="nt-s">Analytics</text><text x="435" y="363" text-anchor="end" class="nm">/analytics</text>
+    <rect x="450" y="348" width="142" height="23" rx="4" class="box-dec"/><text x="458" y="363" class="nt-s">Cohorts</text><text x="585" y="363" text-anchor="end" class="nm">/cohorts</text>
+    <rect x="600" y="348" width="140" height="23" rx="4" class="box-auth"/><text x="608" y="363" class="nt-s">Settings</text><text x="733" y="363" text-anchor="end" class="nm">/settings</text>
+
+    <text x="0" y="384" class="cap" fill="#8a4fff">ECOSYSTEM &mdash; 11 ROUTES</text>
+    <line x1="0" y1="389" x2="740" y2="389" stroke="#1f2433" stroke-width="1"/>
+    <rect x="0" y="394" width="740" height="14" rx="3" class="box"/>
+    <text x="370" y="404" text-anchor="middle" class="ns">/hub/:module &nbsp;·&nbsp; /module/ANCRLAB &nbsp;·&nbsp; /module/ANCRSync &nbsp;·&nbsp; /module/COHEIR &nbsp;·&nbsp; /module/INHEIRA &nbsp;·&nbsp; /module/ANCRID &nbsp;·&nbsp; /module/:name</text>
+  </svg>
+  <div class="fig">Figure 1 &mdash; All destinations. Role determines which set is reachable.</div>
+
+  <div class="fill">
+    <span class="fid">TD-03 &nbsp;·&nbsp; Landing vs Welcome</span>
+    <div class="fq">Two entry routes exist: <span class="mono">/welcome</span> and <span class="mono">/</span>.
+    <b>What distinguishes them?</b> Is one a first-run experience shown once, and the other the returning-user
+    entry? Which does a user land on after signing in?</div>
+    <div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Navigation Map &nbsp;&middot;&nbsp; 03 / 19</span></div>
+</section>
+
+<!-- ============================= 04 LEARNING FLOW ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">04</span><h2>Learning Flow</h2><span class="tag">Journey &rarr; Experience &rarr; Lesson</span></div>
+
+  <p class="lead">The path a student takes to consume content. Three levels deep, and the reason ANCRA exists.</p>
+
+  <svg width="740" height="120" viewBox="0 0 740 120">
+    <rect x="0" y="12" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="30" text-anchor="middle" class="nt">Learning Journey</text>
+    <text x="75" y="44" text-anchor="middle" class="ns">the student's programme</text>
+
+    <line x1="150" y1="34" x2="196" y2="34" class="l-b" marker-end="url(#ab)"/>
+    <text x="173" y="28" text-anchor="middle" class="cl">select</text>
+
+    <rect x="196" y="12" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="276" y="30" text-anchor="middle" class="nt">Studio Experience</text>
+    <text x="276" y="44" text-anchor="middle" class="ns">a module of related lessons</text>
+
+    <line x1="356" y1="34" x2="402" y2="34" class="l-b" marker-end="url(#ab)"/>
+    <text x="379" y="28" text-anchor="middle" class="cl">select</text>
+
+    <rect x="402" y="12" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="482" y="30" text-anchor="middle" class="nt">Lesson Player</text>
+    <text x="482" y="44" text-anchor="middle" class="ns">a single unit of content</text>
+
+    <line x1="562" y1="34" x2="608" y2="34" class="l-g" marker-end="url(#agn)"/>
+    <rect x="608" y="12" width="132" height="44" rx="5" class="box-ok"/>
+    <text x="674" y="30" text-anchor="middle" class="nt">Progress recorded</text>
+    <text x="674" y="44" text-anchor="middle" class="ns">feeds journey and graduation</text>
+
+    <rect x="0" y="72" width="740" height="42" rx="5" class="box-fill"/>
+    <text x="10" y="86" class="ft">TD-04 · COMPLETION RULE</text>
+    <text x="10" y="99" class="ns">What marks a lesson complete? Watching to the end, a manual control, or passing an activity?</text>
+    <line x1="330" y1="103" x2="730" y2="103" class="rl"/>
+  </svg>
+
+  <h3>Lesson Player &mdash; control specifications</h3>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Play / Pause</span><span class="typ">Button</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Start and stop lesson media.</dd>
+      <dt>On activation</dt><dd>Begins playback of the lesson's media from the current position; pause holds position.</dd>
+      <dt>Success</dt><dd>Media plays. Elapsed time and remaining duration are visible. Progress is reported periodically so the position survives leaving the page.</dd>
+      <dt>Failure</dt><dd>If media cannot load, the player shows a retry affordance and states that the lesson could not be loaded &mdash; it must not present as an empty or finished lesson.</dd>
+      <dt>Preconditions</dt><dd>Lesson exists and the student is enrolled in the parent experience.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-05 &nbsp;·&nbsp; Lesson media format and hosting</span>
+    <div class="fq">The design shows a video-style player with a poster image. <b>What media does a lesson
+    actually contain</b> &mdash; video, audio, or both? What formats must be supported, where is the media
+    hosted, and is it streamed or downloaded? This determines the media storage requirement on page 13.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+    <div class="hint">If lessons are video, note whether captions and transcripts are required.</div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Chapter list</span><span class="typ">List</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Jump to a named section within the lesson.</dd>
+      <dt>On activation</dt><dd>Moves playback to that chapter's start time and marks it as the active chapter.</dd>
+      <dt>Success</dt><dd>Playback continues from the chapter start. The active chapter is highlighted.</dd>
+      <dt>Preconditions</dt><dd>The lesson defines chapters. If it does not, the list is not shown.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Bookmark</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Let a student mark this lesson to return to later.</dd>
+      <dt>On activation</dt><dd>Saves a bookmark against the student and the lesson.</dd>
+      <dt>Success</dt><dd>The control shows a saved state. The bookmark appears in a place the student can find it.</dd>
+      <dt>Failure</dt><dd>The control returns to its unsaved state with a brief message.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-06 &nbsp;·&nbsp; Bookmarks</span>
+    <div class="fq">Two things the design does not answer. <b>Is a bookmark for the whole lesson or a
+    timestamp within it?</b> And <b>where does the student go to see their bookmarks</b> &mdash; there is
+    currently no surface listing them. If bookmarks need a home, name it.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Discussion</span><span class="typ">Button</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Open a conversation attached to this lesson.</dd>
+      <dt>On activation</dt><dd>See TD-07 &mdash; the discussion surface is not designed.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-07 &nbsp;·&nbsp; Lesson discussion</span>
+    <div class="fq">A Discussion control exists on the lesson, but <b>no discussion screen was designed.</b>
+    Define: is it a thread per lesson visible to the whole cohort, or to a smaller group? Can faculty post and
+    moderate? Are replies threaded? Does it notify anyone? <b>If discussion is out of scope for the first
+    build, say so</b> and the control is removed.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Share</span><span class="typ">Button</span><span class="pill p-dcn">Decision</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Pass a reference to this lesson to someone else.</dd>
+      <dt>Decision</dt><dd>Three defensible options: <b>(a)</b> copy an in-app link usable only by enrolled students;
+        <b>(b)</b> share to a cohort or team inside ANCRA; <b>(c)</b> a public link exposing lesson content outside
+        the programme. Option (c) has content-rights implications and should not be chosen by default.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-08 &nbsp;·&nbsp; Share target</span>
+    <div class="fq">Choose (a), (b) or (c) above, or describe the intended behaviour.</div>
+    <div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Not Found &mdash; Applies to Both Levels</h4>
+    <p>An unknown experience or lesson identifier must produce the same experience: a clear not-found state
+    <b>inside the application shell</b>, naming what could not be found and offering a route back to the
+    learning journey. The user must not be dropped out of the application.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Learning Flow &nbsp;&middot;&nbsp; 04 / 19</span></div>
+</section>
+
+
+<!-- ============================= 05 STUDENT SUBMISSION ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">05</span><h2>Student Submission</h2><span class="tag">Portfolio &middot; Graduation</span></div>
+
+  <p class="lead">The points at which a student commits work. These are the highest-consequence controls in the
+  student experience &mdash; each represents an academic act.</p>
+
+  <h3>Portfolio Builder</h3>
+  <svg width="740" height="132" viewBox="0 0 740 132">
+    <rect x="0" y="12" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="30" text-anchor="middle" class="nt">Browse available work</text>
+    <text x="75" y="44" text-anchor="middle" class="ns">from projects and lessons</text>
+
+    <line x1="150" y1="34" x2="196" y2="34" class="l" marker-end="url(#ag)"/>
+
+    <rect x="196" y="12" width="160" height="44" rx="5" class="box-nav"/>
+    <text x="276" y="30" text-anchor="middle" class="nt">Toggle works in / out</text>
+    <text x="276" y="44" text-anchor="middle" class="ns">selection persists as a draft</text>
+
+    <line x1="356" y1="34" x2="402" y2="34" class="l" marker-end="url(#ag)"/>
+
+    <rect x="402" y="12" width="150" height="44" rx="5" class="box-auth"/>
+    <text x="477" y="30" text-anchor="middle" class="nt">Save &amp; Sign</text>
+    <text x="477" y="44" text-anchor="middle" class="ns">the committing act</text>
+
+    <path d="M552,34 L600,34" class="l-g" marker-end="url(#agn)"/>
+    <rect x="600" y="12" width="140" height="44" rx="5" class="box-ok"/>
+    <text x="670" y="30" text-anchor="middle" class="nt">Portfolio submitted</text>
+    <text x="670" y="44" text-anchor="middle" class="ns">confirmation shown</text>
+
+    <rect x="0" y="72" width="740" height="54" rx="5" class="box-fill"/>
+    <text x="10" y="86" class="ft">TD-09 · WHAT DOES "SIGN" MEAN?</text>
+    <text x="10" y="99" class="ns">Is this an academic attestation by the student? Does it lock the portfolio from further edits?</text>
+    <text x="10" y="110" class="ns">Can it be withdrawn or re-signed? Who is notified when it happens?</text>
+    <line x1="10" y1="120" x2="730" y2="120" class="rl"/>
+  </svg>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Work toggle</span><span class="typ">Button, per work</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Add or remove a piece of work from the portfolio being assembled.</dd>
+      <dt>On activation</dt><dd>Updates the draft selection and persists it immediately, so the student can leave and return without losing the assembly.</dd>
+      <dt>Success</dt><dd>The work shows as included; the portfolio count updates.</dd>
+      <dt>Failure</dt><dd>The toggle reverts and a brief message appears. The rest of the selection is unaffected.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Save &amp; Sign</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Commit the assembled portfolio as the student's submitted work.</dd>
+      <dt>On activation</dt><dd>Submits the selection with a timestamp and the student's attestation.</dd>
+      <dt>Success</dt><dd>A clear confirmation states the portfolio is submitted and when. The portfolio moves to a submitted state visible to the student.</dd>
+      <dt>Failure</dt><dd>An error is shown and <b>the selection is preserved in full</b>. The student must never lose an assembled portfolio to a failed submission.</dd>
+      <dt>Preconditions</dt><dd>At least one work selected. <span class="pill p-todef">TD-10</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-10 &nbsp;·&nbsp; Portfolio requirements</span>
+    <div class="fq">Are there rules a portfolio must satisfy before it can be signed &mdash; a <b>minimum number
+    of works</b>, required categories, or a required capstone? If so, the builder should show progress toward
+    those requirements and explain what is missing rather than simply refusing.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Preview</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Show the student their portfolio as a reviewer will see it, before committing.</dd>
+      <dt>On activation</dt><dd>Opens a read-only rendering of the current selection.</dd>
+      <dt>Success</dt><dd>Preview opens with a clear way to return to editing. Nothing is submitted.</dd>
+    </dl></div>
+  </div>
+
+  <h3>Graduation</h3>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Send Packet</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Submit the student's graduation packet for review.</dd>
+      <dt>On activation</dt><dd>Assembles and submits the packet contents (see TD-11) with a timestamp.</dd>
+      <dt>Success</dt><dd>Confirmation states the packet was sent, to whom, and what happens next. Graduation status moves to submitted.</dd>
+      <dt>Failure</dt><dd>Error shown; nothing is sent; the packet remains editable.</dd>
+      <dt>Preconditions</dt><dd>Graduation readiness requirements met. <span class="pill p-todef">TD-12</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-11 &nbsp;·&nbsp; Graduation packet contents</span>
+    <div class="fq"><b>What is in the packet, and who receives it?</b> The design shows the control but not the
+    payload. List what it must contain (signed portfolio, transcript, capstone, faculty recommendations?) and
+    the recipient (faculty adviser, an institutional queue, an external body?).</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-12 &nbsp;·&nbsp; Graduation readiness</span>
+    <div class="fq">The dashboard shows a readiness indicator. <b>What conditions must be satisfied</b> for a
+    student to be eligible to send the packet &mdash; lessons completed, capstone approved, portfolio signed,
+    minimum songs in the 30 Song Project? Can a student send a packet while not fully ready?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Schedule ANCRLAB session</span><span class="typ">Button</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Book studio time as part of graduation preparation.</dd>
+      <dt>On activation</dt><dd>Requires a booking capability in ANCRLAB. See page 14 &mdash; module integration.</dd>
+    </dl></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Student Submission &nbsp;&middot;&nbsp; 05 / 19</span></div>
+</section>
+
+<!-- ============================= 06 ASSIGNMENTS & PEER REVIEW ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">06</span><h2>Assignments &amp; Peer Review</h2><span class="tag">Student Work</span></div>
+
+  <p class="lead">The design presents assignments and peer reviews as lists. Neither has a designed
+  submission or authoring screen &mdash; both are named below as work still to be designed.</p>
+
+  <h3>Assignments</h3>
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Assignment row</span><span class="typ">Card</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Show the student what has been set, when it is due, and its current state.</dd>
+      <dt>Displays</dt><dd>Title, brief, due date, current status (not started, in progress, submitted, returned), and grade once returned.</dd>
+      <dt>On activation</dt><dd>Opens the assignment detail, from which the student submits.</dd>
+      <dt>Preconditions</dt><dd>Assignment has been issued to the student's cohort by faculty.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-13 &nbsp;·&nbsp; Assignment submission screen</span>
+    <div class="fq"><b>No assignment submission screen was designed.</b> The list shows assignments but there
+    is no surface for handing one in. Define what a student submits: uploaded files, a text response, a link to
+    a project already in ANCRA, or a combination. Note file types and any size limit.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-14 &nbsp;·&nbsp; Resubmission and late work</span>
+    <div class="fq">Can a student <b>submit more than once</b> before the due date, and does a new submission
+    replace the previous one? Is submission allowed <b>after</b> the due date, and if so is it marked late and
+    still accepted?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Assignments &nbsp;&middot;&nbsp; 06 / 19</span></div>
+</section>
+
+
+<!-- ============================= 07 PEER REVIEW & PROJECTS ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">07</span><h2>Peer Review &amp; Creative Projects</h2><span class="tag">Student Work</span></div>
+
+  <p class="lead">Peer review and personal creative work. Neither has a designed authoring screen; both are
+  named below as work still to be designed.</p>
+
+  <h3>Peer Review</h3>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Review</span><span class="typ">Button</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Write a review of another student's work.</dd>
+      <dt>On activation</dt><dd>Opens a review authoring surface. <b>That surface is not designed.</b> See TD-15.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Listen</span><span class="typ">Button</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Play the audio work under review without leaving the review context.</dd>
+      <dt>On activation</dt><dd>Plays the submitted audio inline.</dd>
+      <dt>Success</dt><dd>Audio plays with transport controls. The reviewer can write while listening.</dd>
+      <dt>Note</dt><dd>Depends on the same media capability as the Lesson Player &mdash; see page 16.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Reply</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Let the student who received a review respond to it.</dd>
+      <dt>On activation</dt><dd>Opens a response field attached to that review.</dd>
+      <dt>Success</dt><dd>Reply is posted and visible to the reviewer and, per TD-15, possibly to faculty.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-15 &nbsp;·&nbsp; Peer review model</span>
+    <div class="fq">The whole peer review model needs defining. <b>Is a review anonymous</b> to the recipient?
+    <b>How is a reviewer assigned</b> &mdash; allocated by faculty, chosen by the student, or automatic?
+    <b>How many</b> reviews must a student give and receive? <b>Does faculty see</b> peer reviews, and do they
+    count toward a grade?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-16 &nbsp;·&nbsp; Review structure</span>
+    <div class="fq">Is a peer review <b>free text</b>, or structured against criteria like a rubric? If
+    structured, does it reuse the faculty Rubrics tool or have its own simpler form?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <h3>Creative Projects</h3>
+  <div class="ctl">
+    <div class="ch"><span class="lbl">New Project</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Start a new piece of creative work.</dd>
+      <dt>On activation</dt><dd>Creates a project and opens it for editing.</dd>
+      <dt>Success</dt><dd>Project appears in the student's project list in a draft state.</dd>
+      <dt>Preconditions</dt><dd>None &mdash; a student may start a project at any time. <span class="pill p-todef">TD-17</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-17 &nbsp;·&nbsp; What is a Creative Project?</span>
+    <div class="fq">The design lists projects but does not show what one contains. <b>What does a student
+    create and edit inside a project?</b> Is it a container for uploaded files, a text document, a link to work
+    in ANCRLAB, or something else? Is a project ever submitted, or is it a personal working space?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Peer Review & Projects &nbsp;&middot;&nbsp; 07 / 19</span></div>
+</section>
+
+
+<!-- ============================= 07 FACULTY AUTHORING ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">08</span><h2>Faculty Authoring</h2><span class="tag">7 Tools, One Pattern</span></div>
+
+  <p class="lead">Seven authoring tools share one structure: compose content in a form, then publish it so
+  students receive it. They are specified once here, with the differences tabulated.</p>
+
+  <h3>The shared authoring pattern <span class="pill p-prop">Proposed</span></h3>
+  <svg width="740" height="176" viewBox="0 0 740 176">
+    <rect x="0" y="12" width="146" height="46" rx="5" class="box-nav"/>
+    <text x="73" y="30" text-anchor="middle" class="nt">Open tool</text>
+    <text x="73" y="44" text-anchor="middle" class="ns">new, or an existing draft</text>
+
+    <line x1="146" y1="35" x2="188" y2="35" class="l" marker-end="url(#ag)"/>
+
+    <rect x="188" y="12" width="156" height="46" rx="5" class="box-nav"/>
+    <text x="266" y="30" text-anchor="middle" class="nt">Compose</text>
+    <text x="266" y="44" text-anchor="middle" class="ns">fields captured as typed</text>
+
+    <line x1="344" y1="35" x2="386" y2="35" class="l" marker-end="url(#ag)"/>
+
+    <rect x="386" y="12" width="150" height="46" rx="5" class="box"/>
+    <text x="461" y="30" text-anchor="middle" class="nt">Auto-save draft</text>
+    <text x="461" y="44" text-anchor="middle" class="ns">work is never lost</text>
+
+    <line x1="536" y1="35" x2="578" y2="35" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="578" y="12" width="162" height="46" rx="5" class="box-auth"/>
+    <text x="659" y="30" text-anchor="middle" class="nt">Publish</text>
+    <text x="659" y="44" text-anchor="middle" class="ns">content becomes visible to students</text>
+
+    <path d="M659,58 L659,76 L370,76" class="l-g" marker-end="url(#agn)"/>
+    <text x="510" y="72" text-anchor="middle" class="cl">published</text>
+    <rect x="230" y="84" width="280" height="30" rx="5" class="box-ok"/>
+    <text x="370" y="103" text-anchor="middle" class="nt-s">Confirmation names what was published and to whom</text>
+
+    <rect x="0" y="126" width="740" height="44" rx="5" class="box-fill"/>
+    <text x="10" y="140" class="ft">TD-18 · DRAFT AND PUBLISH MODEL</text>
+    <text x="10" y="153" class="ns">Does published content have a draft state first? Can a published item be edited, and does editing create a version?</text>
+    <line x1="10" y1="163" x2="730" y2="163" class="rl"/>
+  </svg>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Compose fields</span><span class="typ">Text inputs</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Capture the content the faculty member is authoring.</dd>
+      <dt>On activation</dt><dd>Every field's value is held as the user types and included when the item is saved or published.</dd>
+      <dt>Success</dt><dd>A draft indicator confirms work is saved. Leaving and returning restores the draft intact.</dd>
+      <dt>Failure</dt><dd>If a draft save fails, the editor warns and keeps the content on screen. It must not silently discard work.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Publish</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Make the authored content available to students.</dd>
+      <dt>On activation</dt><dd>Validates required fields, then publishes to the named target.</dd>
+      <dt>Success</dt><dd>Confirmation states what was published and which students can now see it.</dd>
+      <dt>Failure</dt><dd>Validation errors are shown against the specific fields. Nothing is published; the draft is retained.</dd>
+      <dt>Preconditions</dt><dd>Required fields complete. <span class="pill p-todef">TD-19</span></dd>
+    </dl></div>
+  </div>
+
+  <h3>How each tool differs</h3>
+  <table>
+    <tr><th style="width:36mm">Tool</th><th style="width:44mm">Produces</th><th style="width:34mm">Publish target</th><th>Open items</th></tr>
+    <tr><td><b>Lesson Builder</b></td><td>A lesson: title, subtitle, chapters, media</td><td>A Studio Experience</td><td>Media upload &mdash; TD-05, page 13</td></tr>
+    <tr><td><b>Experience Builder</b></td><td>A Studio Experience grouping lessons</td><td>A learning journey</td><td>Ordering and prerequisites &mdash; TD-20</td></tr>
+    <tr><td><b>Curriculum Builder</b></td><td>Programme structure across experiences</td><td>The programme</td><td>Canvas persistence &mdash; TD-21</td></tr>
+    <tr><td><b>Assignment Builder</b></td><td>An assignment: title, brief, type, due date</td><td>A cohort</td><td>Scheduling &amp; targeting &mdash; TD-22</td></tr>
+    <tr><td><b>Rubrics</b></td><td>Criteria with weights and descriptors</td><td>Reusable, attached to assignments</td><td>Reuse model &mdash; TD-23</td></tr>
+    <tr><td><b>Creative Teams</b></td><td>A team of students</td><td>A cohort</td><td>Membership rules &mdash; TD-24</td></tr>
+    <tr><td><b>AI Course Builder</b></td><td>A drafted outline for a course</td><td>Hands off to Lesson Builder</td><td>See below</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-19 &nbsp;·&nbsp; Publishing permission</span>
+    <div class="fq">Can <b>any faculty member publish</b> content that students will see, or does publishing
+    require review or approval by a lead? This affects whether a submitted-for-review state is needed between
+    draft and published.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-20 &nbsp;·&nbsp; Sequencing and prerequisites</span>
+    <div class="fq">Are lessons and experiences <b>ordered</b>, and must a student complete one before the next
+    unlocks? Or is all published content available at once? This changes the learning journey and the progress
+    model substantially.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-21 &nbsp;·&nbsp; Curriculum canvas</span>
+    <div class="fq">The Curriculum Builder presents a canvas of blocks. <b>What is a block</b>, and what does
+    arranging them produce? Is the canvas the authoritative programme structure, or a planning view that is
+    then applied?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-22 &nbsp;·&nbsp; Assignment targeting</span>
+    <div class="fq">The control reads <b>Assign to cohort</b>. Can an assignment also target an <b>individual
+    student</b> or a creative team? Can it be scheduled to release at a future date rather than immediately?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-23 &nbsp;·&nbsp; Rubric reuse</span>
+    <div class="fq">Is a rubric <b>created once and reused</b> across many assignments, or authored per
+    assignment? If reused, what happens to grades already given when a rubric is later edited?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-24 &nbsp;·&nbsp; Creative team membership</span>
+    <div class="fq">Who assembles a team &mdash; faculty only, or can students form their own? Can a student
+    belong to more than one team? Are teams tied to a specific assignment or persistent across the programme?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>AI Course Builder &mdash; Decision</h4>
+    <p>The design shows a Compose control that produces a drafted course outline, and a <b>Send to Builder</b>
+    control that hands it onward. The intent is clear: generate a starting draft, then refine it in the Lesson
+    Builder. ANCRA already uses a configured AI service for its student assistant, so the capability exists.</p>
+    <p><b>Decide:</b> what the generator receives as input (a topic? a learning objective? an existing
+    curriculum block?), and whether the faculty member reviews the draft before it reaches the Lesson Builder
+    or it lands there directly as an unpublished draft.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Faculty Authoring &nbsp;&middot;&nbsp; 08 / 19</span></div>
+</section>
+
+<!-- ============================= 08 FACULTY ASSESSMENT ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">09</span><h2>Faculty Assessment</h2><span class="tag">Approve &middot; Grade &middot; Triage</span></div>
+
+  <p class="lead">The cycle by which submitted student work is reviewed, graded and returned. Together with
+  student submission on page 05, this is the core academic workflow of ANCRA.</p>
+
+  <svg width="740" height="118" viewBox="0 0 740 118">
+    <rect x="0" y="12" width="128" height="42" rx="5" class="box-nav"/>
+    <text x="64" y="30" text-anchor="middle" class="nt-s">Student submits</text>
+    <text x="64" y="43" text-anchor="middle" class="ns">page 05</text>
+
+    <line x1="128" y1="33" x2="164" y2="33" class="l" marker-end="url(#ag)"/>
+    <rect x="164" y="12" width="128" height="42" rx="5" class="box-dec"/>
+    <text x="228" y="30" text-anchor="middle" class="nt-s">Appears in queue</text>
+    <text x="228" y="43" text-anchor="middle" class="ns">command centre</text>
+
+    <line x1="292" y1="33" x2="328" y2="33" class="l" marker-end="url(#ag)"/>
+    <rect x="328" y="12" width="128" height="42" rx="5" class="box-dec"/>
+    <text x="392" y="30" text-anchor="middle" class="nt-s">Faculty reviews</text>
+    <text x="392" y="43" text-anchor="middle" class="ns">against a rubric</text>
+
+    <line x1="456" y1="33" x2="492" y2="33" class="l-v" marker-end="url(#av)"/>
+    <rect x="492" y="12" width="118" height="42" rx="5" class="box-auth"/>
+    <text x="551" y="30" text-anchor="middle" class="nt-s">Sign &amp; Return</text>
+    <text x="551" y="43" text-anchor="middle" class="ns">the committing act</text>
+
+    <line x1="610" y1="33" x2="646" y2="33" class="l-g" marker-end="url(#agn)"/>
+    <rect x="646" y="12" width="94" height="42" rx="5" class="box-ok"/>
+    <text x="693" y="30" text-anchor="middle" class="nt-s">Student sees</text>
+    <text x="693" y="43" text-anchor="middle" class="ns">grade + feedback</text>
+
+    <rect x="0" y="68" width="740" height="44" rx="5" class="box-fill"/>
+    <text x="10" y="82" class="ft">TD-25 · NOTIFICATION AT EACH STEP</text>
+    <text x="10" y="95" class="ns">Who is told when work is submitted, and when a grade is returned? In-app only, or email as well?</text>
+    <line x1="10" y1="105" x2="730" y2="105" class="rl"/>
+  </svg>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Approve</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Accept a student's submitted work as meeting requirements.</dd>
+      <dt>On activation</dt><dd>Marks the submission approved, recording who approved it and when.</dd>
+      <dt>Success</dt><dd>The item leaves the approval queue. The student sees their work as approved.</dd>
+      <dt>Failure</dt><dd>Error shown; the item stays in the queue in its previous state.</dd>
+      <dt>Preconditions</dt><dd>Item is in a submitted state and assigned to this faculty member. <span class="pill p-todef">TD-01</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-26 &nbsp;·&nbsp; Approval semantics</span>
+    <div class="fq">Three things the design does not settle. <b>Is approval reversible</b> once given?
+    <b>Does approval lock</b> the student's submission from further edits? And <b>is approval distinct from
+    grading</b>, or does approving something also mean grading it? The Approvals and Grading screens are
+    separate in the design, which suggests they are distinct acts &mdash; confirm.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Preview</span><span class="typ">Button</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Open the submitted work so it can be assessed before approving.</dd>
+      <dt>On activation</dt><dd>Opens the student's submission in a read-only view, including any media.</dd>
+      <dt>Success</dt><dd>Work is displayed with a clear route back to the queue.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Feedback field</span><span class="typ">Text area</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Write the written feedback the student will receive.</dd>
+      <dt>On activation</dt><dd>Content is captured as typed and retained as a draft against that submission.</dd>
+      <dt>Success</dt><dd>Draft feedback survives navigating away and returning.</dd>
+      <dt>Failure</dt><dd>The editor warns if a draft save fails and keeps the text on screen.</dd>
+    </dl></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Use as starting point</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Populate the feedback field from a rubric descriptor or a saved comment, to speed up marking.</dd>
+      <dt>On activation</dt><dd>Inserts the selected text into the feedback field, where it can then be edited.</dd>
+      <dt>Success</dt><dd>Feedback field contains the inserted text; the cursor is placed for editing.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-27 &nbsp;·&nbsp; Feedback starting points</span>
+    <div class="fq"><b>Where do the starting points come from?</b> Rubric criterion descriptors, a faculty
+    member's own saved comment bank, or a shared department bank? If saved comments are a feature, they need
+    a place to be created and managed &mdash; that screen is not in the design.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Sign &amp; Return</span><span class="typ">Button</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Commit the grade and feedback, and release them to the student.</dd>
+      <dt>On activation</dt><dd>Records the grade, feedback and rubric scores against the submission, attributed to the faculty member with a timestamp.</dd>
+      <dt>Success</dt><dd>Confirmation states the grade was returned. The item leaves the grading queue. The student is notified per TD-25.</dd>
+      <dt>Failure</dt><dd>Error shown; <b>grade and feedback are preserved in full</b>; nothing is released to the student.</dd>
+      <dt>Preconditions</dt><dd>A grade has been entered. <span class="pill p-todef">TD-28</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-28 &nbsp;·&nbsp; Grade format and visibility</span>
+    <div class="fq"><b>What form does a grade take</b> &mdash; a letter, a percentage, a rubric total, or
+    pass/fail? Is the grade <b>visible to the student immediately</b> on return, or held until a release date?
+    Can a returned grade be amended afterwards, and does the student see that it changed?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Faculty Assessment &nbsp;&middot;&nbsp; 09 / 19</span></div>
+</section>
+
+
+<!-- ============================= 10 COMMAND CENTRE ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">10</span><h2>Faculty Command Centre</h2><span class="tag">Triage</span></div>
+
+  <p class="lead">The faculty landing screen presents a queue of items needing attention, with three actions
+  on each. What those actions do is the main open question on this page.</p>
+
+  <h3>Queue actions</h3>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Review / Schedule / Dismiss</span><span class="typ">Row actions</span><span class="pill p-prop">Proposed</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Triage the faculty member's queue of items needing attention.</dd>
+      <dt>Review</dt><dd>Opens the item in whichever surface handles it &mdash; a submission opens in Grading, an approval in Approvals.</dd>
+      <dt>Schedule</dt><dd>Sets a time to deal with the item. <span class="pill p-todef">TD-29</span></dd>
+      <dt>Dismiss</dt><dd>Removes the item from the queue. <span class="pill p-todef">TD-29</span></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-29 &nbsp;·&nbsp; Queue behaviour</span>
+    <div class="fq"><b>What does Dismiss mean</b> &mdash; hide permanently, snooze until a date, or resolve the
+    underlying item? And <b>what does Schedule do</b> &mdash; add to the ANCRA calendar, set a personal reminder,
+    or book time with the student? These two controls sit side by side and currently have no defined outcome.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-30 &nbsp;·&nbsp; What generates a queue item?</span>
+    <div class="fq">List the events that place something in the faculty queue &mdash; a submission arriving,
+    a deadline passing with work outstanding, a student falling behind, a peer review not completed. This
+    determines what the command centre can meaningfully surface.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Command Centre &nbsp;&middot;&nbsp; 10 / 19</span></div>
+</section>
+
+
+<!-- ============================= 09 RECORD SURFACES ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">11</span><h2>Record Surfaces</h2><span class="tag">11 Screens, One Pattern</span></div>
+
+  <p class="lead">Eleven screens present a list of records the user can read but not change. They share one
+  specification.</p>
+
+  <svg width="740" height="128" viewBox="0 0 740 128">
+    <rect x="0" y="12" width="150" height="44" rx="5" class="box-nav"/>
+    <text x="75" y="30" text-anchor="middle" class="nt">Screen opens</text>
+    <text x="75" y="44" text-anchor="middle" class="ns">records requested</text>
+
+    <path d="M150,34 L204,34" class="l-g" marker-end="url(#agn)"/>
+    <text x="177" y="28" text-anchor="middle" class="cl">records exist</text>
+    <rect x="204" y="12" width="140" height="44" rx="5" class="box-ok"/>
+    <text x="274" y="30" text-anchor="middle" class="nt">List renders</text>
+    <text x="274" y="44" text-anchor="middle" class="ns">newest first</text>
+
+    <path d="M75,56 L75,76 L274,76 L274,88" class="l-o" marker-end="url(#ao)"/>
+    <text x="175" y="72" text-anchor="middle" class="cl">none yet</text>
+    <rect x="184" y="88" width="180" height="34" rx="5" class="box-dec"/>
+    <text x="274" y="103" text-anchor="middle" class="nt-s">Empty state</text>
+    <text x="274" y="115" text-anchor="middle" class="ns">explains how records are earned</text>
+
+    <path d="M400,34 L448,34" class="l-r" marker-end="url(#ar)"/>
+    <text x="424" y="28" text-anchor="middle" class="cl">request fails</text>
+    <rect x="448" y="12" width="180" height="44" rx="5" class="box-bad"/>
+    <text x="538" y="30" text-anchor="middle" class="nt">Error state</text>
+    <text x="538" y="44" text-anchor="middle" class="ns">states the problem, offers retry</text>
+
+    <rect x="648" y="12" width="92" height="44" rx="5" class="box-dec"/>
+    <text x="694" y="28" text-anchor="middle" class="nt-s">Never shown</text>
+    <text x="694" y="42" text-anchor="middle" class="ns">as empty</text>
+    <line x1="628" y1="34" x2="648" y2="34" class="l" marker-end="url(#ag)"/>
+  </svg>
+
+  <div class="panel pn-b">
+    <h4>The One Rule That Matters Here</h4>
+    <p>An <b>empty</b> record set and a <b>failed</b> request must never look the same. A student whose
+    achievements fail to load must not be shown a screen implying they have earned nothing. Every screen in
+    this pattern needs three distinct states: populated, genuinely empty, and failed &mdash; the last with a
+    retry.</p>
+  </div>
+
+  <table>
+    <tr><th style="width:34mm">Screen</th><th style="width:14mm">Role</th><th>What it lists</th></tr>
+    <tr><td><b>Achievements</b></td><td>Student</td><td>Badges and milestones earned.</td></tr>
+    <tr><td><b>Portfolio</b></td><td>Student</td><td>Works included in the portfolio. Editing is in Portfolio Builder.</td></tr>
+    <tr><td><b>Teams</b></td><td>Student</td><td>Creative teams the student belongs to.</td></tr>
+    <tr><td><b>Calendar</b></td><td>Student</td><td>Scheduled sessions, deadlines and events.</td></tr>
+    <tr><td><b>30 Song Project</b></td><td>Student</td><td>Progress across the songwriting programme.</td></tr>
+    <tr><td><b>Capstones</b></td><td>Student</td><td>Capstone work and its status.</td></tr>
+    <tr><td><b>Creator Passport</b></td><td>Student</td><td>Verified record of accomplishment across the ecosystem.</td></tr>
+    <tr><td><b>Progress</b></td><td>Student</td><td>Completion across the learning journey.</td></tr>
+    <tr><td><b>Students</b></td><td>Faculty</td><td>Roster, filtered per TD-01. Searchable.</td></tr>
+    <tr><td><b>Cohorts</b></td><td>Faculty</td><td>Cohorts and their membership.</td></tr>
+    <tr><td><b>Reviews</b></td><td>Faculty</td><td>Reviews given and outstanding.</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-31 &nbsp;·&nbsp; Empty-state copy</span>
+    <div class="fq">Each screen needs a sentence telling the user <b>how the first record appears</b>. These
+    differ per screen and are best written by whoever knows the programme. Two examples to set the pattern:<br>
+    <b>Achievements:</b> ______________________________________________<br>
+    <b>Capstones:</b> ________________________________________________</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-32 &nbsp;·&nbsp; Are these truly read-only?</span>
+    <div class="fq">The design shows no actions on these screens. Confirm that is intended &mdash; in
+    particular whether a student should be able to <b>respond to a calendar event</b>, <b>leave a team</b>, or
+    <b>share their Creator Passport</b> outward. If any of those are wanted, they become new controls to design.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Record Surfaces &nbsp;&middot;&nbsp; 11 / 19</span></div>
+</section>
+
+<!-- ============================= 10 SHELL ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">12</span><h2>Application Shell</h2><span class="tag">Present on Every Screen</span></div>
+
+  <p class="lead">Three surfaces sit above every screen: the top bar, the command palette, and the assistant.
+  They are the primary means of moving around ANCRA &mdash; there is no persistent sidebar in the design.</p>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Command palette</span><span class="typ">Overlay</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Reach any destination or record quickly by typing, without navigating a menu.</dd>
+      <dt>On activation</dt><dd>Opens over the current screen with focus in the query field. Results filter as the user types, grouped by kind.</dd>
+      <dt>Success</dt><dd>Selecting a result navigates there and closes the palette.</dd>
+      <dt>Empty</dt><dd>When nothing matches, the palette says so rather than showing an empty panel.</dd>
+      <dt>Preconditions</dt><dd>Results are scoped to what the user's role may reach &mdash; a student never sees faculty destinations in results.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-33 &nbsp;·&nbsp; What the palette searches</span>
+    <div class="fq">The design groups results into several categories. <b>Which of these are live searches over
+    real content</b> (lessons, students, assignments) and which are simply lists of destinations? Live content
+    search needs an endpoint per category. Confirm the categories and mark which are which.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">AIAH assistant</span><span class="typ">Dock panel</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Ask a question and get help without leaving the current screen.</dd>
+      <dt>On activation</dt><dd>Opens a panel; the prompt is sent to the configured AI service and the reply streams in.</dd>
+      <dt>Success</dt><dd>Response appears progressively. The conversation remains visible while the user works.</dd>
+      <dt>Failure</dt><dd>A clear message states the assistant is unavailable. <b>It must not present a fabricated answer.</b></dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-34 &nbsp;·&nbsp; Assistant context and history</span>
+    <div class="fq">Two questions. <b>Does the assistant know what screen the user is on</b> and what they are
+    working on &mdash; or is every question asked cold? Context makes it far more useful but means sending
+    student data to the AI service.<br><br>
+    And <b>is the conversation retained</b> between sessions? If yes, for how long, and can the student clear it?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Application Shell &nbsp;&middot;&nbsp; 12 / 19</span></div>
+</section>
+
+
+<!-- ============================= SHELL B =============================  -->
+<section class="page">
+  <div class="ph"><span class="pn">13</span><h2>Notifications &amp; Settings</h2><span class="tag">Shell</span></div>
+
+  <p class="lead">Two shell surfaces the design leaves largely undrawn. Both need defining before the shell
+  is complete.</p>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Notifications</span><span class="typ">Bell + panel</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Tell the user something needs their attention.</dd>
+      <dt>On activation</dt><dd>Opens a list of notifications. <b>That panel is not designed.</b> See TD-35.</dd>
+      <dt>Indicator</dt><dd>The bell shows an unread count when items are waiting.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-35 &nbsp;·&nbsp; Notification model</span>
+    <div class="fq">A notification bell appears in the design but <b>no notification panel was drawn.</b>
+    Define what generates a notification for each role. Likely candidates &mdash; confirm and add:<br>
+    <b>Student:</b> grade returned, assignment issued, peer review assigned, deadline approaching, portfolio approved<br>
+    <b>Faculty:</b> work submitted, review outstanding, cohort deadline passed<br><br>
+    Also: are notifications in-app only, or email as well? Do they persist once read?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Settings</span><span class="typ">Screen</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Let the user adjust their own preferences.</dd>
+      <dt>On activation</dt><dd>The design shows two controls without labels. See TD-36.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-36 &nbsp;·&nbsp; What is in Settings?</span>
+    <div class="fq">The Settings screen is largely undrawn. <b>List what a user can change</b> &mdash;
+    notification preferences, display name, avatar, accessibility options, language? And note which apply to
+    ANCRA only versus which belong to the ANCRID profile shared across the ecosystem.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Notifications & Settings &nbsp;&middot;&nbsp; 13 / 19</span></div>
+</section>
+
+
+<!-- ============================= 11 ECOSYSTEM ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">14</span><h2>Ecosystem Surfaces</h2><span class="tag">Module Entry Points</span></div>
+
+  <p class="lead">ANCRA presents the surrounding ANCR modules and offers actions that reach into them. These
+  are the seams between ANCRA and the rest of the ecosystem, and each depends on the target module exposing
+  something to call.</p>
+
+  <svg width="740" height="108" viewBox="0 0 740 108">
+    <rect x="0" y="12" width="152" height="44" rx="5" class="box-nav"/>
+    <text x="76" y="30" text-anchor="middle" class="nt">Module surface in ANCRA</text>
+    <text x="76" y="44" text-anchor="middle" class="ns">describes the module, offers actions</text>
+
+    <line x1="152" y1="34" x2="196" y2="34" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="196" y="12" width="152" height="44" rx="5" class="box-auth"/>
+    <text x="272" y="30" text-anchor="middle" class="nt">User activates an action</text>
+    <text x="272" y="44" text-anchor="middle" class="ns">carrying their ANCRID session</text>
+
+    <line x1="348" y1="34" x2="392" y2="34" class="l-v" marker-end="url(#av)"/>
+
+    <rect x="392" y="12" width="152" height="44" rx="5" class="box-auth"/>
+    <text x="468" y="30" text-anchor="middle" class="nt">Target module opens</text>
+    <text x="468" y="44" text-anchor="middle" class="ns">no second sign-in</text>
+
+    <line x1="544" y1="34" x2="588" y2="34" class="l-g" marker-end="url(#agn)"/>
+    <rect x="588" y="12" width="152" height="44" rx="5" class="box-ok"/>
+    <text x="664" y="30" text-anchor="middle" class="nt">User lands in context</text>
+    <text x="664" y="44" text-anchor="middle" class="ns">at the right place, not a generic home</text>
+
+    <rect x="0" y="70" width="740" height="34" rx="5" class="box-dec"/>
+    <text x="370" y="85" text-anchor="middle" class="nt-s">Every action on this page depends on the target module exposing an entry point that accepts an ANCRID session</text>
+    <text x="370" y="97" text-anchor="middle" class="ns">Where a module cannot yet accept one, the action should be presented as unavailable rather than appearing active</text>
+  </svg>
+
+  <table>
+    <tr><th style="width:28mm">Module</th><th style="width:48mm">Action in ANCRA</th><th>What it should do</th></tr>
+    <tr><td><b>ANCRLAB</b></td><td>Open the DAW</td><td>Opens the student's workspace in ANCRLAB.</td></tr>
+    <tr><td></td><td>Upload stems</td><td>Sends audio files into the student's ANCRLAB project. Depends on file upload, page 13.</td></tr>
+    <tr><td></td><td>Book room</td><td>Reserves studio time. Requires a booking capability in ANCRLAB.</td></tr>
+    <tr><td></td><td>Export to INHEIRA</td><td>Sends finished work onward for publishing and rights registration.</td></tr>
+    <tr><td><b>ANCRSync</b></td><td>3 collaboration actions</td><td>Opens shared workspaces and sessions.</td></tr>
+    <tr><td><b>COHEIR</b></td><td>3 mentorship actions</td><td>Reaches mentorship and portfolio review.</td></tr>
+    <tr><td><b>INHEIRA</b></td><td>2 publishing actions</td><td>Reaches publishing, credits and rights.</td></tr>
+    <tr><td><b>ANCRID</b></td><td>1 identity action</td><td>Opens the student's identity and Creator Passport.</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-37 &nbsp;·&nbsp; Module entry points</span>
+    <div class="fq">For each action above, <b>what does the target module need to expose?</b> A URL that accepts
+    a session and a context identifier is the minimum. This cannot be built from the ANCRA side alone &mdash;
+    it needs agreement with each module team. Note which modules are ready and which are not.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-38 &nbsp;·&nbsp; Same tab or new?</span>
+    <div class="fq">When a user opens another module, do they <b>leave ANCRA</b> or does it open alongside?
+    And is there a route back? This shapes whether ANCRA feels like a hub or a departure point.</div>
+    <div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Coming-soon modules</span><span class="typ">Surface</span><span class="pill p-dcn">Decision</span></div>
+    <div class="cb"><dl>
+      <dt>Purpose</dt><dd>Show a module that exists in the ecosystem plan but is not yet available.</dd>
+      <dt>Decision</dt><dd>The design offers <b>Notify me at launch</b> and <b>Read the spec</b>. Either wire
+        the first to a real waitlist that records the request and the second to a real document, or present the
+        module without actions. A control that registers nothing should not be shown.</dd>
+    </dl></div>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Ecosystem Surfaces &nbsp;&middot;&nbsp; 14 / 19</span></div>
+</section>
+
+
+<!-- ============================= 12 DASHBOARDS ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">15</span><h2>Dashboards</h2><span class="tag">Student &middot; Faculty</span></div>
+
+  <p class="lead">Each role has a landing screen summarising what matters and offering routes into the work.
+  Both are composite surfaces assembled from data owned by other screens.</p>
+
+  <h3>Student Dashboard</h3>
+  <table>
+    <tr><th style="width:44mm">Element</th><th style="width:26mm">Source</th><th>Behaviour</th></tr>
+    <tr><td><b>Continue learning</b></td><td>Learning journey</td><td>Opens the next incomplete lesson. If none, points to the journey.</td></tr>
+    <tr><td><b>Progress indicator</b></td><td>Completion records</td><td>Shows advancement through the programme. See TD-39.</td></tr>
+    <tr><td><b>Upcoming events</b></td><td>Calendar</td><td>Next scheduled items.</td></tr>
+    <tr><td><b>RSVP</b></td><td>Calendar</td><td>Records attendance intent for an event. <span class="pill p-prop">Proposed</span></td></tr>
+    <tr><td><b>Add to Calendar</b></td><td>Calendar</td><td>Adds to the student's own external calendar. <span class="pill p-todef">TD-40</span></td></tr>
+    <tr><td><b>Portfolio score</b></td><td>Portfolio</td><td>A measure of portfolio strength. See TD-39.</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-39 &nbsp;·&nbsp; How are progress and portfolio score calculated?</span>
+    <div class="fq">The dashboard shows a progress figure and a portfolio score, both with a trend indicator.
+    <b>Define the calculation for each.</b> Progress is presumably lessons completed over lessons available &mdash;
+    confirm. Portfolio score is less obvious: what raises it, and over what period is the trend measured?</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-40 &nbsp;·&nbsp; External calendar</span>
+    <div class="fq"><b>Add to Calendar</b> implies a calendar outside ANCRA. Which &mdash; a downloaded
+    calendar file the user opens, or a connected account? A file download is far simpler and needs no
+    integration; confirm that is sufficient.</div>
+    <div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <h3>Faculty Command Centre</h3>
+  <table>
+    <tr><th style="width:44mm">Element</th><th style="width:26mm">Source</th><th>Behaviour</th></tr>
+    <tr><td><b>Attention queue</b></td><td>Submissions, deadlines</td><td>Items needing action, with Review / Schedule / Dismiss. See page 08.</td></tr>
+    <tr><td><b>Cohort summary</b></td><td>Cohorts</td><td>Cohorts taught, with size and progress.</td></tr>
+    <tr><td><b>Analytics</b></td><td>Student activity</td><td>Engagement and completion across cohorts. See TD-41.</td></tr>
+  </table>
+
+  <div class="fill">
+    <span class="fid">TD-41 &nbsp;·&nbsp; Which analytics matter?</span>
+    <div class="fq">The design shows an analytics surface without settling what it measures. <b>Name the
+    handful of figures faculty actually need</b> to spot a student falling behind or a cohort struggling.
+    Fewer, well-chosen measures will serve better than a broad dashboard.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+    <div class="hint">Note that most of these depend on completion and submission data existing first &mdash; see the sequencing note on page 17.</div>
+  </div>
+
+  <div class="panel pn-o">
+    <h4>Decision &mdash; Analytics Depend on Earlier Work</h4>
+    <p>Every figure on the faculty analytics surface derives from student activity: lessons completed, work
+    submitted, grades returned. None of that data exists until the learning and submission flows are built.
+    <b>Analytics should be specified in detail only after those land</b>, or it risks being designed around
+    measures that cannot be produced.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Dashboards &nbsp;&middot;&nbsp; 15 / 19</span></div>
+</section>
+
+<!-- ============================= 13 CROSS-SCREEN ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">16</span><h2>Cross-Screen Requirements</h2><span class="tag">Shared Capabilities</span></div>
+
+  <p class="lead">Three capabilities are relied on by several screens. Each is specified once here rather than
+  repeated, and each is a prerequisite for the screens that depend on it.</p>
+
+  <h3>Media playback</h3>
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Media playback</span><span class="typ">Capability</span><span class="pill p-spec">Specified</span></div>
+    <div class="cb"><dl>
+      <dt>Needed by</dt><dd>Lesson Player (page 04) &middot; Peer Review listening (page 06) &middot; submitted audio in Grading (page 08)</dd>
+      <dt>Must support</dt><dd>Play, pause, seek, elapsed and remaining time, volume. Position reported periodically so it survives leaving the screen.</dd>
+      <dt>Failure</dt><dd>A clear message that the media could not be loaded, with retry. Never a silent empty player.</dd>
+      <dt>Open</dt><dd>Format, hosting and streaming approach &mdash; TD-05. Captions and transcripts &mdash; TD-42.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-42 &nbsp;·&nbsp; Captions and transcripts</span>
+    <div class="fq">Are <b>captions required</b> on lesson media, and are <b>transcripts</b> provided? Both
+    carry accessibility obligations for an educational product and affect what must be produced alongside every
+    lesson. If required, note who produces them.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <h3>File upload</h3>
+  <div class="ctl">
+    <div class="ch"><span class="lbl">File upload</span><span class="typ">Capability</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Needed by</dt><dd>Assignment submission (page 06) &middot; Lesson Builder media (page 07) &middot; ANCRLAB stem upload (page 14) &middot; portfolio artefacts (page 05)</dd>
+      <dt>Must support</dt><dd>Select file, show progress, confirm success, report failure without losing the surrounding form.</dd>
+      <dt>Open</dt><dd>Storage location, accepted types, size limits, retention &mdash; TD-43.</dd>
+    </dl></div>
+  </div>
+
+  <div class="fill">
+    <span class="fid">TD-43 &nbsp;·&nbsp; File storage</span>
+    <div class="fq">No upload capability exists in the design or on our infrastructure yet, and four separate
+    flows depend on it. Define: <b>where files are stored</b>, <b>which types are accepted</b> per context
+    (audio for stems, documents for assignments), <b>maximum size</b>, and <b>who may retrieve a file</b> once
+    uploaded. Note also how long student work is retained after graduation.</div>
+    <div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div><div class="rule"></div>
+  </div>
+
+  <h3>Notifications</h3>
+  <div class="ctl">
+    <div class="ch"><span class="lbl">Notifications</span><span class="typ">Capability</span><span class="pill p-todef">To define</span></div>
+    <div class="cb"><dl>
+      <dt>Needed by</dt><dd>Assessment cycle (page 08) &middot; shell bell (page 13) &middot; assignment issue (page 06)</dd>
+      <dt>Must support</dt><dd>Generate on defined events, mark read, surface an unread count.</dd>
+      <dt>Open</dt><dd>Triggering events and delivery channels &mdash; TD-25, TD-35.</dd>
+    </dl></div>
+  </div>
+
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Cross-Screen Requirements &nbsp;&middot;&nbsp; 16 / 19</span></div>
+</section>
+
+
+<!-- ============================= SEQUENCE ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">17</span><h2>Build Sequence &amp; Vocabulary</h2><span class="tag">Planning</span></div>
+
+  <p class="lead">How the work in this document depends on itself, and how prototype-platform language maps to
+  our own infrastructure.</p>
+
+  <div class="panel pn-b">
+    <h4>Suggested Build Sequence</h4>
+    <p>Several items in this document depend on others and should not be scheduled in parallel:</p>
+    <p><b>1. Identity</b> (page 02) &mdash; nothing else can be safely deployed without role enforcement.<br>
+    <b>2. Media playback and file upload</b> (this page) &mdash; shared infrastructure that several screens need.<br>
+    <b>3. Submission and assessment</b> (pages 05, 06, 08) as one workstream &mdash; a submission with nowhere
+    to go is not useful, and grading with nothing to grade is untestable.<br>
+    <b>4. Progress, dashboards and analytics</b> (page 15) &mdash; these can only be truthful once real activity
+    exists to compute from.<br>
+    <b>5. Ecosystem actions</b> (page 14) &mdash; gated on other module teams, so treat as a separate track.</p>
+  </div>
+
+  <h3>Target infrastructure vocabulary</h3>
+  <table>
+    <tr><th style="width:56mm">Prototype relied on</th><th style="width:52mm">Documented as</th><th>Status</th></tr>
+    <tr><td>Hosted AI service</td><td><b>Configured AI service</b></td><td>Capability proven in the prototype assistant. Provider and account to be chosen for our infrastructure.</td></tr>
+    <tr><td>Platform-managed identity</td><td><b>ANCRID session</b></td><td>Integration required. See page 02.</td></tr>
+    <tr><td>&mdash;</td><td><b>Approved media storage</b></td><td><b>Does not exist.</b> Blocks four flows &mdash; TD-43.</td></tr>
+    <tr><td>Seeded demonstration data</td><td>&mdash;</td><td>Not carried forward. Every screen must handle a genuinely empty account.</td></tr>
+  </table>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Build Sequence & Vocabulary &nbsp;&middot;&nbsp; 17 / 19</span></div>
+</section>
+
+
+<!-- ============================= 14 REGISTER A ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">18</span><h2>Completion Register</h2><span class="tag">Items 01&ndash;22</span></div>
+
+  <p class="lead">Every open item in this document, in order. Work through them and mark each complete.
+  Items marked <b>blocks build</b> prevent the affected screen being built at all; the rest can be answered
+  in parallel with development.</p>
+
+  <table>
+    <tr><th style="width:14mm">ID</th><th style="width:10mm">Page</th><th style="width:52mm">Question</th><th style="width:20mm">Priority</th><th>Done</th></tr>
+    <tr><td class="mono"><b>TD-01</b></td><td>02</td><td>Faculty scope &mdash; all students or only own cohorts?</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-02</b></td><td>02</td><td>Additional roles beyond student and faculty?</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-03</b></td><td>03</td><td>Difference between Welcome and Landing entry routes</td><td>Minor</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-04</b></td><td>04</td><td>What marks a lesson complete?</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-05</b></td><td>04</td><td>Lesson media format, hosting and delivery</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-06</b></td><td>04</td><td>Bookmark scope, and where bookmarks are listed</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-07</b></td><td>04</td><td>Lesson discussion model &mdash; or drop the control</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-08</b></td><td>04</td><td>Share target &mdash; internal, cohort, or public</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-09</b></td><td>05</td><td>What "Sign" means on a portfolio &mdash; lock, reverse, notify</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-10</b></td><td>05</td><td>Portfolio requirements before signing</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-11</b></td><td>05</td><td>Graduation packet contents and recipient</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-12</b></td><td>05</td><td>Graduation readiness conditions</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-13</b></td><td>06</td><td>Assignment submission screen &mdash; not designed</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-14</b></td><td>06</td><td>Resubmission and late submission rules</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-15</b></td><td>07</td><td>Peer review model &mdash; anonymity, assignment, count</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-16</b></td><td>07</td><td>Peer review structure &mdash; free text or criteria</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-17</b></td><td>07</td><td>What a Creative Project contains</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-18</b></td><td>08</td><td>Draft and publish model, versioning</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-19</b></td><td>08</td><td>Who may publish &mdash; approval step needed?</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-20</b></td><td>08</td><td>Lesson sequencing and prerequisites</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-21</b></td><td>08</td><td>What a curriculum canvas block is</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-22</b></td><td>08</td><td>Assignment targeting and scheduled release</td><td>Before build</td><td>&nbsp;</td></tr>
+  </table>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Completion Register &nbsp;&middot;&nbsp; 18 / 19</span></div>
+</section>
+
+
+<!-- ============================= 15 REGISTER B ============================= -->
+<section class="page">
+  <div class="ph"><span class="pn">19</span><h2>Completion Register</h2><span class="tag">Items 23&ndash;43</span></div>
+
+  <table>
+    <tr><th style="width:14mm">ID</th><th style="width:10mm">Page</th><th style="width:52mm">Question</th><th style="width:20mm">Priority</th><th>Done</th></tr>
+    <tr><td class="mono"><b>TD-23</b></td><td>08</td><td>Rubric reuse across assignments</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-24</b></td><td>08</td><td>Creative team membership rules</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-25</b></td><td>09</td><td>Who is notified at each assessment step</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-26</b></td><td>09</td><td>Approval semantics &mdash; reversible, locking, vs grading</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-27</b></td><td>09</td><td>Where feedback starting points come from</td><td>Minor</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-28</b></td><td>09</td><td>Grade format, visibility and amendment</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-29</b></td><td>10</td><td>What Dismiss and Schedule do in the queue</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-30</b></td><td>10</td><td>What events generate a faculty queue item</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-31</b></td><td>11</td><td>Empty-state copy for each record surface</td><td>Minor</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-32</b></td><td>11</td><td>Confirm record surfaces are read-only</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-33</b></td><td>12</td><td>What the command palette searches</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-34</b></td><td>12</td><td>Assistant context and conversation retention</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-35</b></td><td>13</td><td>Notification model &mdash; panel not designed</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-36</b></td><td>13</td><td>Settings contents</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-37</b></td><td>14</td><td>Module entry points &mdash; needs other module teams</td><td>Separate track</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-38</b></td><td>14</td><td>Same tab or new when leaving for a module</td><td>Minor</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-39</b></td><td>15</td><td>Progress and portfolio score calculation</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-40</b></td><td>15</td><td>External calendar approach</td><td>Minor</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-41</b></td><td>15</td><td>Which analytics figures matter</td><td>After activity data</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-42</b></td><td>16</td><td>Captions and transcripts on lesson media</td><td>Before build</td><td>&nbsp;</td></tr>
+    <tr><td class="mono"><b>TD-43</b></td><td>16</td><td>File storage, types, limits, retention</td><td><b>Blocks build</b></td><td>&nbsp;</td></tr>
+  </table>
+
+  <div class="panel pn-o">
+    <h4>Summary</h4>
+    <p><b>43 open items.</b> Of these, <b>15 block the build</b> of the screen they affect &mdash; mostly
+    concentrated in the learning flow, student submission and the assessment cycle. A further 20 should be
+    answered before those screens are built but do not prevent starting. The remainder are minor or depend on
+    other teams.</p>
+    <p>The fastest route to a buildable specification is to answer the 15 blocking items first. They cluster
+    into four conversations: <b>what completion and progress mean</b> (TD-04, TD-20, TD-39), <b>what students
+    submit and what happens to it</b> (TD-09, TD-11, TD-12, TD-13, TD-15, TD-17), <b>how assessment works</b>
+    (TD-25, TD-26, TD-28), and <b>infrastructure</b> (TD-05, TD-43, TD-35, TD-01).</p>
+  </div>
+
+  <div class="panel pn-b">
+    <h4>How to Return This Document</h4>
+    <p>Answers can be written directly onto a printed copy, or typed into the editable HTML source supplied
+    alongside this PDF &mdash; each fill-in area is a labelled block in that file. Once the blocking items are
+    answered, this specification is rebuilt with those answers folded in as <b>Specified</b> behaviour, and the
+    remaining open items carried forward.</p>
+  </div>
+
+  <div class="pfoot"><span class="fl">ANCRA Design-Intent Specification</span><span class="fr">Completion Register &nbsp;&middot;&nbsp; 19 / 19</span></div>
+</section>
+
+</body>
+</html>
